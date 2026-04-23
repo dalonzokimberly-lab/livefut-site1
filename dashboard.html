@@ -19,6 +19,7 @@
       --border: rgba(49, 209, 88, 0.18);
       --shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
       --radius: 24px;
+      --danger: #ff6b6b;
     }
 
     * { box-sizing: border-box; }
@@ -37,7 +38,7 @@
     a { color: inherit; text-decoration: none; }
 
     .container {
-      width: min(1180px, calc(100% - 32px));
+      width: min(1220px, calc(100% - 32px));
       margin: 0 auto;
     }
 
@@ -56,6 +57,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 20px;
+      flex-wrap: wrap;
     }
 
     .brand {
@@ -63,6 +65,7 @@
       align-items: center;
       gap: 12px;
       font-weight: 800;
+      min-width: 0;
     }
 
     .brand-badge {
@@ -75,11 +78,18 @@
       border: 1px solid var(--border);
       color: var(--green);
       font-size: 0.88rem;
+      flex-shrink: 0;
+    }
+
+    .brand-text {
+      min-width: 0;
     }
 
     .brand-text strong {
       display: block;
       font-size: 1.12rem;
+      line-height: 1.1;
+      overflow-wrap: anywhere;
     }
 
     .brand-text span {
@@ -89,12 +99,15 @@
       font-size: 0.72rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
+      overflow-wrap: anywhere;
     }
 
     .top-actions {
       display: flex;
       align-items: center;
       gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
     .btn {
@@ -105,6 +118,12 @@
       font-weight: 800;
       font-family: inherit;
       font-size: 0.94rem;
+      transition: 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
     }
 
     .btn-primary {
@@ -119,6 +138,12 @@
       border: 1px solid var(--border);
     }
 
+    .btn-danger {
+      background: rgba(255, 107, 107, 0.1);
+      color: #fff;
+      border: 1px solid rgba(255, 107, 107, 0.22);
+    }
+
     .hero {
       padding: 34px 0 22px;
     }
@@ -129,10 +154,10 @@
       border-radius: 32px;
       box-shadow: var(--shadow);
       padding: 32px;
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(280px, 340px);
       gap: 24px;
-      align-items: center;
+      align-items: start;
     }
 
     .eyebrow {
@@ -149,6 +174,7 @@
       text-transform: uppercase;
       letter-spacing: 0.08em;
       margin-bottom: 16px;
+      max-width: 100%;
     }
 
     .pulse {
@@ -157,14 +183,16 @@
       border-radius: 999px;
       background: var(--green);
       box-shadow: 0 0 0 8px rgba(49, 209, 88, 0.12);
+      flex-shrink: 0;
     }
 
     h1 {
       margin: 0 0 12px;
-      font-size: clamp(2rem, 4vw, 3.4rem);
-      line-height: 1;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      line-height: 1.02;
       letter-spacing: -0.04em;
       color: var(--green);
+      overflow-wrap: anywhere;
     }
 
     .hero-card p {
@@ -172,6 +200,7 @@
       color: #fff;
       line-height: 1.75;
       max-width: 720px;
+      overflow-wrap: anywhere;
     }
 
     .hero-buttons {
@@ -182,10 +211,9 @@
     }
 
     .hero-side {
-      min-width: 260px;
-      width: 320px;
       display: grid;
       gap: 12px;
+      min-width: 0;
     }
 
     .mini-stat {
@@ -193,6 +221,7 @@
       border: 1px solid var(--border);
       border-radius: 20px;
       padding: 18px;
+      min-width: 0;
     }
 
     .mini-stat strong {
@@ -200,12 +229,15 @@
       color: var(--green);
       font-size: 1.35rem;
       margin-bottom: 6px;
+      overflow-wrap: anywhere;
+      line-height: 1.15;
     }
 
     .mini-stat span {
       color: #fff;
       font-size: 0.92rem;
       line-height: 1.6;
+      overflow-wrap: anywhere;
     }
 
     .section {
@@ -220,7 +252,7 @@
 
     .grid-2 {
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
+      grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
       gap: 16px;
     }
 
@@ -230,6 +262,8 @@
       border-radius: 24px;
       box-shadow: var(--shadow);
       padding: 24px;
+      min-width: 0;
+      overflow: hidden;
     }
 
     .card h2,
@@ -237,6 +271,7 @@
       margin: 0 0 10px;
       color: var(--green);
       letter-spacing: -0.02em;
+      overflow-wrap: anywhere;
     }
 
     .card p,
@@ -244,6 +279,7 @@
     .card span {
       color: #fff;
       line-height: 1.7;
+      overflow-wrap: anywhere;
     }
 
     .metric-value {
@@ -252,6 +288,8 @@
       color: var(--green);
       font-weight: 800;
       margin-bottom: 6px;
+      line-height: 1.1;
+      overflow-wrap: anywhere;
     }
 
     .quick-actions {
@@ -267,6 +305,8 @@
       border-radius: 18px;
       padding: 16px;
       font-weight: 700;
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
 
     .list {
@@ -283,13 +323,20 @@
       display: flex;
       justify-content: space-between;
       gap: 16px;
-      align-items: center;
+      align-items: flex-start;
+      min-width: 0;
+    }
+
+    .list-item > div {
+      flex: 1;
+      min-width: 0;
     }
 
     .list-item strong {
       display: block;
       margin-bottom: 4px;
       color: var(--green);
+      overflow-wrap: anywhere;
     }
 
     .badge {
@@ -304,44 +351,63 @@
       font-size: 0.82rem;
       font-weight: 800;
       white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .profile-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .profile-item {
+      border: 1px solid var(--border);
+      background: rgba(49,209,88,0.05);
+      border-radius: 18px;
+      padding: 16px;
+      min-width: 0;
+    }
+
+    .profile-item strong {
+      display: block;
+      color: var(--green);
+      margin-bottom: 6px;
+      overflow-wrap: anywhere;
     }
 
     .footer-note {
       padding-bottom: 42px;
       color: var(--muted);
       font-size: 0.92rem;
+      overflow-wrap: anywhere;
     }
 
     @media (max-width: 1080px) {
-      .grid-4,
-      .grid-2 {
+      .grid-4 {
         grid-template-columns: 1fr 1fr;
       }
 
+      .grid-2,
       .hero-card {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .hero-side {
-        width: 100%;
-        min-width: 0;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr;
       }
     }
 
     @media (max-width: 760px) {
       .grid-4,
-      .grid-2,
-      .hero-side,
       .quick-actions {
         grid-template-columns: 1fr;
       }
 
       .topbar-inner,
+      .top-actions,
       .list-item {
         flex-direction: column;
         align-items: flex-start;
+      }
+
+      .btn {
+        width: 100%;
       }
     }
   </style>
@@ -358,7 +424,8 @@
       </a>
       <div class="top-actions">
         <a class="btn btn-secondary" href="index.html">Home</a>
-        <button class="btn btn-primary" id="logoutBtn">Esci</button>
+        <a class="btn btn-primary" href="profile.html">Configura profilo</a>
+        <button class="btn btn-danger" id="logoutBtn">Esci</button>
       </div>
     </div>
   </header>
@@ -373,22 +440,23 @@
             Questa è la tua area personale. Da qui potrai gestire profilo, future partite, dirette, collegamenti alle piattaforme e strumenti di trasmissione.
           </p>
           <div class="hero-buttons">
-            <button class="btn btn-primary">Nuova diretta</button>
-            <button class="btn btn-secondary">Modifica profilo</button>
+            <button class="btn btn-primary" type="button">Nuova diretta</button>
+            <a class="btn btn-secondary" href="profile.html">Configura profilo</a>
           </div>
         </div>
+
         <div class="hero-side">
           <div class="mini-stat">
             <strong id="userRole">user</strong>
             <span>Ruolo utente attualmente assegnato al tuo profilo.</span>
           </div>
           <div class="mini-stat">
-            <strong>0</strong>
-            <span>Dirette attive in questo momento sul tuo account.</span>
+            <strong id="usernamePreview">—</strong>
+            <span>Username del tuo profilo pubblico su LiveFut TV.</span>
           </div>
           <div class="mini-stat">
-            <strong>0</strong>
-            <span>Eventi creati finora. Cresceranno con i prossimi step.</span>
+            <strong id="favoriteTeamPreview">—</strong>
+            <span>La tua squadra del cuore visualizzata nella piattaforma.</span>
           </div>
         </div>
       </div>
@@ -401,16 +469,19 @@
           <span class="metric-value" id="profileName">—</span>
           <span id="profileEmail">—</span>
         </article>
+
         <article class="card">
           <h3>Stato account</h3>
           <span class="metric-value">Attivo</span>
           <span>Utente autenticato con successo su LiveFut TV.</span>
         </article>
+
         <article class="card">
           <h3>Streaming</h3>
           <span class="metric-value">0 live</span>
           <span>Nessuna sessione live avviata per ora.</span>
         </article>
+
         <article class="card">
           <h3>Supporto</h3>
           <span class="metric-value">0 ticket</span>
@@ -424,6 +495,7 @@
         <article class="card">
           <h2>Azioni rapide</h2>
           <p>Queste saranno le funzioni principali della tua area broadcaster e utente.</p>
+
           <div class="quick-actions">
             <div class="quick-action">Crea una partita</div>
             <div class="quick-action">Collega YouTube</div>
@@ -437,6 +509,7 @@
         <article class="card">
           <h2>Stato piattaforma</h2>
           <p>Questa card diventerà il riepilogo delle tue attività recenti.</p>
+
           <div class="list">
             <div class="list-item">
               <div>
@@ -445,6 +518,7 @@
               </div>
               <span class="badge">OK</span>
             </div>
+
             <div class="list-item">
               <div>
                 <strong>Autenticazione</strong>
@@ -452,6 +526,7 @@
               </div>
               <span class="badge">OK</span>
             </div>
+
             <div class="list-item">
               <div>
                 <strong>Dirette</strong>
@@ -464,14 +539,50 @@
       </div>
     </section>
 
+    <section class="section">
+      <div class="grid-2">
+        <article class="card">
+          <h2>Dettagli profilo</h2>
+          <p>Questa sezione mostra i dati che hai compilato nella configurazione del profilo.</p>
+
+          <div class="profile-list">
+            <div class="profile-item">
+              <strong>Nome profilo</strong>
+              <span id="detailDisplayName">—</span>
+            </div>
+
+            <div class="profile-item">
+              <strong>Username</strong>
+              <span id="detailUsername">—</span>
+            </div>
+
+            <div class="profile-item">
+              <strong>Città</strong>
+              <span id="detailCity">—</span>
+            </div>
+
+            <div class="profile-item">
+              <strong>Squadra del cuore</strong>
+              <span id="detailFavoriteTeam">—</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>Bio</h2>
+          <p id="detailBio">Nessuna bio inserita al momento.</p>
+        </article>
+      </div>
+    </section>
+
     <section class="footer-note">
-      LiveFut TV — base dashboard v1 pronta per i prossimi moduli: profilo, eventi, dirette, supporto, admin.
+      LiveFut TV — dashboard pulita con collegamento alla pagina profilo dedicata.
     </section>
   </main>
 
   <script>
     const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
+    const SUPABASE_ANON_KEY = 'INSERISCI_QUI_LA_TUA_ANON_KEY';
 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -493,9 +604,24 @@
         .single();
 
       if (!error && profile) {
-        document.getElementById('profileName').textContent = profile.display_name || 'Utente LiveFut';
-        document.getElementById('userRole').textContent = profile.role || 'user';
-        document.getElementById('welcomeTitle').textContent = `Benvenuto, ${profile.display_name || 'utente'}`;
+        const displayName = profile.display_name || 'Utente LiveFut';
+        const username = profile.username || 'Nessuno';
+        const role = profile.role || 'user';
+        const city = profile.city || 'Non impostata';
+        const favoriteTeam = profile.favorite_team || 'Non impostata';
+        const bio = profile.bio || 'Nessuna bio inserita al momento.';
+
+        document.getElementById('profileName').textContent = displayName;
+        document.getElementById('userRole').textContent = role;
+        document.getElementById('welcomeTitle').textContent = `Benvenuto, ${displayName}`;
+        document.getElementById('usernamePreview').textContent = username;
+        document.getElementById('favoriteTeamPreview').textContent = favoriteTeam;
+
+        document.getElementById('detailDisplayName').textContent = displayName;
+        document.getElementById('detailUsername').textContent = username;
+        document.getElementById('detailCity').textContent = city;
+        document.getElementById('detailFavoriteTeam').textContent = favoriteTeam;
+        document.getElementById('detailBio').textContent = bio;
       } else {
         document.getElementById('profileName').textContent = user.email || 'Utente LiveFut';
       }
