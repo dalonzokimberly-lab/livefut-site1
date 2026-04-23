@@ -535,7 +535,7 @@
         return;
       }
 
-      showStatus('Accesso effettuato con successo. La dashboard sarà il prossimo step.', 'ok');
+      window.location.href = 'dashboard.html';
     });
 
     registerForm.addEventListener('submit', async (event) => {
@@ -579,8 +579,7 @@
         }
       }
 
-      showStatus('Registrazione completata con successo. Ora puoi accedere con il tuo account.', 'ok');
-      setTab('login');
+      window.location.href = 'dashboard.html';
     });
   </script>
 </body>
