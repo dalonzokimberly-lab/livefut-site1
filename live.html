@@ -3,463 +3,444 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>LiveFut TV — Live</title>
-  <script src="https://app.termly.io/resource-blocker/XXXX?autoBlock=on"></script>
+
+  <script src="https://app.termly.io/resource-blocker/ecfeb307-3d9a-4e26-a7de-4dab9c2345f9?autoBlock=on"></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg: #050505;
-      --panel: #0b0b0b;
-      --panel-2: #101010;
-      --text: #ffffff;
-      --muted: #cfd6cf;
-      --green: #31d158;
-      --border: rgba(49, 209, 88, 0.18);
-      --shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
-      --live: #ff5252;
+      --bg:#050505;
+      --green:#31d158;
+      --border:rgba(49,209,88,0.18);
+      --text:#ffffff;
+      --muted:#cfd6cf;
+      --shadow:0 20px 60px rgba(0,0,0,0.55);
+      --live:#ff5252;
     }
 
-    * { box-sizing: border-box; }
+    * { box-sizing:border-box; }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior:smooth; }
 
     body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin:0;
+      min-height:100vh;
+      font-family:"Space Grotesk", sans-serif;
       background:
-        radial-gradient(circle at top left, rgba(49, 209, 88, 0.12), transparent 24%),
-        radial-gradient(circle at top right, rgba(49, 209, 88, 0.08), transparent 22%),
+        radial-gradient(circle at top left, rgba(49,209,88,0.12), transparent 24%),
+        radial-gradient(circle at top right, rgba(49,209,88,0.08), transparent 22%),
         linear-gradient(180deg, #020202 0%, #080808 100%);
-      color: var(--text);
+      color:var(--text);
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+    a { color:inherit; text-decoration:none; }
 
     .container {
-      width: min(1240px, calc(100% - 32px));
-      margin: 0 auto;
+      width:min(1240px, calc(100% - 32px));
+      margin:0 auto;
     }
 
     .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      backdrop-filter: blur(14px);
-      background: rgba(0, 0, 0, 0.84);
-      border-bottom: 1px solid rgba(49, 209, 88, 0.1);
+      position:sticky;
+      top:0;
+      z-index:50;
+      backdrop-filter:blur(14px);
+      background:rgba(0,0,0,0.84);
+      border-bottom:1px solid var(--border);
     }
 
     .topbar-inner {
-      min-height: 78px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      flex-wrap: wrap;
+      min-height:78px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      flex-wrap:wrap;
     }
 
     .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 800;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-weight:800;
     }
 
     .brand-badge {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      background: rgba(49, 209, 88, 0.12);
-      border: 1px solid var(--border);
-      color: var(--green);
-      font-size: 0.88rem;
-      flex-shrink: 0;
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:rgba(49,209,88,0.12);
+      border:1px solid var(--border);
+      color:var(--green);
+      font-size:.88rem;
+      flex-shrink:0;
     }
 
     .brand-text strong {
-      display: block;
-      font-size: 1.12rem;
-      line-height: 1.1;
+      display:block;
+      font-size:1.12rem;
+      line-height:1.1;
     }
 
     .brand-text span {
-      display: block;
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 0.72rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
+      display:block;
+      margin-top:4px;
+      color:var(--muted);
+      font-size:.72rem;
+      letter-spacing:.1em;
+      text-transform:uppercase;
     }
 
     .nav {
-      display: flex;
-      gap: 24px;
-      align-items: center;
-      flex-wrap: wrap;
+      display:flex;
+      gap:24px;
+      align-items:center;
+      flex-wrap:wrap;
     }
 
     .nav a {
-      color: var(--text);
-      font-size: 0.95rem;
-      transition: 0.2s ease;
+      color:#fff;
+      font-size:.95rem;
+      transition:.2s ease;
     }
 
-    .nav a:hover {
-      color: var(--green);
-    }
+    .nav a:hover { color:var(--green); }
 
     .top-actions {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
     }
 
     .btn {
-      border: 0;
-      cursor: pointer;
-      border-radius: 999px;
-      padding: 12px 18px;
-      font-weight: 800;
-      font-family: inherit;
-      font-size: 0.94rem;
-      transition: 0.2s ease;
-      white-space: nowrap;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      border:0;
+      cursor:pointer;
+      border-radius:999px;
+      padding:12px 18px;
+      font-weight:800;
+      font-family:inherit;
+      font-size:.94rem;
+      transition:.2s ease;
+      white-space:nowrap;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
     }
 
-    .btn:hover {
-      transform: translateY(-1px);
-    }
+    .btn:hover { transform:translateY(-1px); }
 
     .btn-primary {
-      background: linear-gradient(135deg, #19a83f, #31d158);
-      color: #000;
-      box-shadow: 0 12px 28px rgba(49, 209, 88, 0.28);
+      background:linear-gradient(135deg,#19a83f,#31d158);
+      color:#000;
+      box-shadow:0 12px 28px rgba(49,209,88,.28);
     }
 
     .btn-secondary {
-      background: rgba(49, 209, 88, 0.06);
-      color: #fff;
-      border: 1px solid var(--border);
+      background:rgba(49,209,88,.06);
+      color:#fff;
+      border:1px solid var(--border);
     }
 
-    .hero {
-      padding: 34px 0 22px;
-    }
+    .hero { padding:34px 0 22px; }
 
     .hero-card {
-      background: linear-gradient(180deg, rgba(49,209,88,0.03), rgba(255,255,255,0.01));
-      border: 1px solid var(--border);
-      border-radius: 32px;
-      box-shadow: var(--shadow);
-      padding: 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(280px, 340px);
-      gap: 24px;
-      align-items: start;
+      background:linear-gradient(180deg, rgba(49,209,88,.03), rgba(255,255,255,.01));
+      border:1px solid var(--border);
+      border-radius:32px;
+      box-shadow:var(--shadow);
+      padding:32px;
+      display:grid;
+      grid-template-columns:minmax(0, 1.2fr) minmax(280px, 340px);
+      gap:24px;
+      align-items:start;
     }
 
     .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(49, 209, 88, 0.08);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 10px 14px;
-      color: var(--green);
-      font-weight: 700;
-      font-size: 0.82rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 16px;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      background:rgba(49,209,88,.08);
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:10px 14px;
+      color:var(--green);
+      font-weight:700;
+      font-size:.82rem;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:16px;
     }
 
     .pulse {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      background: var(--live);
-      box-shadow: 0 0 0 8px rgba(255, 82, 82, 0.12);
-      animation: pulse 1.8s infinite;
-      flex-shrink: 0;
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      background:var(--live);
+      box-shadow:0 0 0 8px rgba(255,82,82,.12);
+      animation:pulse 1.8s infinite;
+      flex-shrink:0;
     }
 
     @keyframes pulse {
-      0%,100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.18); opacity: 0.82; }
+      0%,100% { transform:scale(1); opacity:1; }
+      50% { transform:scale(1.18); opacity:.82; }
     }
 
     h1 {
-      margin: 0 0 12px;
-      font-size: clamp(2.2rem, 4vw, 3.8rem);
-      line-height: 1.02;
-      letter-spacing: -0.04em;
-      color: var(--green);
-      overflow-wrap: anywhere;
+      margin:0 0 12px;
+      font-size:clamp(2.2rem,4vw,3.8rem);
+      line-height:1.02;
+      letter-spacing:-.04em;
+      color:var(--green);
+      overflow-wrap:anywhere;
     }
 
     .hero-card p {
-      margin: 0;
-      color: #fff;
-      line-height: 1.75;
-      max-width: 760px;
+      margin:0;
+      color:#fff;
+      line-height:1.75;
+      max-width:760px;
     }
 
     .hero-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 24px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:24px;
     }
 
     .hero-side {
-      display: grid;
-      gap: 12px;
+      display:grid;
+      gap:12px;
     }
 
     .mini-stat {
-      background: rgba(49,209,88,0.05);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 18px;
+      background:rgba(49,209,88,.05);
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:18px;
     }
 
     .mini-stat strong {
-      display: block;
-      color: var(--green);
-      font-size: 1.35rem;
-      margin-bottom: 6px;
-      line-height: 1.15;
+      display:block;
+      color:var(--green);
+      font-size:1.35rem;
+      margin-bottom:6px;
+      line-height:1.15;
     }
 
     .mini-stat span {
-      color: #fff;
-      font-size: 0.92rem;
-      line-height: 1.6;
+      color:#fff;
+      font-size:.92rem;
+      line-height:1.6;
     }
 
-    .section {
-      padding: 12px 0 28px;
-    }
+    .section { padding:12px 0 28px; }
 
     .section-title {
-      margin: 0 0 16px;
-      color: var(--green);
-      font-size: clamp(1.45rem, 3vw, 2rem);
-      letter-spacing: -0.03em;
+      margin:0 0 16px;
+      color:var(--green);
+      font-size:clamp(1.45rem,3vw,2rem);
+      letter-spacing:-.03em;
     }
 
     .section-text {
-      margin: 0 0 20px;
-      color: #fff;
-      line-height: 1.7;
+      margin:0 0 20px;
+      color:#fff;
+      line-height:1.7;
     }
 
     .filters-card,
     .card,
     .region-card,
     .match-card {
-      background: linear-gradient(180deg, rgba(49,209,88,0.03), rgba(255,255,255,0.01));
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      box-shadow: var(--shadow);
+      background:linear-gradient(180deg, rgba(49,209,88,.03), rgba(255,255,255,.01));
+      border:1px solid var(--border);
+      border-radius:24px;
+      box-shadow:var(--shadow);
     }
 
-    .filters-card {
-      padding: 22px;
-    }
+    .filters-card { padding:22px; }
 
     .filters-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:14px;
     }
 
     .field label {
-      display: block;
-      margin-bottom: 8px;
-      color: var(--text);
-      font-weight: 700;
-      font-size: 0.93rem;
+      display:block;
+      margin-bottom:8px;
+      color:#fff;
+      font-weight:700;
+      font-size:.93rem;
     }
 
     .field select {
-      width: 100%;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.03);
-      color: #ffffff;
-      border-radius: 16px;
-      padding: 14px 14px;
-      font-size: 0.96rem;
-      outline: none;
-      font-family: inherit;
+      width:100%;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.03);
+      color:#fff;
+      border-radius:16px;
+      padding:14px;
+      font-size:.96rem;
+      outline:none;
+      font-family:inherit;
     }
 
-    .field select option {
-      color: #000;
-    }
+    .field select option { color:#000; }
 
     .grid-4 {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 16px;
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:16px;
     }
 
     .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:16px;
     }
 
     .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
     }
 
     .region-card,
     .match-card,
     .card {
-      padding: 22px;
-      min-width: 0;
-      overflow: hidden;
+      padding:22px;
+      min-width:0;
+      overflow:hidden;
     }
 
     .region-card h3,
     .match-card h3,
     .card h3 {
-      margin: 0 0 8px;
-      color: var(--green);
-      font-size: 1.1rem;
-      overflow-wrap: anywhere;
+      margin:0 0 8px;
+      color:var(--green);
+      font-size:1.1rem;
+      overflow-wrap:anywhere;
     }
 
     .region-card p,
     .match-card p,
-    .card p,
-    .meta-row span {
-      margin: 0;
-      color: #fff;
-      line-height: 1.65;
-      overflow-wrap: anywhere;
+    .card p {
+      margin:0;
+      color:#fff;
+      line-height:1.65;
+      overflow-wrap:anywhere;
     }
 
     .region-card:hover,
     .match-card:hover {
-      transform: translateY(-2px);
-      transition: 0.2s ease;
+      transform:translateY(-2px);
+      transition:.2s ease;
     }
 
     .region-badge,
     .status-badge,
     .tag {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 7px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      font-size: 0.8rem;
-      font-weight: 800;
-      white-space: nowrap;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:7px 12px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      font-size:.8rem;
+      font-weight:800;
+      white-space:nowrap;
     }
 
     .region-badge,
     .tag {
-      background: rgba(49,209,88,0.08);
-      color: #fff;
+      background:rgba(49,209,88,.08);
+      color:#fff;
     }
 
     .status-badge.live {
-      background: rgba(255,82,82,0.14);
-      border-color: rgba(255,82,82,0.25);
-      color: #fff;
+      background:rgba(255,82,82,.14);
+      border-color:rgba(255,82,82,.25);
+      color:#fff;
     }
 
     .status-badge.soon {
-      background: rgba(49,209,88,0.08);
-      color: #fff;
+      background:rgba(49,209,88,.08);
+      color:#fff;
     }
 
     .meta-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 14px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:14px;
     }
 
     .match-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 14px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
     }
 
     .match-score {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 800;
-      color: var(--green);
-      font-size: 1.15rem;
-      margin: 10px 0 12px;
-      flex-wrap: wrap;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:800;
+      color:var(--green);
+      font-size:1.15rem;
+      margin:10px 0 12px;
+      flex-wrap:wrap;
     }
 
     .row-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 16px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:16px;
     }
 
     .footer-note {
-      padding: 0 0 42px;
-      color: var(--muted);
-      font-size: 0.92rem;
-      overflow-wrap: anywhere;
+      padding:0 0 42px;
+      color:var(--muted);
+      font-size:.92rem;
+      overflow-wrap:anywhere;
     }
 
     footer a {
-      color: var(--green);
-      text-decoration: underline;
+      color:var(--green);
+      text-decoration:underline;
     }
 
-    @media (max-width: 1080px) {
+    @media (max-width:1080px) {
       .hero-card,
       .filters-grid,
       .grid-4,
       .grid-3 {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns:1fr 1fr;
       }
 
-      .hero-card {
-        grid-template-columns: 1fr;
-      }
+      .hero-card { grid-template-columns:1fr; }
     }
 
-    @media (max-width: 760px) {
+    @media (max-width:760px) {
       .filters-grid,
       .grid-4,
       .grid-3,
       .grid-2 {
-        grid-template-columns: 1fr;
+        grid-template-columns:1fr;
       }
 
       .topbar-inner,
@@ -468,16 +449,15 @@
       .match-top,
       .hero-buttons,
       .row-actions {
-        flex-direction: column;
-        align-items: stretch;
+        flex-direction:column;
+        align-items:stretch;
       }
 
-      .btn {
-        width: 100%;
-      }
+      .btn { width:100%; }
     }
   </style>
 </head>
+
 <body>
   <header class="topbar">
     <div class="container topbar-inner">
@@ -513,8 +493,10 @@
           </div>
 
           <h1>Tutte le live, tutte le regioni, tutte le categorie.</h1>
+
           <p>
-            Questa è la pagina centrale di LiveFut TV: qui gli utenti possono scoprire le dirette in corso, navigare per regione, filtrare tra calcio a 11 e calcetto e seguire campionati e partite in arrivo.
+            Questa è la pagina centrale di LiveFut TV: qui gli utenti possono scoprire le dirette in corso,
+            navigare per regione, filtrare tra calcio a 11 e calcetto e seguire campionati e partite in arrivo.
           </p>
 
           <div class="hero-buttons">
@@ -545,7 +527,9 @@
     <section class="section">
       <div class="filters-card">
         <h2 class="section-title">Filtri rapidi</h2>
-        <p class="section-text">Questa barra sarà la base per la ricerca di dirette e partite quando collegheremo i dati veri.</p>
+        <p class="section-text">
+          Questa barra sarà la base per la ricerca di dirette e partite quando collegheremo i dati veri.
+        </p>
 
         <div class="filters-grid">
           <div class="field">
@@ -594,7 +578,9 @@
 
     <section class="section" id="live-now">
       <h2 class="section-title">Live ora</h2>
-      <p class="section-text">Queste card rappresentano la futura lista pubblica delle dirette attive.</p>
+      <p class="section-text">
+        Queste card rappresentano la futura lista pubblica delle dirette attive.
+      </p>
 
       <div class="grid-3">
         <article class="match-card">
@@ -610,7 +596,7 @@
             <span>2</span>
             <span>-</span>
             <span>1</span>
-            <span style="font-size:0.9rem; color:#fff;">67'</span>
+            <span style="font-size:.9rem; color:#fff;">67'</span>
           </div>
 
           <div class="meta-row">
@@ -620,7 +606,9 @@
           </div>
 
           <div class="row-actions">
-            <a class="btn btn-primary" href="#">Guarda diretta</a>
+            <a class="btn btn-primary" href="match.html?home=Virtus%20Marina&away=San%20Marco&score=2-1&minute=67&region=Abruzzo&category=Terza%20Categoria&field=Comunale%20Montesilvano&video=dQw4w9WgXcQ">
+              Guarda diretta
+            </a>
           </div>
         </article>
 
@@ -637,7 +625,7 @@
             <span>4</span>
             <span>-</span>
             <span>4</span>
-            <span style="font-size:0.9rem; color:#fff;">31'</span>
+            <span style="font-size:.9rem; color:#fff;">31'</span>
           </div>
 
           <div class="meta-row">
@@ -646,7 +634,9 @@
           </div>
 
           <div class="row-actions">
-            <a class="btn btn-primary" href="#">Guarda diretta</a>
+            <a class="btn btn-primary" href="match.html?home=Futsal%20Pescara%20B&away=Montesilvano%20Five&score=4-4&minute=31&region=Abruzzo&category=C1&field=Pala%20Roma&video=dQw4w9WgXcQ">
+              Guarda diretta
+            </a>
           </div>
         </article>
 
@@ -663,7 +653,7 @@
             <span>0</span>
             <span>-</span>
             <span>0</span>
-            <span style="font-size:0.9rem; color:#fff;">24'</span>
+            <span style="font-size:.9rem; color:#fff;">24'</span>
           </div>
 
           <div class="meta-row">
@@ -671,7 +661,9 @@
           </div>
 
           <div class="row-actions">
-            <a class="btn btn-primary" href="#">Guarda diretta</a>
+            <a class="btn btn-primary" href="match.html?home=Atletico%20Adriatico&away=Real%20Centro&score=0-0&minute=24&region=Lazio&category=Seconda%20Categoria&field=Campo%20Comunale&video=dQw4w9WgXcQ">
+              Guarda diretta
+            </a>
           </div>
         </article>
       </div>
@@ -679,7 +671,9 @@
 
     <section class="section" id="regioni">
       <h2 class="section-title">Esplora per regione</h2>
-      <p class="section-text">Questa griglia sarà il primo livello di navigazione territoriale della piattaforma.</p>
+      <p class="section-text">
+        Questa griglia sarà il primo livello di navigazione territoriale della piattaforma.
+      </p>
 
       <div class="grid-4">
         <article class="region-card">
@@ -718,7 +712,9 @@
 
     <section class="section" id="campionati">
       <h2 class="section-title">Campionati e categorie</h2>
-      <p class="section-text">Questa sezione sarà la base per collegare in futuro classifiche, risultati e calendario.</p>
+      <p class="section-text">
+        Questa sezione sarà la base per collegare in futuro classifiche, risultati e calendario.
+      </p>
 
       <div class="grid-3">
         <article class="card">
@@ -756,18 +752,18 @@
           <h3>Prossime partite</h3>
           <p>Anteprima delle partite che potranno essere trasmesse nelle prossime ore o giornate.</p>
 
-          <div class="list-like">
-            <div class="match-card" style="margin-top:16px;">
-              <div class="match-top">
-                <div>
-                  <h3>Real Nord vs Sporting Sud</h3>
-                  <p>Abruzzo · Domani ore 15:00</p>
-                </div>
-                <span class="status-badge soon">IN ARRIVO</span>
+          <div class="match-card" style="margin-top:16px;">
+            <div class="match-top">
+              <div>
+                <h3>Real Nord vs Sporting Sud</h3>
+                <p>Abruzzo · Domani ore 15:00</p>
               </div>
-              <div class="row-actions">
-                <a class="btn btn-secondary" href="#">Vedi dettaglio</a>
-              </div>
+              <span class="status-badge soon">IN ARRIVO</span>
+            </div>
+            <div class="row-actions">
+              <a class="btn btn-secondary" href="match.html?home=Real%20Nord&away=Sporting%20Sud&score=0-0&minute=0&region=Abruzzo&category=Calcio%20a%2011&field=Campo%20Comunale&video=dQw4w9WgXcQ">
+                Vedi dettaglio
+              </a>
             </div>
           </div>
         </article>
@@ -776,18 +772,55 @@
           <h3>Risultati recenti</h3>
           <p>Sezione pronta per affiancare le live con il lato informativo della piattaforma.</p>
 
-          <div class="list-like">
-            <div class="match-card" style="margin-top:16px;">
-              <div class="match-top">
-                <div>
-                  <h3>Valle Aterno vs Città Blu</h3>
-                  <p>Conclusa · Abruzzo · Calcio a 11</p>
-                </div>
-                <span class="status-badge soon">FINALE</span>
+          <div class="match-card" style="margin-top:16px;">
+            <div class="match-top">
+              <div>
+                <h3>Valle Aterno vs Città Blu</h3>
+                <p>Conclusa · Abruzzo · Calcio a 11</p>
               </div>
-              <div class="match-score">
-                <span>1</span>
-                <span>-</span>
+              <span class="status-badge soon">FINALE</span>
+            </div>
+            <div class="match-score">
+              <span>1</span>
+              <span>-</span>
+              <span>3</span>
+            </div>
+            <div class="row-actions">
+              <a class="btn btn-secondary" href="match.html?home=Valle%20Aterno&away=Città%20Blu&score=1-3&minute=90&region=Abruzzo&category=Calcio%20a%2011&field=Comunale&video=dQw4w9WgXcQ">
+                Vedi riepilogo
+              </a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="footer-note">
+      LiveFut TV — pagina pubblica Live pronta per diventare il centro di navigazione nazionale tra regioni, categorie e dirette.
+    </section>
+  </main>
+
+  <footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
+    © 2026 LiveFut TV — Football United Team. Tutti i diritti riservati.<br><br>
+
+    <a href="https://www.iubenda.com/privacy-policy/71949704"
+       class="iubenda-white iubenda-noiframe iubenda-embed">
+       Privacy Policy
+    </a> |
+
+    <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy"
+       class="iubenda-white iubenda-noiframe iubenda-embed">
+       Cookie Policy
+    </a> |
+
+    <a href="terms.html">
+       Termini e Condizioni
+    </a>
+  </footer>
+
+  <script src="https://cdn.iubenda.com/iubenda.js"></script>
+</body>
+</html>
                 <span>3</span>
               </div>
             </div>
