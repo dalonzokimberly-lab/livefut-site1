@@ -3,142 +3,474 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>LiveFut TV — Partita</title>
 
   <script src="https://app.termly.io/resource-blocker/ecfeb307-3d9a-4e26-a7de-4dab9c2345f9?autoBlock=on"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
 
   <style>
-    body {
-      margin:0;
-      font-family: "Space Grotesk", sans-serif;
-      background:#050505;
-      color:#fff;
+    :root {
+      --bg:#050505;
+      --green:#31d158;
+      --border:rgba(49,209,88,0.18);
+      --text:#ffffff;
+      --muted:#cfd6cf;
+      --shadow:0 20px 60px rgba(0,0,0,0.55);
+      --live:#ff5252;
     }
 
+    * { box-sizing:border-box; }
+
+    body {
+      margin:0;
+      min-height:100vh;
+      font-family:"Space Grotesk", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(49,209,88,0.12), transparent 24%),
+        linear-gradient(180deg, #020202 0%, #080808 100%);
+      color:var(--text);
+    }
+
+    a { color:inherit; text-decoration:none; }
+
     .container {
-      width: min(1100px, 90%);
-      margin:auto;
-      padding:20px;
+      width:min(1180px, calc(100% - 32px));
+      margin:0 auto;
     }
 
     .topbar {
-      background:#000;
-      padding:15px;
-      border-bottom:1px solid rgba(49,209,88,0.2);
+      position:sticky;
+      top:0;
+      z-index:30;
+      backdrop-filter:blur(14px);
+      background:rgba(0,0,0,0.84);
+      border-bottom:1px solid var(--border);
     }
 
-    .topbar a {
-      color:#31d158;
-      font-weight:bold;
+    .topbar-inner {
+      min-height:78px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      flex-wrap:wrap;
+    }
+
+    .brand {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-weight:800;
+    }
+
+    .brand-badge {
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:rgba(49,209,88,0.12);
+      border:1px solid var(--border);
+      color:var(--green);
+    }
+
+    .btn {
+      border:0;
+      cursor:pointer;
+      border-radius:999px;
+      padding:12px 18px;
+      font-weight:800;
+      font-family:inherit;
+      font-size:0.94rem;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      white-space:nowrap;
+    }
+
+    .btn-primary {
+      background:linear-gradient(135deg,#19a83f,#31d158);
+      color:#000;
+      box-shadow:0 12px 28px rgba(49,209,88,0.28);
+    }
+
+    .btn-secondary {
+      background:rgba(49,209,88,0.06);
+      color:#fff;
+      border:1px solid var(--border);
+    }
+
+    .hero {
+      padding:34px 0 22px;
+    }
+
+    .match-header {
+      background:linear-gradient(180deg, rgba(49,209,88,0.03), rgba(255,255,255,0.01));
+      border:1px solid var(--border);
+      border-radius:32px;
+      box-shadow:var(--shadow);
+      padding:30px;
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) auto;
+      gap:24px;
+      align-items:start;
+    }
+
+    .live-badge {
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      background:rgba(255,82,82,0.12);
+      border:1px solid rgba(255,82,82,0.24);
+      border-radius:999px;
+      padding:10px 14px;
+      font-weight:800;
+      text-transform:uppercase;
+      font-size:0.82rem;
+      margin-bottom:16px;
+    }
+
+    .dot {
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      background:var(--live);
+      box-shadow:0 0 0 8px rgba(255,82,82,0.12);
+      animation:pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { transform:scale(1); opacity:1; }
+      50% { transform:scale(1.18); opacity:.82; }
     }
 
     h1 {
-      color:#31d158;
-      margin-bottom:10px;
+      margin:0 0 12px;
+      color:var(--green);
+      font-size:clamp(2rem, 4vw, 3.4rem);
+      line-height:1.02;
+      letter-spacing:-0.04em;
+      overflow-wrap:anywhere;
+    }
+
+    .subtitle {
+      color:#fff;
+      line-height:1.7;
+      margin:0;
+    }
+
+    .score-box {
+      min-width:220px;
+      background:rgba(49,209,88,0.05);
+      border:1px solid var(--border);
+      border-radius:24px;
+      padding:22px;
+      text-align:center;
     }
 
     .score {
-      font-size:28px;
-      font-weight:bold;
-      margin-bottom:20px;
+      color:var(--green);
+      font-size:2.7rem;
+      font-weight:900;
+      line-height:1;
+    }
+
+    .minute {
+      margin-top:10px;
+      color:#fff;
+      font-weight:800;
+    }
+
+    .layout {
+      display:grid;
+      grid-template-columns:minmax(0, 1.4fr) minmax(280px, .6fr);
+      gap:18px;
+      padding-bottom:34px;
+    }
+
+    .player-card,
+    .side-card,
+    .events-card {
+      background:linear-gradient(180deg, rgba(49,209,88,0.03), rgba(255,255,255,0.01));
+      border:1px solid var(--border);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
     }
 
     .player {
       width:100%;
       aspect-ratio:16/9;
-      border-radius:16px;
-      overflow:hidden;
-      margin-bottom:20px;
-      border:1px solid rgba(49,209,88,0.2);
+      background:#000;
     }
 
     iframe {
       width:100%;
       height:100%;
       border:0;
+      display:block;
     }
 
-    .info {
-      background:#0b0b0b;
-      padding:20px;
-      border-radius:16px;
-      border:1px solid rgba(49,209,88,0.2);
-      margin-bottom:20px;
+    .card-body {
+      padding:22px;
     }
 
-    .buttons {
+    h2, h3 {
+      color:var(--green);
+      margin:0 0 10px;
+      letter-spacing:-0.02em;
+    }
+
+    p {
+      color:#fff;
+      line-height:1.7;
+      margin:0;
+    }
+
+    .info-list {
+      display:grid;
+      gap:12px;
+      margin-top:16px;
+    }
+
+    .info-item {
+      background:rgba(49,209,88,0.05);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:14px;
+    }
+
+    .info-item strong {
+      color:var(--green);
+      display:block;
+      margin-bottom:4px;
+    }
+
+    .platforms {
       display:flex;
-      gap:10px;
       flex-wrap:wrap;
+      gap:10px;
+      margin-top:16px;
     }
 
-    .btn {
-      padding:12px 16px;
+    .pill {
+      background:rgba(49,209,88,0.09);
+      border:1px solid rgba(49,209,88,0.16);
+      color:#fff;
       border-radius:999px;
-      background:#31d158;
-      color:#000;
-      font-weight:bold;
+      padding:9px 12px;
+      font-size:.82rem;
+      font-weight:800;
     }
 
-    footer {
-      text-align:center;
-      padding:20px;
-      font-size:0.85rem;
-      color:#aaa;
+    .event-list {
+      display:grid;
+      gap:12px;
+      margin-top:16px;
+    }
+
+    .event {
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      background:rgba(255,255,255,0.02);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:14px;
+    }
+
+    .event strong {
+      color:var(--green);
     }
 
     footer a {
-      color:#31d158;
+      color:var(--green);
+      text-decoration:underline;
+    }
+
+    @media (max-width: 900px) {
+      .match-header,
+      .layout {
+        grid-template-columns:1fr;
+      }
+
+      .score-box {
+        text-align:left;
+      }
     }
   </style>
 </head>
 
 <body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="index.html" class="brand">
+        <div class="brand-badge">TV</div>
+        <strong>LiveFut</strong>
+      </a>
 
-<div class="topbar">
-  <div class="container">
-    <a href="live.html">← Torna alle live</a>
-  </div>
-</div>
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <a class="btn btn-secondary" href="live.html">← Torna alle live</a>
+        <a class="btn btn-primary" href="login.html">Accedi</a>
+      </div>
+    </div>
+  </header>
 
-<div class="container">
+  <main class="container">
+    <section class="hero">
+      <div class="match-header">
+        <div>
+          <div class="live-badge">
+            <span class="dot"></span>
+            Diretta live
+          </div>
 
-  <h1>Virtus Marina vs San Marco</h1>
+          <h1 id="matchTitle">Partita LiveFut TV</h1>
+          <p class="subtitle" id="matchSubtitle">Caricamento informazioni partita...</p>
+        </div>
 
-  <div class="score">
-    2 - 1 | 67'
-  </div>
+        <div class="score-box">
+          <div class="score" id="matchScore">0 - 0</div>
+          <div class="minute" id="matchMinute">LIVE</div>
+        </div>
+      </div>
+    </section>
 
-  <div class="player">
-    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
-  </div>
+    <section class="layout">
+      <article class="player-card">
+        <div class="player">
+          <iframe
+            id="videoPlayer"
+            src=""
+            title="LiveFut TV player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+          </iframe>
+        </div>
 
-  <div class="info">
-    <p><strong>Regione:</strong> Abruzzo</p>
-    <p><strong>Categoria:</strong> Terza Categoria</p>
-    <p><strong>Campo:</strong> Comunale Montesilvano</p>
-  </div>
+        <div class="card-body">
+          <h2 id="videoTitle">Diretta partita</h2>
+          <p>
+            Player collegato alla diretta. In futuro questa pagina potrà mostrare video LiveFut interno,
+            YouTube, Twitch o Facebook in base alla piattaforma scelta dal broadcaster.
+          </p>
 
-  <div class="buttons">
-    <a class="btn" href="#">YouTube</a>
-    <a class="btn" href="#">Facebook</a>
-    <a class="btn" href="#">Twitch</a>
-  </div>
+          <div class="platforms">
+            <span class="pill">YouTube</span>
+            <span class="pill">Facebook</span>
+            <span class="pill">Twitch</span>
+            <span class="pill">LiveFut TV</span>
+          </div>
+        </div>
+      </article>
 
-</div>
+      <aside class="side-card">
+        <div class="card-body">
+          <h2>Info partita</h2>
+          <p>Dati principali della partita selezionata.</p>
 
-<footer>
-  © 2026 LiveFut TV — Football United Team. Tutti i diritti riservati.<br><br>
+          <div class="info-list">
+            <div class="info-item">
+              <strong>Regione</strong>
+              <span id="matchRegion">—</span>
+            </div>
 
-  <a href="https://www.iubenda.com/privacy-policy/71949704">Privacy Policy</a> |
-  <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy">Cookie Policy</a> |
-  <a href="terms.html">Termini e Condizioni</a>
-</footer>
+            <div class="info-item">
+              <strong>Categoria</strong>
+              <span id="matchCategory">—</span>
+            </div>
 
-<script src="https://cdn.iubenda.com/iubenda.js"></script>
+            <div class="info-item">
+              <strong>Campo</strong>
+              <span id="matchField">—</span>
+            </div>
 
+            <div class="info-item">
+              <strong>Stato</strong>
+              <span>Live</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="events-card" style="margin-bottom:34px;">
+      <div class="card-body">
+        <h2>Eventi partita</h2>
+        <p>Questa sezione diventerà il feed live di gol, ammonizioni, sostituzioni e aggiornamenti.</p>
+
+        <div class="event-list">
+          <div class="event">
+            <div>
+              <strong>67'</strong>
+              <span> Aggiornamento punteggio live</span>
+            </div>
+            <span id="eventScore">—</span>
+          </div>
+
+          <div class="event">
+            <div>
+              <strong>LIVE</strong>
+              <span> Diretta attiva su LiveFut TV</span>
+            </div>
+            <span>ON AIR</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
+    © 2026 LiveFut TV — Football United Team. Tutti i diritti riservati.<br><br>
+
+    <a href="https://www.iubenda.com/privacy-policy/71949704"
+       class="iubenda-white iubenda-noiframe iubenda-embed">
+       Privacy Policy
+    </a> |
+
+    <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy"
+       class="iubenda-white iubenda-noiframe iubenda-embed">
+       Cookie Policy
+    </a> |
+
+    <a href="terms.html">
+       Termini e Condizioni
+    </a>
+  </footer>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+
+    const home = params.get('home') || 'Squadra Casa';
+    const away = params.get('away') || 'Squadra Ospite';
+    const score = params.get('score') || '0-0';
+    const minute = params.get('minute') || 'LIVE';
+    const region = params.get('region') || 'Non specificata';
+    const category = params.get('category') || 'Non specificata';
+    const field = params.get('field') || 'Non specificato';
+    const video = params.get('video') || 'dQw4w9WgXcQ';
+
+    const cleanScore = score.replace('-', ' - ');
+
+    document.title = `${home} vs ${away} — LiveFut TV`;
+
+    document.getElementById('matchTitle').textContent = `${home} vs ${away}`;
+    document.getElementById('matchSubtitle').textContent = `${region} · ${category} · ${field}`;
+    document.getElementById('matchScore').textContent = cleanScore;
+    document.getElementById('matchMinute').textContent = `${minute}'`;
+    document.getElementById('matchRegion').textContent = region;
+    document.getElementById('matchCategory').textContent = category;
+    document.getElementById('matchField').textContent = field;
+    document.getElementById('videoTitle').textContent = `${home} vs ${away}`;
+    document.getElementById('eventScore').textContent = cleanScore;
+
+    document.getElementById('videoPlayer').src = `https://www.youtube.com/embed/${video}`;
+  </script>
+
+  <script src="https://cdn.iubenda.com/iubenda.js"></script>
 </body>
 </html>
