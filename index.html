@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LiveFut TV</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
   <meta
     name="description"
     content="LiveFut TV è la piattaforma di live streaming per il calcio locale: dirette, overlay professionali e multistream su YouTube, Facebook e Twitch."
   />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #050505;
@@ -53,11 +53,6 @@
       text-decoration: none;
     }
 
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
     .container {
       width: min(var(--max), calc(100% - 32px));
       margin: 0 auto;
@@ -69,7 +64,7 @@
       z-index: 50;
       backdrop-filter: blur(14px);
       background: rgba(0, 0, 0, 0.84);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(49, 209, 88, 0.08);
     }
 
     .topbar-inner {
@@ -86,11 +81,13 @@
     }
 
     .site-logo {
-      width: 150px;
+      width: 180px;
       max-width: 100%;
       height: auto;
       display: block;
-      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.45));
+      filter:
+        drop-shadow(0 0 10px rgba(49, 209, 88, 0.4))
+        drop-shadow(0 10px 20px rgba(0, 0, 0, 0.6));
     }
 
     .nav {
@@ -127,6 +124,7 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
+      font-family: inherit;
     }
 
     .btn:hover {
@@ -177,7 +175,7 @@
       top: -80px;
       width: 220px;
       height: 220px;
-      background: radial-gradient(circle, rgba(255,138,31,0.22), transparent 65%);
+      background: radial-gradient(circle, rgba(49,209,88,0.18), transparent 65%);
       pointer-events: none;
     }
 
@@ -201,7 +199,7 @@
       height: 10px;
       border-radius: 999px;
       background: #31d158;
-      box-shadow: 0 0 0 8px rgba(255, 74, 74, 0.12);
+      box-shadow: 0 0 0 8px rgba(49, 209, 88, 0.12);
       animation: pulse 1.8s infinite;
     }
 
@@ -251,10 +249,11 @@
       display: block;
       font-size: 1.35rem;
       margin-bottom: 6px;
+      color: var(--green);
     }
 
     .stat span {
-      color: var(--text);
+      color: #ffffff;
       font-size: 0.92rem;
     }
 
@@ -367,6 +366,7 @@
       margin: 0;
       font-size: clamp(1.6rem, 3vw, 2.3rem);
       letter-spacing: -0.03em;
+      color: var(--green);
     }
 
     .section-head p {
@@ -403,7 +403,7 @@
       display: grid;
       place-items: center;
       margin-bottom: 18px;
-      background: linear-gradient(135deg, rgba(255,138,31,0.22), rgba(40,168,91,0.22));
+      background: linear-gradient(135deg, rgba(49,209,88,0.22), rgba(255,255,255,0.04));
       font-size: 1.4rem;
     }
 
@@ -412,6 +412,7 @@
     .step h3 {
       margin: 0 0 10px;
       font-size: 1.08rem;
+      color: var(--green);
     }
 
     .feature-card p,
@@ -461,8 +462,8 @@
       justify-content: space-between;
       gap: 24px;
       background:
-        radial-gradient(circle at top right, rgba(255,138,31,0.14), transparent 32%),
-        radial-gradient(circle at bottom left, rgba(40,168,91,0.14), transparent 28%),
+        radial-gradient(circle at top right, rgba(49,209,88,0.14), transparent 32%),
+        radial-gradient(circle at bottom left, rgba(49,209,88,0.10), transparent 28%),
         linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
     }
 
@@ -470,6 +471,7 @@
       margin: 0;
       font-size: clamp(1.7rem, 3vw, 2.5rem);
       letter-spacing: -0.03em;
+      color: var(--green);
     }
 
     .cta-box p {
@@ -492,10 +494,6 @@
       padding-top: 20px;
       border-top: 1px solid rgba(255,255,255,0.06);
       font-size: 0.92rem;
-    }
-
-    .mobile-only {
-      display: none;
     }
 
     @media (max-width: 1080px) {
@@ -546,10 +544,6 @@
       .hero-preview {
         padding: 18px;
       }
-
-      .mobile-only {
-        display: inline-flex;
-      }
     }
   </style>
 </head>
@@ -568,8 +562,8 @@
       </nav>
 
       <div class="actions">
-        <a class="btn btn-secondary" href="#funzioni">Scopri di più</a>
-        <a class="btn btn-primary" href="#contatti">Inizia ora</a>
+        <a class="btn btn-secondary" href="login.html">Accedi</a>
+        <a class="btn btn-primary" href="login.html">Inizia ora</a>
       </div>
     </div>
   </header>
@@ -590,7 +584,7 @@
           </p>
 
           <div class="hero-ctas">
-            <a class="btn btn-primary" href="#contatti">Richiedi informazioni</a>
+            <a class="btn btn-primary" href="login.html">Accedi alla piattaforma</a>
             <a class="btn btn-secondary" href="#come">Come funziona</a>
           </div>
 
@@ -789,4 +783,3 @@
   </footer>
 </body>
 </html>
-
