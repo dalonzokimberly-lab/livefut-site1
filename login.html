@@ -10,37 +10,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    .consent-box {
-  margin-top: 10px;
-  margin-bottom: 16px;
-  padding: 14px 16px;
-  border-radius: 18px;
-  border: 1px solid var(--border);
-  background: rgba(49, 209, 88, 0.04);
-}
-
-.consent-label {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin: 0;
-  font-size: 0.92rem;
-  line-height: 1.6;
-  color: #ffffff;
-}
-
-.consent-label input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  margin-top: 2px;
-  accent-color: #31d158;
-  flex-shrink: 0;
-}
-
-.consent-label a {
-  color: var(--green);
-  text-decoration: underline;
-}
     :root {
       --bg: #050505;
       --panel: #0b0b0b;
@@ -54,6 +23,38 @@
     }
 
     * { box-sizing: border-box; }
+
+    .consent-box {
+      margin-top: 10px;
+      margin-bottom: 16px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: rgba(49, 209, 88, 0.04);
+    }
+
+    .consent-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin: 0;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #ffffff;
+    }
+
+    .consent-label input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: #31d158;
+      flex-shrink: 0;
+    }
+
+    .consent-label a {
+      color: var(--green);
+      text-decoration: underline;
+    }
 
     body {
       margin: 0;
@@ -397,6 +398,11 @@
       text-decoration: none;
     }
 
+    footer a {
+      color: var(--green);
+      text-decoration: underline;
+    }
+
     @media (max-width: 980px) {
       .shell {
         grid-template-columns: 1fr;
@@ -498,6 +504,21 @@
           <label for="registerPassword">Password</label>
           <input id="registerPassword" type="password" placeholder="Scegli una password" required />
         </div>
+
+        <div class="consent-box">
+          <label class="consent-label">
+            <input id="privacyConsent" type="checkbox" />
+            <span>
+              Dichiaro di aver letto e accettato la
+              <a href="https://www.iubenda.com/privacy-policy/71949704" target="_blank" rel="noopener noreferrer">Privacy Policy</a>,
+              la
+              <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy" target="_blank" rel="noopener noreferrer">Cookie Policy</a>
+              e i
+              <a href="terms.html" target="_blank" rel="noopener noreferrer">Termini e Condizioni</a>.
+            </span>
+          </label>
+        </div>
+
         <button type="submit" class="submit">Crea account</button>
       </form>
 
@@ -506,25 +527,25 @@
       <a class="back-home" href="index.html">← Torna alla home</a>
     </section>
   </div>
-<footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
-  © 2026 LiveFut TV — Football United Team. Tutti i diritti riservati.<br><br>
 
-  <a href="https://www.iubenda.com/privacy-policy/71949704"
-     class="iubenda-white iubenda-noiframe iubenda-embed">
-     Privacy Policy
-  </a> |
+  <footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
+    © 2026 LiveFut TV — Football United Team. Tutti i diritti riservati.<br><br>
 
-  <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy"
-     class="iubenda-white iubenda-noiframe iubenda-embed">
-     Cookie Policy
-  </a> |
+    <a href="https://www.iubenda.com/privacy-policy/71949704"
+       class="iubenda-white iubenda-noiframe iubenda-embed">
+       Privacy Policy
+    </a> |
 
-  <a href="terms.html">
-     Termini e Condizioni
-  </a>
-</footer>
-  </a>
-</footer>
+    <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy"
+       class="iubenda-white iubenda-noiframe iubenda-embed">
+       Cookie Policy
+    </a> |
+
+    <a href="terms.html">
+       Termini e Condizioni
+    </a>
+  </footer>
+
   <script>
     const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
@@ -595,13 +616,20 @@
       const displayName = document.getElementById('registerName').value.trim();
       const email = document.getElementById('registerEmail').value.trim();
       const password = document.getElementById('registerPassword').value.trim();
+      const privacyConsent = document.getElementById('privacyConsent').checked;
+
+      if (!privacyConsent) {
+        showStatus('Per registrarti devi accettare Privacy Policy, Cookie Policy e Termini e Condizioni.', 'error');
+        return;
+      }
 
       const { data, error } = await supabaseClient.auth.signUp({
         email,
         password,
         options: {
           data: {
-            display_name: displayName
+            display_name: displayName,
+            privacy_accepted: true
           }
         }
       });
@@ -619,7 +647,8 @@
               id: data.user.id,
               email,
               display_name: displayName,
-              role: 'user'
+              role: 'user',
+              privacy_accepted: true
             }
           ]);
 
@@ -632,6 +661,7 @@
       window.location.href = 'dashboard.html';
     });
   </script>
+
   <script src="https://cdn.iubenda.com/iubenda.js"></script>
 </body>
 </html>
