@@ -10,6 +10,37 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
+    .consent-box {
+  margin-top: 10px;
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: rgba(49, 209, 88, 0.04);
+}
+
+.consent-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: #ffffff;
+}
+
+.consent-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: #31d158;
+  flex-shrink: 0;
+}
+
+.consent-label a {
+  color: var(--green);
+  text-decoration: underline;
+}
     :root {
       --bg: #050505;
       --panel: #0b0b0b;
