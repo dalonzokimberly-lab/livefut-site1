@@ -4,13 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LiveFut TV</title>
-  <meta
-    name="description"
-    content="LiveFut TV è la piattaforma di live streaming per il calcio locale: dirette, overlay professionali e multistream su YouTube, Facebook e Twitch."
-  />
+  <script src="https://app.termly.io/resource-blocker/ecfeb307-3d9a-4e26-a7de-4dab9c2345f9?autoBlock=on"></script>
+  <meta name="description" content="LiveFut TV è la piattaforma di live streaming per il calcio locale: dirette, overlay professionali e multistream su YouTube, Facebook e Twitch." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --bg: #050505;
@@ -18,25 +17,15 @@
       --panel-2: #101010;
       --text: #ffffff;
       --muted: #cfd6cf;
-      --orange: #ff8a1f;
-      --orange-2: #ff9d45;
       --green: #31d158;
-      --white: #ffffff;
-      --black: #000000;
       --border: rgba(49, 209, 88, 0.18);
       --shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
-      --radius: 24px;
-      --radius-sm: 18px;
       --max: 1180px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
@@ -48,10 +37,7 @@
       color: var(--text);
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+    a { color: inherit; text-decoration: none; }
 
     .container {
       width: min(var(--max), calc(100% - 32px));
@@ -75,10 +61,7 @@
       min-height: 78px;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-    }
+    .brand { display: flex; align-items: center; }
 
     .site-logo {
       width: 180px;
@@ -102,9 +85,7 @@
       transition: 0.2s ease;
     }
 
-    .nav a:hover {
-      color: var(--green);
-    }
+    .nav a:hover { color: var(--green); }
 
     .actions {
       display: flex;
@@ -119,17 +100,16 @@
       padding: 14px 20px;
       font-weight: 700;
       font-size: 0.95rem;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
       font-family: inherit;
+      white-space: nowrap;
     }
 
-    .btn:hover {
-      transform: translateY(-1px);
-    }
+    .btn:hover { transform: translateY(-1px); }
 
     .btn-primary {
       background: linear-gradient(135deg, #19a83f, #31d158);
@@ -143,9 +123,7 @@
       border: 1px solid var(--border);
     }
 
-    .hero {
-      padding: 56px 0 34px;
-    }
+    .hero { padding: 56px 0 34px; }
 
     .hero-grid {
       display: grid;
@@ -166,17 +144,6 @@
       padding: 42px;
       position: relative;
       overflow: hidden;
-    }
-
-    .hero-copy::after {
-      content: "";
-      position: absolute;
-      right: -80px;
-      top: -80px;
-      width: 220px;
-      height: 220px;
-      background: radial-gradient(circle, rgba(49,209,88,0.18), transparent 65%);
-      pointer-events: none;
     }
 
     .badge {
@@ -263,7 +230,6 @@
       flex-direction: column;
       justify-content: space-between;
       gap: 18px;
-      min-height: 100%;
     }
 
     .phone-frame {
@@ -271,7 +237,6 @@
       border-radius: 28px;
       border: 1px solid rgba(255,255,255,0.06);
       padding: 14px;
-      position: relative;
       overflow: hidden;
     }
 
@@ -299,22 +264,6 @@
       overflow: hidden;
     }
 
-    .video-card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
-      background-size: 34px 34px;
-      opacity: 0.25;
-      pointer-events: none;
-    }
-
-    .video-top,
-    .video-bottom {
-      position: relative;
-      z-index: 1;
-    }
-
     .scoreboard {
       display: inline-flex;
       align-items: center;
@@ -331,7 +280,6 @@
       color: #d9ddd8;
       font-weight: 700;
       font-size: 0.75rem;
-      opacity: 0.85;
     }
 
     .platforms {
@@ -350,9 +298,7 @@
       font-weight: 700;
     }
 
-    .section {
-      padding: 34px 0;
-    }
+    .section { padding: 34px 0; }
 
     .section-head {
       display: flex;
@@ -392,9 +338,7 @@
       box-shadow: var(--shadow);
     }
 
-    .feature-card {
-      padding: 22px;
-    }
+    .feature-card { padding: 22px; }
 
     .feature-icon {
       width: 48px;
@@ -434,7 +378,6 @@
     .audience-card,
     .step {
       padding: 24px;
-      position: relative;
       overflow: hidden;
     }
 
@@ -451,9 +394,7 @@
       margin-bottom: 18px;
     }
 
-    .cta-final {
-      padding: 40px 0 70px;
-    }
+    .cta-final { padding: 40px 0 70px; }
 
     .cta-box {
       padding: 34px;
@@ -461,10 +402,6 @@
       align-items: center;
       justify-content: space-between;
       gap: 24px;
-      background:
-        radial-gradient(circle at top right, rgba(49,209,88,0.14), transparent 32%),
-        radial-gradient(circle at bottom left, rgba(49,209,88,0.10), transparent 28%),
-        linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
     }
 
     .cta-box h2 {
@@ -481,19 +418,9 @@
       max-width: 700px;
     }
 
-    footer {
-      padding: 0 0 42px;
-      color: #ffffff;
-    }
-
-    .footer-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      padding-top: 20px;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      font-size: 0.92rem;
+    footer a {
+      color: var(--green);
+      text-decoration: underline;
     }
 
     @media (max-width: 1080px) {
@@ -502,14 +429,12 @@
         grid-template-columns: 1fr 1fr;
       }
 
-      .hero-grid {
-        grid-template-columns: 1fr;
-      }
+      .hero-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 820px) {
       .nav,
-      .actions .btn-secondary {
+      .actions .btn-secondary:first-child {
         display: none;
       }
 
@@ -522,31 +447,26 @@
 
       .cta-box,
       .section-head,
-      .footer-inner,
       .topbar-inner {
         flex-direction: column;
         align-items: flex-start;
       }
 
-      .hero-copy,
-      .hero-preview,
-      .feature-card,
-      .audience-card,
-      .step,
-      .cta-box {
-        border-radius: 24px;
+      .btn {
+        width: 100%;
+      }
+
+      .actions {
+        width: 100%;
       }
 
       .hero-copy {
         padding: 28px;
       }
-
-      .hero-preview {
-        padding: 18px;
-      }
     }
   </style>
 </head>
+
 <body>
   <header class="topbar">
     <div class="container topbar-inner">
@@ -555,6 +475,7 @@
       </a>
 
       <nav class="nav">
+        <a href="live.html">Live</a>
         <a href="#funzioni">Funzioni</a>
         <a href="#perchi">Per chi è</a>
         <a href="#come">Come funziona</a>
@@ -562,6 +483,7 @@
       </nav>
 
       <div class="actions">
+        <a class="btn btn-secondary" href="live.html">Guarda live</a>
         <a class="btn btn-secondary" href="login.html">Accedi</a>
         <a class="btn btn-primary" href="login.html">Inizia ora</a>
       </div>
@@ -584,7 +506,8 @@
           </p>
 
           <div class="hero-ctas">
-            <a class="btn btn-primary" href="login.html">Accedi alla piattaforma</a>
+            <a class="btn btn-primary" href="live.html">Guarda le live</a>
+            <a class="btn btn-secondary" href="login.html">Accedi alla piattaforma</a>
             <a class="btn btn-secondary" href="#come">Come funziona</a>
           </div>
 
@@ -612,7 +535,7 @@
             </div>
 
             <div class="video-card">
-              <div class="video-top">
+              <div>
                 <div class="scoreboard">
                   <span>Virtus Marina</span>
                   <span>2 - 1</span>
@@ -621,12 +544,10 @@
                 </div>
               </div>
 
-              <div class="video-bottom">
-                <div class="platforms">
-                  <span class="pill">YouTube</span>
-                  <span class="pill">Facebook</span>
-                  <span class="pill">Twitch</span>
-                </div>
+              <div class="platforms">
+                <span class="pill">YouTube</span>
+                <span class="pill">Facebook</span>
+                <span class="pill">Twitch</span>
               </div>
             </div>
           </div>
@@ -646,10 +567,7 @@
         <div class="section-head">
           <div>
             <h2>Una piattaforma costruita per le partite vere</h2>
-            <p>
-              Non un software generico di streaming, ma uno strumento pensato per chi trasmette calcio dilettantistico,
-              tornei locali e campionati di zona.
-            </p>
+            <p>Non un software generico di streaming, ma uno strumento pensato per chi trasmette calcio dilettantistico, tornei locali e campionati di zona.</p>
           </div>
         </div>
 
@@ -686,9 +604,7 @@
         <div class="section-head">
           <div>
             <h2>Per chi è pensato LiveFut TV</h2>
-            <p>
-              La piattaforma nasce per valorizzare chi gioca, organizza, racconta e segue il calcio locale.
-            </p>
+            <p>La piattaforma nasce per valorizzare chi gioca, organizza, racconta e segue il calcio locale.</p>
           </div>
         </div>
 
@@ -721,9 +637,7 @@
         <div class="section-head">
           <div>
             <h2>Come funziona</h2>
-            <p>
-              Il flusso è stato pensato per ridurre al minimo i passaggi tecnici e lasciare spazio alla partita.
-            </p>
+            <p>Il flusso è stato pensato per ridurre al minimo i passaggi tecnici e lasciare spazio alla partita.</p>
           </div>
         </div>
 
@@ -760,14 +674,12 @@
         <div class="cta-box">
           <div>
             <h2>Dove ogni partita conta.</h2>
-            <p>
-              LiveFut TV nasce per rendere memorabile il calcio locale: più visibilità per le squadre, più qualità nelle dirette,
-              più valore per chi organizza e racconta ogni giornata.
-            </p>
+            <p>LiveFut TV nasce per rendere memorabile il calcio locale: più visibilità per le squadre, più qualità nelle dirette, più valore per chi organizza e racconta ogni giornata.</p>
           </div>
 
           <div class="hero-ctas">
-            <a class="btn btn-primary" href="mailto:info@livefut.com">Contattaci</a>
+            <a class="btn btn-primary" href="live.html">Guarda le live</a>
+            <a class="btn btn-secondary" href="mailto:info@livefut.com">Contattaci</a>
             <a class="btn btn-secondary" href="#top">Torna su</a>
           </div>
         </div>
@@ -775,11 +687,24 @@
     </section>
   </main>
 
-  <footer>
-    <div class="container footer-inner">
-      <div>© 2026 LiveFut TV — Football United Team</div>
-      <div>Il live del calcio locale</div>
-    </div>
+  <footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
+    © 2026 LiveFut TV — Football United Team. Tutti i diritti riservati.<br><br>
+
+    <a href="https://www.iubenda.com/privacy-policy/71949704"
+       class="iubenda-white iubenda-noiframe iubenda-embed">
+       Privacy Policy
+    </a> |
+
+    <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy"
+       class="iubenda-white iubenda-noiframe iubenda-embed">
+       Cookie Policy
+    </a> |
+
+    <a href="terms.html">
+       Termini e Condizioni
+    </a>
   </footer>
+
+  <script src="https://cdn.iubenda.com/iubenda.js"></script>
 </body>
 </html>
