@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -342,8 +343,8 @@
       overflow-wrap:anywhere;
     }
 
-    .region-card:hover,
-    .match-card:hover {
+    .match-card:hover,
+    .region-card:hover {
       transform:translateY(-2px);
       transition:.2s ease;
     }
@@ -379,6 +380,11 @@
       color:#fff;
     }
 
+    .status-badge.finished {
+      background:rgba(255,255,255,.08);
+      color:#fff;
+    }
+
     .meta-row {
       display:flex;
       flex-wrap:wrap;
@@ -410,6 +416,15 @@
       gap:10px;
       flex-wrap:wrap;
       margin-top:16px;
+    }
+
+    .empty-state {
+      padding:28px;
+      border-radius:24px;
+      border:1px solid var(--border);
+      background:rgba(49,209,88,.04);
+      color:#fff;
+      line-height:1.7;
     }
 
     .footer-note {
@@ -507,18 +522,18 @@
 
         <div class="hero-side">
           <div class="mini-stat">
-            <strong>20 Regioni</strong>
-            <span>Struttura pronta per una crescita nazionale, partendo dal calcio locale.</span>
+            <strong id="totalMatches">0 partite</strong>
+            <span>Partite presenti nel database LiveFut TV.</span>
           </div>
 
           <div class="mini-stat">
-            <strong>Calcio a 11 + Calcetto</strong>
-            <span>Le due discipline principali già previste nella navigazione.</span>
+            <strong id="liveMatches">0 live</strong>
+            <span>Dirette attive in questo momento.</span>
           </div>
 
           <div class="mini-stat">
-            <strong>Live / Prossime / Risultati</strong>
-            <span>Schema pensato per trasformarsi poi in una piattaforma dati + video completa.</span>
+            <strong>Calcio locale</strong>
+            <span>Calcio a 11, calcetto, tornei e categorie territoriali.</span>
           </div>
         </div>
       </div>
@@ -528,48 +543,48 @@
       <div class="filters-card">
         <h2 class="section-title">Filtri rapidi</h2>
         <p class="section-text">
-          Questa barra sarà la base per la ricerca di dirette e partite quando collegheremo i dati veri.
+          Filtra le partite caricate nel database per regione, disciplina, categoria e stato.
         </p>
 
         <div class="filters-grid">
           <div class="field">
             <label for="regione">Regione</label>
             <select id="regione">
-              <option>Tutte le regioni</option>
-              <option>Abruzzo</option>
-              <option>Lazio</option>
-              <option>Marche</option>
-              <option>Lombardia</option>
+              <option value="">Tutte le regioni</option>
+              <option value="Abruzzo">Abruzzo</option>
+              <option value="Lazio">Lazio</option>
+              <option value="Marche">Marche</option>
+              <option value="Lombardia">Lombardia</option>
             </select>
           </div>
 
           <div class="field">
             <label for="disciplina">Disciplina</label>
             <select id="disciplina">
-              <option>Tutte</option>
-              <option>Calcio a 11</option>
-              <option>Calcetto</option>
+              <option value="">Tutte</option>
+              <option value="Calcio a 11">Calcio a 11</option>
+              <option value="Calcetto">Calcetto</option>
             </select>
           </div>
 
           <div class="field">
             <label for="categoria">Categoria</label>
             <select id="categoria">
-              <option>Tutte le categorie</option>
-              <option>Terza Categoria</option>
-              <option>Seconda Categoria</option>
-              <option>C1</option>
-              <option>C2</option>
+              <option value="">Tutte le categorie</option>
+              <option value="Terza Categoria">Terza Categoria</option>
+              <option value="Seconda Categoria">Seconda Categoria</option>
+              <option value="C1">C1</option>
+              <option value="C2">C2</option>
             </select>
           </div>
 
           <div class="field">
             <label for="stato">Stato</label>
             <select id="stato">
-              <option>Tutti</option>
-              <option>Live</option>
-              <option>In arrivo</option>
-              <option>Conclusi</option>
+              <option value="">Tutti</option>
+              <option value="live">Live</option>
+              <option value="soon">In arrivo</option>
+              <option value="finished">Conclusi</option>
             </select>
           </div>
         </div>
@@ -577,95 +592,14 @@
     </section>
 
     <section class="section" id="live-now">
-      <h2 class="section-title">Live ora</h2>
+      <h2 class="section-title">Partite</h2>
       <p class="section-text">
-        Queste card rappresentano la futura lista pubblica delle dirette attive.
+        Le card qui sotto vengono generate automaticamente leggendo la tabella <strong>matches</strong> da Supabase.
       </p>
 
-      <div class="grid-3">
-        <article class="match-card">
-          <div class="match-top">
-            <div>
-              <h3>Virtus Marina vs San Marco</h3>
-              <p>Abruzzo · Calcio a 11 · Terza Categoria</p>
-            </div>
-            <span class="status-badge live">LIVE</span>
-          </div>
-
-          <div class="match-score">
-            <span>2</span>
-            <span>-</span>
-            <span>1</span>
-            <span style="font-size:.9rem; color:#fff;">67'</span>
-          </div>
-
-          <div class="meta-row">
-            <span class="tag">YouTube</span>
-            <span class="tag">Facebook</span>
-            <span class="tag">Twitch</span>
-          </div>
-
-          <div class="row-actions">
-            <a class="btn btn-primary" href="match.html?home=Virtus%20Marina&away=San%20Marco&score=2-1&minute=67&region=Abruzzo&category=Terza%20Categoria&field=Comunale%20Montesilvano&video=dQw4w9WgXcQ">
-              Guarda diretta
-            </a>
-          </div>
-        </article>
-
-        <article class="match-card">
-          <div class="match-top">
-            <div>
-              <h3>Futsal Pescara B vs Montesilvano Five</h3>
-              <p>Abruzzo · Calcetto · C1</p>
-            </div>
-            <span class="status-badge live">LIVE</span>
-          </div>
-
-          <div class="match-score">
-            <span>4</span>
-            <span>-</span>
-            <span>4</span>
-            <span style="font-size:.9rem; color:#fff;">31'</span>
-          </div>
-
-          <div class="meta-row">
-            <span class="tag">YouTube</span>
-            <span class="tag">Twitch</span>
-          </div>
-
-          <div class="row-actions">
-            <a class="btn btn-primary" href="match.html?home=Futsal%20Pescara%20B&away=Montesilvano%20Five&score=4-4&minute=31&region=Abruzzo&category=C1&field=Pala%20Roma&video=dQw4w9WgXcQ">
-              Guarda diretta
-            </a>
-          </div>
-        </article>
-
-        <article class="match-card">
-          <div class="match-top">
-            <div>
-              <h3>Atletico Adriatico vs Real Centro</h3>
-              <p>Lazio · Calcio a 11 · Seconda Categoria</p>
-            </div>
-            <span class="status-badge live">LIVE</span>
-          </div>
-
-          <div class="match-score">
-            <span>0</span>
-            <span>-</span>
-            <span>0</span>
-            <span style="font-size:.9rem; color:#fff;">24'</span>
-          </div>
-
-          <div class="meta-row">
-            <span class="tag">Facebook</span>
-          </div>
-
-          <div class="row-actions">
-            <a class="btn btn-primary" href="match.html?home=Atletico%20Adriatico&away=Real%20Centro&score=0-0&minute=24&region=Lazio&category=Seconda%20Categoria&field=Campo%20Comunale&video=dQw4w9WgXcQ">
-              Guarda diretta
-            </a>
-          </div>
-        </article>
+      <div id="matchesGrid" class="grid-3"></div>
+      <div id="emptyState" class="empty-state" style="display:none;">
+        Nessuna partita trovata. Quando inserirai partite nella tabella <strong>matches</strong>, compariranno qui automaticamente.
       </div>
     </section>
 
@@ -746,57 +680,8 @@
       </div>
     </section>
 
-    <section class="section">
-      <div class="grid-2">
-        <article class="card">
-          <h3>Prossime partite</h3>
-          <p>Anteprima delle partite che potranno essere trasmesse nelle prossime ore o giornate.</p>
-
-          <div class="match-card" style="margin-top:16px;">
-            <div class="match-top">
-              <div>
-                <h3>Real Nord vs Sporting Sud</h3>
-                <p>Abruzzo · Domani ore 15:00</p>
-              </div>
-              <span class="status-badge soon">IN ARRIVO</span>
-            </div>
-            <div class="row-actions">
-              <a class="btn btn-secondary" href="match.html?home=Real%20Nord&away=Sporting%20Sud&score=0-0&minute=0&region=Abruzzo&category=Calcio%20a%2011&field=Campo%20Comunale&video=dQw4w9WgXcQ">
-                Vedi dettaglio
-              </a>
-            </div>
-          </div>
-        </article>
-
-        <article class="card">
-          <h3>Risultati recenti</h3>
-          <p>Sezione pronta per affiancare le live con il lato informativo della piattaforma.</p>
-
-          <div class="match-card" style="margin-top:16px;">
-            <div class="match-top">
-              <div>
-                <h3>Valle Aterno vs Città Blu</h3>
-                <p>Conclusa · Abruzzo · Calcio a 11</p>
-              </div>
-              <span class="status-badge soon">FINALE</span>
-            </div>
-            <div class="match-score">
-              <span>1</span>
-              <span>-</span>
-              <span>3</span>
-            </div>
-            <div class="row-actions">
-              <a class="btn btn-secondary" href="match.html?home=Valle%20Aterno&away=Città%20Blu&score=1-3&minute=90&region=Abruzzo&category=Calcio%20a%2011&field=Comunale&video=dQw4w9WgXcQ">
-                Vedi riepilogo
-              </a>
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
-
     <section class="footer-note">
-      LiveFut TV — pagina pubblica Live pronta per diventare il centro di navigazione nazionale tra regioni, categorie e dirette.
+      LiveFut TV — pagina pubblica Live collegata al database Supabase.
     </section>
   </main>
 
@@ -818,39 +703,152 @@
     </a>
   </footer>
 
-  <script src="https://cdn.iubenda.com/iubenda.js"></script>
-</body>
-</html>
-                <span>3</span>
-              </div>
+  <script>
+    const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
+
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const matchesGrid = document.getElementById('matchesGrid');
+    const emptyState = document.getElementById('emptyState');
+
+    const filters = {
+      regione: document.getElementById('regione'),
+      disciplina: document.getElementById('disciplina'),
+      categoria: document.getElementById('categoria'),
+      stato: document.getElementById('stato')
+    };
+
+    let allMatches = [];
+
+    function safe(value, fallback = '—') {
+      return value === null || value === undefined || value === '' ? fallback : value;
+    }
+
+    function statusLabel(status) {
+      if (status === 'live') return 'LIVE';
+      if (status === 'soon') return 'IN ARRIVO';
+      if (status === 'finished') return 'FINALE';
+      return safe(status, 'LIVE').toUpperCase();
+    }
+
+    function statusClass(status) {
+      if (status === 'live') return 'live';
+      if (status === 'finished') return 'finished';
+      return 'soon';
+    }
+
+    function buildMatchUrl(match) {
+      const params = new URLSearchParams({
+        id: match.id || '',
+        home: safe(match.home_team, 'Squadra Casa'),
+        away: safe(match.away_team, 'Squadra Ospite'),
+        score: safe(match.score, '0-0'),
+        minute: String(match.minute ?? 0),
+        region: safe(match.region, 'Non specificata'),
+        category: safe(match.category, 'Non specificata'),
+        field: safe(match.field, 'Non specificato'),
+        video: safe(match.video_id, 'dQw4w9WgXcQ')
+      });
+
+      return `match.html?${params.toString()}`;
+    }
+
+    function renderMatches(matches) {
+      matchesGrid.innerHTML = '';
+
+      document.getElementById('totalMatches').textContent = `${allMatches.length} partite`;
+      document.getElementById('liveMatches').textContent = `${allMatches.filter(m => m.status === 'live').length} live`;
+
+      if (!matches.length) {
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+
+      matches.forEach(match => {
+        const status = safe(match.status, 'live');
+        const score = safe(match.score, '0-0').replace('-', ' - ');
+        const minute = match.minute ?? 0;
+        const discipline = safe(match.discipline, '');
+        const region = safe(match.region, 'Regione non specificata');
+        const category = safe(match.category, 'Categoria non specificata');
+
+        const card = document.createElement('article');
+        card.className = 'match-card';
+
+        card.innerHTML = `
+          <div class="match-top">
+            <div>
+              <h3>${safe(match.home_team, 'Squadra Casa')} vs ${safe(match.away_team, 'Squadra Ospite')}</h3>
+              <p>${region}${discipline ? ' · ' + discipline : ''} · ${category}</p>
             </div>
+            <span class="status-badge ${statusClass(status)}">${statusLabel(status)}</span>
           </div>
-        </article>
-      </div>
-    </section>
 
-    <section class="footer-note">
-      LiveFut TV — pagina pubblica Live pronta per diventare il centro di navigazione nazionale tra regioni, categorie e dirette.
-    </section>
-  </main>
+          <div class="match-score">
+            <span>${score}</span>
+            <span style="font-size:.9rem; color:#fff;">${status === 'finished' ? 'FT' : minute + "'"}</span>
+          </div>
 
-  <footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
-    © 2026 LiveFut TV — Football United Team. Tutti i diritti riservati.<br><br>
+          <div class="meta-row">
+            <span class="tag">YouTube</span>
+            <span class="tag">Facebook</span>
+            <span class="tag">Twitch</span>
+          </div>
 
-    <a href="https://www.iubenda.com/privacy-policy/71949704"
-       class="iubenda-white iubenda-noiframe iubenda-embed">
-       Privacy Policy
-    </a> |
+          <div class="row-actions">
+            <a class="btn btn-primary" href="${buildMatchUrl(match)}">
+              ${status === 'finished' ? 'Vedi riepilogo' : 'Guarda diretta'}
+            </a>
+          </div>
+        `;
 
-    <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy"
-       class="iubenda-white iubenda-noiframe iubenda-embed">
-       Cookie Policy
-    </a> |
+        matchesGrid.appendChild(card);
+      });
+    }
 
-    <a href="terms.html">
-       Termini e Condizioni
-    </a>
-  </footer>
+    function applyFilters() {
+      const selectedRegion = filters.regione.value;
+      const selectedDiscipline = filters.disciplina.value;
+      const selectedCategory = filters.categoria.value;
+      const selectedStatus = filters.stato.value;
+
+      const filtered = allMatches.filter(match => {
+        const regionOk = !selectedRegion || match.region === selectedRegion;
+        const disciplineOk = !selectedDiscipline || match.discipline === selectedDiscipline;
+        const categoryOk = !selectedCategory || match.category === selectedCategory;
+        const statusOk = !selectedStatus || match.status === selectedStatus;
+
+        return regionOk && disciplineOk && categoryOk && statusOk;
+      });
+
+      renderMatches(filtered);
+    }
+
+    async function loadMatches() {
+      const { data, error } = await supabaseClient
+        .from('matches')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        emptyState.style.display = 'block';
+        emptyState.innerHTML = `Errore nel caricamento delle partite: <strong>${error.message}</strong>`;
+        return;
+      }
+
+      allMatches = data || [];
+      renderMatches(allMatches);
+    }
+
+    Object.values(filters).forEach(select => {
+      select.addEventListener('change', applyFilters);
+    });
+
+    loadMatches();
+  </script>
 
   <script src="https://cdn.iubenda.com/iubenda.js"></script>
 </body>
