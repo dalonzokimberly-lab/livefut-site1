@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>LiveFut TV — Crea partita</title>
 
   <script src="https://app.termly.io/resource-blocker/ecfeb307-3d9a-4e26-a7de-4dab9c2345f9?autoBlock=on"></script>
@@ -245,6 +246,7 @@
         <h1>Crea una partita</h1>
         <p>
           Inserisci una partita reale nel database LiveFut TV. Dopo il salvataggio comparirà automaticamente nella pagina Live.
+          La diretta verrà collegata successivamente dalla pagina Studio Live.
         </p>
 
         <form id="matchForm">
@@ -306,18 +308,13 @@
               <input id="minute" type="number" min="0" value="0">
             </div>
 
-            <div class="field">
+            <div class="field full">
               <label for="status">Stato partita</label>
               <select id="status" required>
                 <option value="soon">In arrivo</option>
                 <option value="live">Live</option>
                 <option value="finished">Conclusa</option>
               </select>
-            </div>
-
-            <div class="field">
-              <label for="video_id">ID video YouTube</label>
-              <input id="video_id" type="text" placeholder="Es. dQw4w9WgXcQ">
             </div>
           </div>
 
@@ -390,8 +387,7 @@
         field: document.getElementById('field').value.trim(),
         score: document.getElementById('score').value.trim() || '0-0',
         minute: Number(document.getElementById('minute').value || 0),
-        status: document.getElementById('status').value,
-        video_id: document.getElementById('video_id').value.trim() || 'dQw4w9WgXcQ'
+        status: document.getElementById('status').value
       };
 
       const { error } = await supabaseClient
