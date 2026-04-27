@@ -65,18 +65,15 @@
       gap:12px;
       font-weight:800;
       min-width:0;
-         overflow:hidden;
+      overflow:hidden;
     }
 
-    .brand-badge {
-      width:42px;
+    .site-logo {
       height:42px;
-      border-radius:14px;
-      display:grid;
-      place-items:center;
-      background:rgba(49,209,88,0.12);
-      border:1px solid var(--border);
-      color:var(--green);
+      width:auto;
+      max-height:42px;
+      display:block;
+      object-fit:contain;
       flex-shrink:0;
     }
 
@@ -119,6 +116,12 @@
     }
 
     .btn:hover { transform:translateY(-1px); }
+
+    .btn:disabled {
+      opacity:.65;
+      cursor:not-allowed;
+      transform:none;
+    }
 
     .btn-primary {
       background:linear-gradient(135deg,#19a83f,#31d158);
@@ -296,6 +299,10 @@
       overflow-wrap:anywhere;
       transition:.2s ease;
       cursor:pointer;
+      color:#fff;
+      font-family:inherit;
+      font-size:1rem;
+      text-align:left;
     }
 
     .quick-action:hover {
@@ -369,6 +376,27 @@
       overflow-wrap:anywhere;
     }
 
+    .status-message {
+      margin-top:16px;
+      padding:14px 16px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:rgba(49,209,88,.06);
+      color:#fff;
+      line-height:1.6;
+      display:none;
+    }
+
+    .status-message.show {
+      display:block;
+    }
+
+    .status-message.error {
+      border-color:rgba(255,107,107,.28);
+      background:rgba(255,107,107,.1);
+      color:#ffd4d4;
+    }
+
     .footer-note {
       padding-bottom:42px;
       color:var(--muted);
@@ -403,18 +431,12 @@
         align-items:stretch;
       }
 
+      .brand {
+        align-self:flex-start;
+      }
+
       .btn { width:100%; }
     }
-  
-    .site-logo {
-      height:42px;
-      width:auto;
-      max-height:42px;
-      display:block;
-      object-fit:contain;
-      flex-shrink:0;
-    }
-
   </style>
 </head>
 
@@ -449,10 +471,12 @@
           </p>
 
           <div class="hero-buttons">
-            <a class="btn btn-primary" href="live.html">Nuova diretta</a>
+            <button class="btn btn-primary" id="goLiveBtn">Vai in diretta</button>
             <a class="btn btn-secondary" href="create-match.html">Crea partita</a>
-            <a class="btn btn-secondary" href="profile.html">Configura profilo</a>
+            <a class="btn btn-secondary" href="live.html">Lista partite</a>
           </div>
+
+          <div class="status-message" id="dashboardMessage"></div>
         </div>
 
         <div class="hero-side">
@@ -490,14 +514,14 @@
 
         <article class="card">
           <h3>Streaming</h3>
-          <span class="metric-value">0 live</span>
-          <span>Dirette disponibili dalla sezione Live.</span>
+          <span class="metric-value">Live</span>
+          <span>Accesso rapido allo studio diretta.</span>
         </article>
 
         <article class="card">
-          <h3>Supporto</h3>
-          <span class="metric-value">0 ticket</span>
-          <span>Richieste e comunicazioni dell'account.</span>
+          <h3>Partite</h3>
+          <span class="metric-value">Gestione</span>
+          <span>Crea, trasmetti e consulta le partite.</span>
         </article>
       </div>
     </section>
@@ -509,12 +533,10 @@
           <p>Da qui accedi rapidamente alle funzioni principali della piattaforma.</p>
 
           <div class="quick-actions">
-            <div class="quick-action" onclick="window.location.href='live.html'">Nuova diretta</div>
-            <div class="quick-action" onclick="window.location.href='create-match.html'">Crea partita</div>
-            <div class="quick-action">Piattaforme</div>
-            <div class="quick-action">Account</div>
-            <div class="quick-action">Impostazioni</div>
-            <div class="quick-action">Apri supporto</div>
+            <button class="quick-action" id="quickGoLiveBtn">Vai in diretta</button>
+            <button class="quick-action" onclick="window.location.href='create-match.html'">Crea partita</button>
+            <button class="quick-action" onclick="window.location.href='live.html'">Lista partite</button>
+            <button class="quick-action" onclick="window.location.href='profile.html'">Profilo</button>
           </div>
         </article>
 
@@ -542,9 +564,9 @@
             <div class="list-item">
               <div>
                 <strong>Dirette</strong>
-                <span>Area live pronta.</span>
+                <span>Studio diretta disponibile.</span>
               </div>
-              <span class="badge">In arrivo</span>
+              <span class="badge">OK</span>
             </div>
           </div>
         </article>
@@ -616,6 +638,17 @@
 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    let currentUser = null;
+    let currentProfile = null;
+
+    function showDashboardMessage(message, type = 'ok') {
+      const messageBox = document.getElementById('dashboardMessage');
+      messageBox.textContent = message;
+      messageBox.className = type === 'error'
+        ? 'status-message show error'
+        : 'status-message show';
+    }
+
     async function loadDashboard() {
       const { data: { session } } = await supabaseClient.auth.getSession();
 
@@ -624,16 +657,19 @@
         return;
       }
 
-      const user = session.user;
-      document.getElementById('profileEmail').textContent = user.email || '—';
+      currentUser = session.user;
+
+      document.getElementById('profileEmail').textContent = currentUser.email || '—';
 
       const { data: profile, error } = await supabaseClient
         .from('profiles')
         .select('*')
-        .eq('id', user.id)
+        .eq('id', currentUser.id)
         .single();
 
       if (!error && profile) {
+        currentProfile = profile;
+
         const displayName = profile.display_name || 'Utente LiveFut';
         const username = profile.username || 'Nessuno';
         const role = profile.role || 'user';
@@ -653,14 +689,56 @@
         document.getElementById('detailFavoriteTeam').textContent = favoriteTeam;
         document.getElementById('detailBio').textContent = bio;
       } else {
-        document.getElementById('profileName').textContent = user.email || 'Utente LiveFut';
+        document.getElementById('profileName').textContent = currentUser.email || 'Utente LiveFut';
       }
+    }
+
+    async function goLiveNow() {
+      const goLiveBtn = document.getElementById('goLiveBtn');
+      const quickGoLiveBtn = document.getElementById('quickGoLiveBtn');
+
+      goLiveBtn.disabled = true;
+      quickGoLiveBtn.disabled = true;
+
+      showDashboardMessage('Preparazione studio diretta...');
+
+      const teamName = currentProfile?.favorite_team || 'LiveFut Team';
+
+      const { data, error } = await supabaseClient
+        .from('matches')
+        .insert([
+          {
+            home_team: teamName,
+            away_team: 'Avversario',
+            score: '0-0',
+            minute: 0,
+            region: currentProfile?.city || 'Non specificata',
+            category: 'Diretta LiveFut',
+            field: 'Campo non specificato',
+            status: 'soon',
+            discipline: 'Calcio'
+          }
+        ])
+        .select()
+        .single();
+
+      if (error) {
+        goLiveBtn.disabled = false;
+        quickGoLiveBtn.disabled = false;
+        showDashboardMessage(`Errore durante la creazione della diretta: ${error.message}`, 'error');
+        return;
+      }
+
+      window.location.href = `studio.html?id=${encodeURIComponent(data.id)}`;
     }
 
     document.getElementById('logoutBtn').addEventListener('click', async () => {
       await supabaseClient.auth.signOut();
       window.location.href = 'login.html';
     });
+
+    document.getElementById('goLiveBtn').addEventListener('click', goLiveNow);
+    document.getElementById('quickGoLiveBtn').addEventListener('click', goLiveNow);
 
     loadDashboard();
   </script>
