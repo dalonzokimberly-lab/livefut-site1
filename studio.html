@@ -756,20 +756,28 @@
     }
 
     async function updateMatchStatus(status) {
-      const { data, error } = await supabaseClient
+      const { error } = await supabaseClient
         .from('matches')
         .update({ status })
-        .eq('id', matchId)
-        .select()
-        .single();
+        .eq('id', matchId);
 
       if (error) {
         showMessage(`Errore durante l'aggiornamento dello stato: ${error.message}`, 'error');
         return null;
       }
 
-      renderMatch(data);
-      return data;
+      if (currentMatch) {
+        const updatedMatch = {
+          ...currentMatch,
+          status
+        };
+
+        renderMatch(updatedMatch);
+        return updatedMatch;
+      }
+
+      updateStatusUi(status);
+      return { id: matchId, status };
     }
 
     async function startBroadcast() {
