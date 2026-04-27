@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>LiveFut TV — Crea partita</title>
+
+  <script src="https://app.termly.io/resource-blocker/ecfeb307-3d9a-4e26-a7de-4dab9c2345f9?autoBlock=on"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --green:#31d158;
+      --border:rgba(49,209,88,0.18);
+      --shadow:0 20px 60px rgba(0,0,0,0.55);
+      --muted:#cfd6cf;
+    }
+
+    * { box-sizing:border-box; }
+
+    body {
+      margin:0;
+      min-height:100vh;
+      font-family:"Space Grotesk", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(49,209,88,0.12), transparent 24%),
+        radial-gradient(circle at top right, rgba(49,209,88,0.08), transparent 22%),
+        linear-gradient(180deg, #020202 0%, #080808 100%);
+      color:#fff;
+    }
+
+    a { color:inherit; text-decoration:none; }
+
+    .container {
+      width:min(1100px, calc(100% - 32px));
+      margin:0 auto;
+    }
+
+    .topbar {
+      position:sticky;
+      top:0;
+      z-index:30;
+      backdrop-filter:blur(14px);
+      background:rgba(0,0,0,0.84);
+      border-bottom:1px solid var(--border);
+    }
+
+    .topbar-inner {
+      min-height:78px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      flex-wrap:wrap;
+    }
+
+    .brand {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-weight:800;
+         min-width:0;
+      overflow:hidden;
+    }
+
+    .brand-badge {
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:rgba(49,209,88,0.12);
+      border:1px solid var(--border);
+      color:var(--green);
+    }
+
+    .btn {
+      border:0;
+      cursor:pointer;
+      border-radius:999px;
+      padding:12px 18px;
+      font-weight:800;
+      font-family:inherit;
+      font-size:.94rem;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      white-space:nowrap;
+    }
+
+    .btn-primary {
+      background:linear-gradient(135deg,#19a83f,#31d158);
+      color:#000;
+      box-shadow:0 12px 28px rgba(49,209,88,.28);
+    }
+
+    .btn-secondary {
+      background:rgba(49,209,88,.06);
+      color:#fff;
+      border:1px solid var(--border);
+    }
+
+    .hero {
+      padding:34px 0 22px;
+    }
+
+    .card {
+      background:linear-gradient(180deg, rgba(49,209,88,.03), rgba(255,255,255,.01));
+      border:1px solid var(--border);
+      border-radius:32px;
+      box-shadow:var(--shadow);
+      padding:32px;
+    }
+
+    h1 {
+      margin:0 0 12px;
+      color:var(--green);
+      font-size:clamp(2rem,4vw,3.3rem);
+      line-height:1.02;
+      letter-spacing:-.04em;
+    }
+
+    p {
+      margin:0;
+      line-height:1.7;
+      color:#fff;
+    }
+
+    .form-grid {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+      margin-top:24px;
+    }
+
+    .field.full {
+      grid-column:1 / -1;
+    }
+
+    label {
+      display:block;
+      margin-bottom:8px;
+      font-weight:800;
+      font-size:.94rem;
+    }
+
+    input, select {
+      width:100%;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.03);
+      color:#fff;
+      border-radius:18px;
+      padding:15px 16px;
+      font-size:1rem;
+      outline:none;
+      font-family:inherit;
+    }
+
+    select option {
+      color:#000;
+    }
+
+    input:focus, select:focus {
+      border-color:rgba(49,209,88,.6);
+      box-shadow:0 0 0 4px rgba(49,209,88,.12);
+    }
+
+    .actions {
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:22px;
+    }
+
+    .status {
+      margin-top:18px;
+      padding:14px 16px;
+      border-radius:16px;
+      display:none;
+      line-height:1.6;
+      font-size:.94rem;
+    }
+
+    .status.show { display:block; }
+
+    .status.ok {
+      background:rgba(49,209,88,.08);
+      border:1px solid rgba(49,209,88,.22);
+      color:#c9ffd6;
+    }
+
+    .status.error {
+      background:rgba(255,80,80,.08);
+      border:1px solid rgba(255,80,80,.22);
+      color:#ffd4d4;
+    }
+
+    footer a {
+      color:var(--green);
+      text-decoration:underline;
+    }
+
+    @media (max-width:760px) {
+      .form-grid {
+        grid-template-columns:1fr;
+      }
+
+      .field.full {
+        grid-column:auto;
+      }
+
+      .topbar-inner,
+      .actions {
+        flex-direction:column;
+        align-items:stretch;
+      }
+
+      .btn {
+        width:100%;
+      }
+    }
+  
+    .site-logo {
+      height:42px;
+      width:auto;
+      max-height:42px;
+      display:block;
+      object-fit:contain;
+      flex-shrink:0;
+    }
+
+  
+    .brand-text strong {
+      display:block;
+      font-size:1.12rem;
+      line-height:1.1;
+    }
+
+    .brand-text span {
+      display:block;
+      margin-top:4px;
+      color:var(--muted);
+      font-size:.72rem;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+    }
+
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="dashboard.html" class="brand">
+        <img src="livefut-logo.png" alt="LiveFut TV logo" class="site-logo" />
+        <div class="brand-text">
+          <strong>LiveFut</strong>
+          <span>Football United Team</span>
+        </div>
+      </a>
+
+      <div class="actions" style="margin-top:0;">
+        <a class="btn btn-secondary" href="dashboard.html">Dashboard</a>
+        <a class="btn btn-secondary" href="live.html">Live</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="card">
+        <h1>Crea una partita</h1>
+        <p>
+          Inserisci una partita su LiveFut TV e rendila disponibile nella sezione Live.
+          La diretta può essere avviata dalla scheda partita.
+        </p>
+
+        <form id="matchForm">
+          <div class="form-grid">
+            <div class="field">
+              <label for="home_team">Squadra casa</label>
+              <input id="home_team" type="text" placeholder="Es. Virtus Marina" required>
+            </div>
+
+            <div class="field">
+              <label for="away_team">Squadra ospite</label>
+              <input id="away_team" type="text" placeholder="Es. San Marco" required>
+            </div>
+
+            <div class="field">
+              <label for="discipline">Disciplina</label>
+              <select id="discipline" required>
+                <option value="">Seleziona</option>
+                <option value="Calcio a 11">Calcio a 11</option>
+                <option value="Calcetto">Calcetto</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="category">Categoria</label>
+              <select id="category" required>
+                <option value="">Seleziona</option>
+                <option value="Terza Categoria">Terza Categoria</option>
+                <option value="Seconda Categoria">Seconda Categoria</option>
+                <option value="C1">C1</option>
+                <option value="C2">C2</option>
+                <option value="Torneo">Torneo</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="region">Regione</label>
+              <select id="region" required>
+                <option value="">Seleziona</option>
+                <option value="Abruzzo">Abruzzo</option>
+                <option value="Lazio">Lazio</option>
+                <option value="Marche">Marche</option>
+                <option value="Lombardia">Lombardia</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="field">Campo</label>
+              <input id="field" type="text" placeholder="Es. Comunale Montesilvano">
+            </div>
+
+            <div class="field">
+              <label for="score">Risultato iniziale</label>
+              <input id="score" type="text" value="0-0">
+            </div>
+
+            <div class="field">
+              <label for="minute">Minuto</label>
+              <input id="minute" type="number" min="0" value="0">
+            </div>
+
+            <div class="field full">
+              <label for="status">Stato partita</label>
+              <select id="status" required>
+                <option value="soon">In arrivo</option>
+                <option value="live">Live</option>
+                <option value="finished">Conclusa</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary" type="submit">Crea partita</button>
+            <a class="btn btn-secondary" href="live.html">Vai alle live</a>
+          </div>
+
+          <div id="statusBox" class="status"></div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
+    © 2026 LiveFut TV — Football United Team. Tutti i diritti riservati.<br><br>
+
+    <a href="https://www.iubenda.com/privacy-policy/71949704"
+       class="iubenda-white iubenda-noiframe iubenda-embed">
+       Privacy Policy
+    </a> |
+
+    <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy"
+       class="iubenda-white iubenda-noiframe iubenda-embed">
+       Cookie Policy
+    </a> |
+
+    <a href="terms.html">
+       Termini e Condizioni
+    </a>
+  </footer>
+
+  <script>
+    const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
+
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const form = document.getElementById('matchForm');
+    const statusBox = document.getElementById('statusBox');
+
+    function showStatus(message, type = 'ok') {
+      statusBox.textContent = message;
+      statusBox.className = `status show ${type}`;
+    }
+
+    async function checkSession() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+
+      if (!session) {
+        window.location.href = 'login.html';
+      }
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const { data: { session } } = await supabaseClient.auth.getSession();
+
+      if (!session) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const payload = {
+        home_team: document.getElementById('home_team').value.trim(),
+        away_team: document.getElementById('away_team').value.trim(),
+        discipline: document.getElementById('discipline').value,
+        category: document.getElementById('category').value,
+        region: document.getElementById('region').value,
+        field: document.getElementById('field').value.trim(),
+        score: document.getElementById('score').value.trim() || '0-0',
+        minute: Number(document.getElementById('minute').value || 0),
+        status: document.getElementById('status').value
+      };
+
+      const { error } = await supabaseClient
+        .from('matches')
+        .insert([payload]);
+
+      if (error) {
+        showStatus('Errore durante la creazione della partita: ' + error.message, 'error');
+        return;
+      }
+
+      showStatus('Partita creata con successo. Ora comparirà nella pagina Live.', 'ok');
+
+      setTimeout(() => {
+        window.location.href = 'live.html';
+      }, 900);
+    });
+
+    checkSession();
+  </script>
+
+  <script src="https://cdn.iubenda.com/iubenda.js"></script>
+</body>
+</html>

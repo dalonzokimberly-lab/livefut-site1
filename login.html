@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LiveFut TV — Login</title>
+  <script src="https://app.termly.io/resource-blocker/XXXX?autoBlock=on"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg: #050505;
+      --panel: #0b0b0b;
+      --panel-2: #101010;
+      --text: #ffffff;
+      --muted: #cfd6cf;
+      --green: #31d158;
+      --border: rgba(49, 209, 88, 0.18);
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+      --radius: 28px;
+    }
+
+    * { box-sizing: border-box; }
+
+    .consent-box {
+      margin-top: 10px;
+      margin-bottom: 16px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: rgba(49, 209, 88, 0.04);
+    }
+
+    .consent-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin: 0;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #ffffff;
+    }
+
+    .consent-label input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: #31d158;
+      flex-shrink: 0;
+    }
+
+    .consent-label a {
+      color: var(--green);
+      text-decoration: underline;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(49, 209, 88, 0.12), transparent 24%),
+        radial-gradient(circle at top right, rgba(49, 209, 88, 0.08), transparent 22%),
+        linear-gradient(180deg, #020202 0%, #080808 100%);
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .shell {
+      width: min(1120px, 100%);
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .brand-panel,
+    .form-panel {
+      background: linear-gradient(180deg, rgba(49,209,88,0.03), rgba(255,255,255,0.01));
+      border: 1px solid var(--border);
+      border-radius: 32px;
+      box-shadow: var(--shadow);
+    }
+
+    .brand-panel {
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 720px;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .logo-badge {
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: rgba(49, 209, 88, 0.12);
+      border: 1px solid var(--border);
+      color: var(--green);
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .logo-text strong {
+      display: block;
+      font-size: 1.2rem;
+    }
+
+    .logo-text span {
+      display: block;
+      margin-top: 4px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(49, 209, 88, 0.08);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 10px 14px;
+      color: var(--green);
+      font-weight: 700;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 18px;
+    }
+
+    .pulse {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--green);
+      box-shadow: 0 0 0 8px rgba(49, 209, 88, 0.12);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.15); opacity: 0.82; }
+    }
+
+    .brand-copy h1 {
+      margin: 0 0 14px;
+      font-size: clamp(2.4rem, 5vw, 4.5rem);
+      line-height: 0.98;
+      letter-spacing: -0.04em;
+      color: var(--green);
+    }
+
+    .brand-copy p {
+      margin: 0;
+      max-width: 620px;
+      color: #ffffff;
+      line-height: 1.8;
+      font-size: 1.03rem;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 34px;
+    }
+
+    .info-card {
+      background: rgba(49,209,88,0.04);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 18px;
+    }
+
+    .info-card strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--green);
+      font-size: 1rem;
+    }
+
+    .info-card span {
+      color: #ffffff;
+      line-height: 1.6;
+      font-size: 0.92rem;
+    }
+
+    .mini-preview {
+      margin-top: 26px;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.7)), linear-gradient(135deg, rgba(49,209,88,0.48), rgba(20,20,20,0.9));
+      min-height: 220px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .mini-preview::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 34px 34px;
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    .scoreboard,
+    .platforms {
+      position: relative;
+      z-index: 1;
+    }
+
+    .scoreboard {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 0.94rem;
+    }
+
+    .platforms {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      background: rgba(49,209,88,0.09);
+      border: 1px solid rgba(49,209,88,0.16);
+      color: #ffffff;
+      border-radius: 999px;
+      padding: 9px 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .form-panel {
+      padding: 34px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 8px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      margin-bottom: 28px;
+    }
+
+    .tab-btn {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 14px 16px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 0.95rem;
+      transition: 0.2s ease;
+      font-family: inherit;
+    }
+
+    .tab-btn.active {
+      background: rgba(49,209,88,0.1);
+      color: var(--green);
+    }
+
+    .panel-title h2 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+      color: var(--green);
+      letter-spacing: -0.03em;
+    }
+
+    .panel-title p {
+      margin: 0 0 24px;
+      color: #ffffff;
+      line-height: 1.7;
+    }
+
+    .form {
+      display: none;
+    }
+
+    .form.active {
+      display: block;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.93rem;
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      color: #ffffff;
+      border-radius: 18px;
+      padding: 15px 16px;
+      font-size: 1rem;
+      outline: none;
+      font-family: inherit;
+    }
+
+    input:focus {
+      border-color: rgba(49,209,88,0.6);
+      box-shadow: 0 0 0 4px rgba(49,209,88,0.12);
+    }
+
+    .submit {
+      width: 100%;
+      border: 0;
+      cursor: pointer;
+      border-radius: 18px;
+      padding: 15px 18px;
+      font-size: 1rem;
+      font-weight: 800;
+      font-family: inherit;
+      background: linear-gradient(135deg, #19a83f, #31d158);
+      color: #000000;
+      margin-top: 8px;
+      box-shadow: 0 12px 28px rgba(49, 209, 88, 0.28);
+    }
+
+    .status {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      display: none;
+      line-height: 1.6;
+      font-size: 0.94rem;
+    }
+
+    .status.show {
+      display: block;
+    }
+
+    .status.ok {
+      background: rgba(49,209,88,0.08);
+      border: 1px solid rgba(49,209,88,0.22);
+      color: #c9ffd6;
+    }
+
+    .status.error {
+      background: rgba(255,80,80,0.08);
+      border: 1px solid rgba(255,80,80,0.22);
+      color: #ffd4d4;
+    }
+
+    .back-home {
+      margin-top: 22px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 0.94rem;
+      text-decoration: none;
+    }
+
+    footer a {
+      color: var(--green);
+      text-decoration: underline;
+    }
+
+    @media (max-width: 980px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .brand-panel {
+        min-height: auto;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  
+    .site-logo {
+      height:46px;
+      width:auto;
+      max-height:46px;
+      display:block;
+      object-fit:contain;
+      flex-shrink:0;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="brand-panel">
+      <div>
+        <a class="logo" href="index.html">
+          <img src="livefut-logo.png" alt="LiveFut TV logo" class="site-logo" />
+          <div class="logo-text">
+            <strong>LiveFut</strong>
+            <span>Football United Team</span>
+          </div>
+        </a>
+
+        <div class="brand-copy" style="margin-top: 34px;">
+          <div class="eyebrow">
+            <span class="pulse"></span>
+            Accesso piattaforma
+          </div>
+          <h1>Accedi a LiveFut TV</h1>
+          <p>
+            Entra nella piattaforma per creare eventi, gestire dirette, seguire le partite e costruire il tuo profilo nel calcio locale.
+          </p>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-card">
+            <strong>Per broadcaster</strong>
+            <span>Gestisci partite, overlay, piattaforme e stato delle tue dirette da un unico account.</span>
+          </div>
+          <div class="info-card">
+            <strong>Per spettatori</strong>
+            <span>Segui live, profili, eventi e partite con un’esperienza coerente e ordinata.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mini-preview">
+        <div class="scoreboard">
+          <span>LiveFut</span>
+          <span>2 - 1</span>
+          <span>TV</span>
+          <span style="opacity:.85; font-size:.8rem;">LIVE</span>
+        </div>
+        <div class="platforms">
+          <span class="pill">YouTube</span>
+          <span class="pill">Facebook</span>
+          <span class="pill">Twitch</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="form-panel">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="login">Accedi</button>
+        <button class="tab-btn" data-tab="register">Registrati</button>
+      </div>
+
+      <div class="panel-title">
+        <h2 id="panelHeading">Bentornato</h2>
+        <p id="panelDescription">Accedi con la tua email per entrare nella piattaforma LiveFut TV.</p>
+      </div>
+
+      <form id="loginForm" class="form active">
+        <div class="field">
+          <label for="loginEmail">Email</label>
+          <input id="loginEmail" type="email" placeholder="nome@email.com" required />
+        </div>
+        <div class="field">
+          <label for="loginPassword">Password</label>
+          <input id="loginPassword" type="password" placeholder="La tua password" required />
+        </div>
+        <button type="submit" class="submit">Accedi</button>
+      </form>
+
+      <form id="registerForm" class="form">
+        <div class="field">
+          <label for="registerName">Nome profilo</label>
+          <input id="registerName" type="text" placeholder="Come vuoi comparire su LiveFut" required />
+        </div>
+        <div class="field">
+          <label for="registerEmail">Email</label>
+          <input id="registerEmail" type="email" placeholder="nome@email.com" required />
+        </div>
+        <div class="field">
+          <label for="registerPassword">Password</label>
+          <input id="registerPassword" type="password" placeholder="Scegli una password" required />
+        </div>
+
+        <div class="consent-box">
+          <label class="consent-label">
+            <input id="privacyConsent" type="checkbox" />
+            <span>
+              Dichiaro di aver letto e accettato la
+              <a href="https://www.iubenda.com/privacy-policy/71949704" target="_blank" rel="noopener noreferrer">Privacy Policy</a>,
+              la
+              <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy" target="_blank" rel="noopener noreferrer">Cookie Policy</a>
+              e i
+              <a href="terms.html" target="_blank" rel="noopener noreferrer">Termini e Condizioni</a>.
+            </span>
+          </label>
+        </div>
+
+        <button type="submit" class="submit">Crea account</button>
+      </form>
+
+      <div id="statusBox" class="status"></div>
+
+      <a class="back-home" href="index.html">← Torna alla home</a>
+    </section>
+  </div>
+
+  <footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
+    © 2026 LiveFut TV — Football United Team. Tutti i diritti riservati.<br><br>
+
+    <a href="https://www.iubenda.com/privacy-policy/71949704"
+       class="iubenda-white iubenda-noiframe iubenda-embed">
+       Privacy Policy
+    </a> |
+
+    <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy"
+       class="iubenda-white iubenda-noiframe iubenda-embed">
+       Cookie Policy
+    </a> |
+
+    <a href="terms.html">
+       Termini e Condizioni
+    </a>
+  </footer>
+
+  <script>
+    const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
+
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const loginTab = document.querySelector('[data-tab="login"]');
+    const registerTab = document.querySelector('[data-tab="register"]');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const panelHeading = document.getElementById('panelHeading');
+    const panelDescription = document.getElementById('panelDescription');
+    const statusBox = document.getElementById('statusBox');
+
+    function showStatus(message, type = 'ok') {
+      statusBox.textContent = message;
+      statusBox.className = `status show ${type}`;
+    }
+
+    function clearStatus() {
+      statusBox.className = 'status';
+      statusBox.textContent = '';
+    }
+
+    function setTab(tab) {
+      clearStatus();
+      if (tab === 'login') {
+        loginTab.classList.add('active');
+        registerTab.classList.remove('active');
+        loginForm.classList.add('active');
+        registerForm.classList.remove('active');
+        panelHeading.textContent = 'Bentornato';
+        panelDescription.textContent = 'Accedi con la tua email per entrare nella piattaforma LiveFut TV.';
+      } else {
+        registerTab.classList.add('active');
+        loginTab.classList.remove('active');
+        registerForm.classList.add('active');
+        loginForm.classList.remove('active');
+        panelHeading.textContent = 'Crea il tuo account';
+        panelDescription.textContent = 'Registrati per entrare nella piattaforma LiveFut TV.';
+      }
+    }
+
+    loginTab.addEventListener('click', () => setTab('login'));
+    registerTab.addEventListener('click', () => setTab('register'));
+
+    loginForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearStatus();
+
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+
+      const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        showStatus(error.message, 'error');
+        return;
+      }
+
+      window.location.href = 'dashboard.html';
+    });
+
+    registerForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearStatus();
+
+      const displayName = document.getElementById('registerName').value.trim();
+      const email = document.getElementById('registerEmail').value.trim();
+      const password = document.getElementById('registerPassword').value.trim();
+      const privacyConsent = document.getElementById('privacyConsent').checked;
+
+      if (!privacyConsent) {
+        showStatus('Per registrarti devi accettare Privacy Policy, Cookie Policy e Termini e Condizioni.', 'error');
+        return;
+      }
+
+      const { data, error } = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            display_name: displayName,
+            privacy_accepted: true
+          }
+        }
+      });
+
+      if (error) {
+        showStatus(error.message, 'error');
+        return;
+      }
+
+      if (data.user) {
+        const { error: profileError } = await supabaseClient
+          .from('profiles')
+          .insert([
+            {
+              id: data.user.id,
+              email,
+              display_name: displayName,
+              role: 'user',
+              privacy_accepted: true
+            }
+          ]);
+
+        if (profileError) {
+          showStatus('Account creato. Errore nel salvataggio del profilo: ' + profileError.message, 'error');
+          return;
+        }
+      }
+
+      window.location.href = 'dashboard.html';
+    });
+  </script>
+
+  <script src="https://cdn.iubenda.com/iubenda.js"></script>
+</body>
+</html>
