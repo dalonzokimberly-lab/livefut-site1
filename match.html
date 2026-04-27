@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -21,6 +22,7 @@
       --muted:#cfd6cf;
       --shadow:0 20px 60px rgba(0,0,0,0.55);
       --live:#ff5252;
+      --warning:#ffd166;
     }
 
     * { box-sizing:border-box; }
@@ -90,6 +92,11 @@
       align-items:center;
       justify-content:center;
       white-space:nowrap;
+      transition:.2s ease;
+    }
+
+    .btn:hover {
+      transform:translateY(-1px);
     }
 
     .btn-primary {
@@ -102,6 +109,12 @@
       background:rgba(49,209,88,0.06);
       color:#fff;
       border:1px solid var(--border);
+    }
+
+    .btn-warning {
+      background:linear-gradient(135deg,#ffb703,#ffd166);
+      color:#000;
+      box-shadow:0 12px 28px rgba(255,209,102,0.22);
     }
 
     .hero {
@@ -134,6 +147,11 @@
       margin-bottom:16px;
     }
 
+    .broadcast-badge {
+      background:rgba(255,209,102,0.12);
+      border-color:rgba(255,209,102,0.28);
+    }
+
     .dot {
       width:10px;
       height:10px;
@@ -141,6 +159,11 @@
       background:var(--live);
       box-shadow:0 0 0 8px rgba(255,82,82,0.12);
       animation:pulse 1.8s infinite;
+    }
+
+    .broadcast-badge .dot {
+      background:var(--warning);
+      box-shadow:0 0 0 8px rgba(255,209,102,0.12);
     }
 
     @keyframes pulse {
@@ -194,7 +217,8 @@
 
     .player-card,
     .side-card,
-    .events-card {
+    .events-card,
+    .notice-card {
       background:linear-gradient(180deg, rgba(49,209,88,0.03), rgba(255,255,255,0.01));
       border:1px solid var(--border);
       border-radius:24px;
@@ -205,14 +229,31 @@
     .player {
       width:100%;
       aspect-ratio:16/9;
-      background:#000;
+      background:
+        radial-gradient(circle at center, rgba(49,209,88,0.16), transparent 34%),
+        linear-gradient(135deg, #050505, #000);
+      display:grid;
+      place-items:center;
+      padding:22px;
+      text-align:center;
     }
 
-    iframe {
-      width:100%;
-      height:100%;
-      border:0;
+    .player-placeholder {
+      max-width:620px;
+    }
+
+    .player-placeholder strong {
       display:block;
+      color:var(--green);
+      font-size:clamp(1.5rem, 3vw, 2.4rem);
+      margin-bottom:12px;
+      letter-spacing:-0.04em;
+    }
+
+    .player-placeholder span {
+      display:block;
+      color:#fff;
+      line-height:1.7;
     }
 
     .card-body {
@@ -287,6 +328,35 @@
       color:var(--green);
     }
 
+    .broadcast-panel {
+      margin-top:16px;
+      display:grid;
+      gap:12px;
+    }
+
+    .broadcast-box {
+      background:rgba(255,209,102,0.07);
+      border:1px solid rgba(255,209,102,0.22);
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .broadcast-box strong {
+      display:block;
+      color:var(--warning);
+      margin-bottom:6px;
+    }
+
+    .error-box {
+      padding:28px;
+      margin:34px 0;
+      border-radius:24px;
+      border:1px solid rgba(255,82,82,0.25);
+      background:rgba(255,82,82,0.08);
+      color:#fff;
+      line-height:1.7;
+    }
+
     footer a {
       color:var(--green);
       text-decoration:underline;
@@ -300,6 +370,18 @@
 
       .score-box {
         text-align:left;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .topbar-inner,
+      .topbar-inner > div {
+        flex-direction:column;
+        align-items:stretch;
+      }
+
+      .btn {
+        width:100%;
       }
     }
   </style>
@@ -320,13 +402,13 @@
     </div>
   </header>
 
-  <main class="container">
+  <main class="container" id="pageContent">
     <section class="hero">
       <div class="match-header">
         <div>
-          <div class="live-badge">
+          <div class="live-badge" id="modeBadge">
             <span class="dot"></span>
-            Diretta live
+            <span id="modeBadgeText">Caricamento</span>
           </div>
 
           <h1 id="matchTitle">Partita LiveFut TV</h1>
@@ -342,28 +424,40 @@
 
     <section class="layout">
       <article class="player-card">
-        <div class="player">
-          <iframe
-            id="videoPlayer"
-            src=""
-            title="LiveFut TV player"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen>
-          </iframe>
+        <div class="player" id="playerArea">
+          <div class="player-placeholder">
+            <strong id="playerHeadline">Diretta LiveFut</strong>
+            <span id="playerText">
+              La diretta verrà mostrata qui quando sarà avviata dal broadcaster tramite app LiveFut.
+            </span>
+          </div>
         </div>
 
         <div class="card-body">
           <h2 id="videoTitle">Diretta partita</h2>
-          <p>
-            Player collegato alla diretta. In futuro questa pagina potrà mostrare video LiveFut interno,
-            YouTube, Twitch o Facebook in base alla piattaforma scelta dal broadcaster.
+          <p id="videoDescription">
+            Questa pagina è pronta per mostrare il player LiveFut interno o la diretta collegata alle piattaforme esterne.
           </p>
 
           <div class="platforms">
+            <span class="pill">LiveFut TV</span>
             <span class="pill">YouTube</span>
             <span class="pill">Facebook</span>
             <span class="pill">Twitch</span>
-            <span class="pill">LiveFut TV</span>
+          </div>
+
+          <div class="broadcast-panel" id="broadcastPanel" style="display:none;">
+            <div class="broadcast-box">
+              <strong>Modalità broadcaster</strong>
+              <p>
+                Da qui puoi preparare la diretta della partita. Il prossimo step sarà collegare questa azione
+                alla futura app mobile LiveFut Broadcaster.
+              </p>
+            </div>
+
+            <a class="btn btn-warning" id="startBroadcastBtn" href="#">
+              Avvia diretta
+            </a>
           </div>
         </div>
       </article>
@@ -380,6 +474,11 @@
             </div>
 
             <div class="info-item">
+              <strong>Disciplina</strong>
+              <span id="matchDiscipline">—</span>
+            </div>
+
+            <div class="info-item">
               <strong>Categoria</strong>
               <span id="matchCategory">—</span>
             </div>
@@ -391,7 +490,7 @@
 
             <div class="info-item">
               <strong>Stato</strong>
-              <span>Live</span>
+              <span id="matchStatus">—</span>
             </div>
           </div>
         </div>
@@ -406,18 +505,18 @@
         <div class="event-list">
           <div class="event">
             <div>
-              <strong>67'</strong>
-              <span> Aggiornamento punteggio live</span>
+              <strong id="eventMinute">LIVE</strong>
+              <span> Aggiornamento punteggio</span>
             </div>
             <span id="eventScore">—</span>
           </div>
 
           <div class="event">
             <div>
-              <strong>LIVE</strong>
-              <span> Diretta attiva su LiveFut TV</span>
+              <strong>LiveFut</strong>
+              <span id="eventStatusText">Pagina partita pronta</span>
             </div>
-            <span>ON AIR</span>
+            <span id="eventStatusBadge">READY</span>
           </div>
         </div>
       </div>
@@ -443,32 +542,147 @@
   </footer>
 
   <script>
+    const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSRj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
+
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     const params = new URLSearchParams(window.location.search);
+    const matchId = params.get('id');
+    const mode = params.get('mode') || 'view';
 
-    const home = params.get('home') || 'Squadra Casa';
-    const away = params.get('away') || 'Squadra Ospite';
-    const score = params.get('score') || '0-0';
-    const minute = params.get('minute') || 'LIVE';
-    const region = params.get('region') || 'Non specificata';
-    const category = params.get('category') || 'Non specificata';
-    const field = params.get('field') || 'Non specificato';
-    const video = params.get('video') || 'dQw4w9WgXcQ';
+    const pageContent = document.getElementById('pageContent');
 
-    const cleanScore = score.replace('-', ' - ');
+    function safe(value, fallback = '—') {
+      return value === null || value === undefined || value === '' ? fallback : value;
+    }
 
-    document.title = `${home} vs ${away} — LiveFut TV`;
+    function formatScore(score) {
+      return safe(score, '0-0').replace('-', ' - ');
+    }
 
-    document.getElementById('matchTitle').textContent = `${home} vs ${away}`;
-    document.getElementById('matchSubtitle').textContent = `${region} · ${category} · ${field}`;
-    document.getElementById('matchScore').textContent = cleanScore;
-    document.getElementById('matchMinute').textContent = `${minute}'`;
-    document.getElementById('matchRegion').textContent = region;
-    document.getElementById('matchCategory').textContent = category;
-    document.getElementById('matchField').textContent = field;
-    document.getElementById('videoTitle').textContent = `${home} vs ${away}`;
-    document.getElementById('eventScore').textContent = cleanScore;
+    function statusLabel(status) {
+      if (status === 'live') return 'Live';
+      if (status === 'soon') return 'In arrivo';
+      if (status === 'finished') return 'Conclusa';
+      return safe(status, 'In arrivo');
+    }
 
-    document.getElementById('videoPlayer').src = `https://www.youtube.com/embed/${video}`;
+    function minuteLabel(match) {
+      if (match.status === 'finished') return 'FT';
+      if (match.status === 'soon') return 'Non iniziata';
+      if (match.minute === null || match.minute === undefined) return 'LIVE';
+      return `${match.minute}'`;
+    }
+
+    function showError(message) {
+      pageContent.innerHTML = `
+        <div class="error-box">
+          <strong>Errore</strong><br>
+          ${message}<br><br>
+          <a class="btn btn-secondary" href="live.html">Torna alle live</a>
+        </div>
+      `;
+    }
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    function applyMode(match) {
+      const modeBadge = document.getElementById('modeBadge');
+      const modeBadgeText = document.getElementById('modeBadgeText');
+      const broadcastPanel = document.getElementById('broadcastPanel');
+      const startBroadcastBtn = document.getElementById('startBroadcastBtn');
+      const playerHeadline = document.getElementById('playerHeadline');
+      const playerText = document.getElementById('playerText');
+      const videoDescription = document.getElementById('videoDescription');
+
+      if (mode === 'broadcast') {
+        modeBadge.classList.add('broadcast-badge');
+        modeBadgeText.textContent = 'Modalità broadcaster';
+
+        playerHeadline.textContent = 'Studio diretta';
+        playerText.textContent = 'Questa partita è pronta per essere trasmessa. Premi Avvia diretta per entrare nello studio.';
+        videoDescription.textContent = 'Modalità gestione diretta: qui il broadcaster prepara e avvia la trasmissione collegata alla partita.';
+
+        broadcastPanel.style.display = 'grid';
+        startBroadcastBtn.href = `studio.html?id=${encodeURIComponent(match.id)}`;
+
+        setText('eventStatusText', 'Modalità broadcaster attiva');
+        setText('eventStatusBadge', 'BROADCAST');
+      } else {
+        modeBadge.classList.remove('broadcast-badge');
+        modeBadgeText.textContent = match.status === 'live' ? 'Diretta live' : statusLabel(match.status);
+
+        playerHeadline.textContent = match.status === 'live' ? 'Diretta in corso' : 'Diretta non ancora avviata';
+        playerText.textContent = match.status === 'live'
+          ? 'Il player LiveFut verrà collegato qui quando lo streaming sarà disponibile.'
+          : 'La partita è presente nel database. La diretta apparirà qui quando un broadcaster la avvierà.';
+
+        videoDescription.textContent = 'Pagina spettatore: qui sarà visibile il player LiveFut interno e, in futuro, i collegamenti alle piattaforme esterne.';
+        broadcastPanel.style.display = 'none';
+
+        setText('eventStatusText', 'Pagina spettatore pronta');
+        setText('eventStatusBadge', 'READY');
+      }
+    }
+
+    function renderMatch(match) {
+      const home = safe(match.home_team, 'Squadra Casa');
+      const away = safe(match.away_team, 'Squadra Ospite');
+      const score = formatScore(match.score);
+      const region = safe(match.region, 'Non specificata');
+      const discipline = safe(match.discipline, 'Non specificata');
+      const category = safe(match.category, 'Non specificata');
+      const field = safe(match.field, 'Non specificato');
+      const status = safe(match.status, 'soon');
+
+      document.title = `${home} vs ${away} — LiveFut TV`;
+
+      setText('matchTitle', `${home} vs ${away}`);
+      setText('matchSubtitle', `${region} · ${discipline} · ${category} · ${field}`);
+      setText('matchScore', score);
+      setText('matchMinute', minuteLabel(match));
+      setText('matchRegion', region);
+      setText('matchDiscipline', discipline);
+      setText('matchCategory', category);
+      setText('matchField', field);
+      setText('matchStatus', statusLabel(status));
+      setText('videoTitle', `${home} vs ${away}`);
+      setText('eventScore', score);
+      setText('eventMinute', minuteLabel(match));
+
+      applyMode(match);
+    }
+
+    async function loadMatch() {
+      if (!matchId) {
+        showError('ID partita mancante. Apri questa pagina dalla lista live.');
+        return;
+      }
+
+      const { data, error } = await supabaseClient
+        .from('matches')
+        .select('*')
+        .eq('id', matchId)
+        .single();
+
+      if (error) {
+        showError(`Impossibile caricare la partita: <strong>${error.message}</strong>`);
+        return;
+      }
+
+      if (!data) {
+        showError('Partita non trovata.');
+        return;
+      }
+
+      renderMatch(data);
+    }
+
+    loadMatch();
   </script>
 
   <script src="https://cdn.iubenda.com/iubenda.js"></script>
