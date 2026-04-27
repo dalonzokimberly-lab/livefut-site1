@@ -60,23 +60,22 @@
     }
 
     .brand {
-     .site-logo {
-  height: 42px;
-  width: auto;
-  max-height: 42px;
-  display: block;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-.brand {
-  display:flex;
-  align-items:center;
-  gap:12px;
-  font-weight:800;
-  min-width:0;
-  overflow:hidden;
-}
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-weight:800;
+      min-width:0;
+      overflow:hidden;
+    }
 
+    .site-logo {
+      height:42px;
+      width:auto;
+      max-height:42px;
+      display:block;
+      object-fit:contain;
+      flex-shrink:0;
+    }
 
     .brand-text strong {
       display:block;
@@ -401,6 +400,10 @@
         align-items:stretch;
       }
 
+      .brand {
+        align-self:flex-start;
+      }
+
       .btn { width:100%; }
     }
   </style>
@@ -410,7 +413,7 @@
   <header class="topbar">
     <div class="container topbar-inner">
       <a href="index.html" class="brand">
-       <img src="livefut-logo.png" alt="LiveFut TV logo" class="site-logo" />
+        <img src="livefut-logo.png" alt="LiveFut TV logo" class="site-logo" />
         <div class="brand-text">
           <strong>LiveFut</strong>
           <span>Football United Team</span>
@@ -499,10 +502,8 @@
           <div class="quick-actions">
             <div class="quick-action" onclick="window.location.href='live.html'">Nuova diretta</div>
             <div class="quick-action" onclick="window.location.href='create-match.html'">Crea partita</div>
-            <div class="quick-action">Piattaforme</div>
-            <div class="quick-action">Account</div>
-            <div class="quick-action">Impostazioni</div>
-            <div class="quick-action">Apri supporto</div>
+            <div class="quick-action" onclick="window.location.href='profile.html'">Profilo</div>
+            <div class="quick-action" onclick="window.location.href='live.html'">Live</div>
           </div>
         </article>
 
@@ -530,9 +531,9 @@
             <div class="list-item">
               <div>
                 <strong>Dirette</strong>
-                <span>Area live pronta.</span>
+                <span>Area live disponibile.</span>
               </div>
-              <span class="badge">In arrivo</span>
+              <span class="badge">OK</span>
             </div>
           </div>
         </article>
