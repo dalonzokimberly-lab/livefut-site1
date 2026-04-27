@@ -311,12 +311,6 @@
       gap:16px;
     }
 
-    .grid-2 {
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:16px;
-    }
-
     .region-card,
     .match-card,
     .card {
@@ -453,8 +447,7 @@
     @media (max-width:760px) {
       .filters-grid,
       .grid-4,
-      .grid-3,
-      .grid-2 {
+      .grid-3 {
         grid-template-columns:1fr;
       }
 
@@ -598,6 +591,7 @@
       </p>
 
       <div id="matchesGrid" class="grid-3"></div>
+
       <div id="emptyState" class="empty-state" style="display:none;">
         Nessuna partita trovata. Quando inserirai partite nella tabella <strong>matches</strong>, compariranno qui automaticamente.
       </div>
@@ -705,12 +699,14 @@
 
   <script>
     const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJIUzI1NiIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const matchesGrid = document.getElementById('matchesGrid');
     const emptyState = document.getElementById('emptyState');
+    const totalMatches = document.getElementById('totalMatches');
+    const liveMatches = document.getElementById('liveMatches');
 
     const filters = {
       regione: document.getElementById('regione'),
@@ -725,11 +721,20 @@
       return value === null || value === undefined || value === '' ? fallback : value;
     }
 
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
     function statusLabel(status) {
       if (status === 'live') return 'LIVE';
       if (status === 'soon') return 'IN ARRIVO';
       if (status === 'finished') return 'FINALE';
-      return safe(status, 'LIVE').toUpperCase();
+      return safe(status, 'IN ARRIVO').toUpperCase();
     }
 
     function statusClass(status) {
@@ -738,27 +743,24 @@
       return 'soon';
     }
 
-    function buildMatchUrl(match) {
+    function buildMatchUrl(match, mode = 'view') {
       const params = new URLSearchParams({
         id: match.id || '',
-        home: safe(match.home_team, 'Squadra Casa'),
-        away: safe(match.away_team, 'Squadra Ospite'),
-        score: safe(match.score, '0-0'),
-        minute: String(match.minute ?? 0),
-        region: safe(match.region, 'Non specificata'),
-        category: safe(match.category, 'Non specificata'),
-        field: safe(match.field, 'Non specificato'),
-        video: safe(match.video_id, 'dQw4w9WgXcQ')
+        mode: mode
       });
 
       return `match.html?${params.toString()}`;
     }
 
+    function normalizeScore(score) {
+      return safe(score, '0-0').replace('-', ' - ');
+    }
+
     function renderMatches(matches) {
       matchesGrid.innerHTML = '';
 
-      document.getElementById('totalMatches').textContent = `${allMatches.length} partite`;
-      document.getElementById('liveMatches').textContent = `${allMatches.filter(m => m.status === 'live').length} live`;
+      totalMatches.textContent = `${allMatches.length} partite`;
+      liveMatches.textContent = `${allMatches.filter(m => m.status === 'live').length} live`;
 
       if (!matches.length) {
         emptyState.style.display = 'block';
@@ -768,12 +770,13 @@
       emptyState.style.display = 'none';
 
       matches.forEach(match => {
-        const status = safe(match.status, 'live');
-        const score = safe(match.score, '0-0').replace('-', ' - ');
+        const status = safe(match.status, 'soon');
+        const score = normalizeScore(match.score);
         const minute = match.minute ?? 0;
         const discipline = safe(match.discipline, '');
         const region = safe(match.region, 'Regione non specificata');
         const category = safe(match.category, 'Categoria non specificata');
+        const field = safe(match.field, 'Campo non specificato');
 
         const card = document.createElement('article');
         card.className = 'match-card';
@@ -781,26 +784,28 @@
         card.innerHTML = `
           <div class="match-top">
             <div>
-              <h3>${safe(match.home_team, 'Squadra Casa')} vs ${safe(match.away_team, 'Squadra Ospite')}</h3>
-              <p>${region}${discipline ? ' · ' + discipline : ''} · ${category}</p>
+              <h3>${escapeHtml(safe(match.home_team, 'Squadra Casa'))} vs ${escapeHtml(safe(match.away_team, 'Squadra Ospite'))}</h3>
+              <p>${escapeHtml(region)}${discipline ? ' · ' + escapeHtml(discipline) : ''} · ${escapeHtml(category)}</p>
             </div>
             <span class="status-badge ${statusClass(status)}">${statusLabel(status)}</span>
           </div>
 
           <div class="match-score">
-            <span>${score}</span>
+            <span>${escapeHtml(score)}</span>
             <span style="font-size:.9rem; color:#fff;">${status === 'finished' ? 'FT' : minute + "'"}</span>
           </div>
 
           <div class="meta-row">
-            <span class="tag">YouTube</span>
-            <span class="tag">Facebook</span>
-            <span class="tag">Twitch</span>
+            <span class="tag">${escapeHtml(field)}</span>
           </div>
 
           <div class="row-actions">
-            <a class="btn btn-primary" href="${buildMatchUrl(match)}">
-              ${status === 'finished' ? 'Vedi riepilogo' : 'Guarda diretta'}
+            <a class="btn btn-primary" href="${buildMatchUrl(match, 'view')}">
+              Dettaglio
+            </a>
+
+            <a class="btn btn-secondary" href="${buildMatchUrl(match, 'broadcast')}">
+              Trasmetti
             </a>
           </div>
         `;
@@ -828,6 +833,10 @@
     }
 
     async function loadMatches() {
+      matchesGrid.innerHTML = '';
+      emptyState.style.display = 'block';
+      emptyState.innerHTML = 'Caricamento partite in corso...';
+
       const { data, error } = await supabaseClient
         .from('matches')
         .select('*')
@@ -835,11 +844,14 @@
 
       if (error) {
         emptyState.style.display = 'block';
-        emptyState.innerHTML = `Errore nel caricamento delle partite: <strong>${error.message}</strong>`;
+        emptyState.innerHTML = `Errore nel caricamento delle partite: <strong>${escapeHtml(error.message)}</strong>`;
         return;
       }
 
       allMatches = data || [];
+
+      emptyState.innerHTML = 'Nessuna partita trovata. Quando inserirai partite nella tabella <strong>matches</strong>, compariranno qui automaticamente.';
+
       renderMatches(allMatches);
     }
 
