@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LiveFut TV — Dashboard</title>
+
+  <script src="https://app.termly.io/resource-blocker/ecfeb307-3d9a-4e26-a7de-4dab9c2345f9?autoBlock=on"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --green:#31d158;
+      --border:rgba(49,209,88,0.18);
+      --shadow:0 20px 60px rgba(0,0,0,0.55);
+      --muted:#cfd6cf;
+      --danger:#ff6b6b;
+    }
+
+    * { box-sizing:border-box; }
+
+    body {
+      margin:0;
+      min-height:100vh;
+      font-family:"Space Grotesk", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(49,209,88,0.12), transparent 24%),
+        radial-gradient(circle at top right, rgba(49,209,88,0.08), transparent 22%),
+        linear-gradient(180deg, #020202 0%, #080808 100%);
+      color:#fff;
+    }
+
+    a { color:inherit; text-decoration:none; }
+
+    .container {
+      width:min(1220px, calc(100% - 32px));
+      margin:0 auto;
+    }
+
+    .topbar {
+      position:sticky;
+      top:0;
+      z-index:30;
+      backdrop-filter:blur(14px);
+      background:rgba(0,0,0,0.84);
+      border-bottom:1px solid var(--border);
+    }
+
+    .topbar-inner {
+      min-height:78px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      flex-wrap:wrap;
+    }
+
+    .brand {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-weight:800;
+      min-width:0;
+    }
+
+    .brand-badge {
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:rgba(49,209,88,0.12);
+      border:1px solid var(--border);
+      color:var(--green);
+      flex-shrink:0;
+    }
+
+    .brand-text strong {
+      display:block;
+      font-size:1.12rem;
+      line-height:1.1;
+    }
+
+    .brand-text span {
+      display:block;
+      margin-top:4px;
+      color:var(--muted);
+      font-size:.72rem;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+    }
+
+    .top-actions {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .btn {
+      border:0;
+      cursor:pointer;
+      border-radius:999px;
+      padding:12px 18px;
+      font-weight:800;
+      font-family:inherit;
+      font-size:.94rem;
+      transition:.2s ease;
+      white-space:nowrap;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .btn:hover { transform:translateY(-1px); }
+
+    .btn-primary {
+      background:linear-gradient(135deg,#19a83f,#31d158);
+      color:#000;
+      box-shadow:0 12px 28px rgba(49,209,88,.28);
+    }
+
+    .btn-secondary {
+      background:rgba(49,209,88,.06);
+      color:#fff;
+      border:1px solid var(--border);
+    }
+
+    .btn-danger {
+      background:rgba(255,107,107,.1);
+      color:#fff;
+      border:1px solid rgba(255,107,107,.22);
+    }
+
+    .hero { padding:34px 0 22px; }
+
+    .hero-card {
+      background:linear-gradient(180deg, rgba(49,209,88,.03), rgba(255,255,255,.01));
+      border:1px solid var(--border);
+      border-radius:32px;
+      box-shadow:var(--shadow);
+      padding:32px;
+      display:grid;
+      grid-template-columns:minmax(0,1.2fr) minmax(280px,340px);
+      gap:24px;
+      align-items:start;
+    }
+
+    .eyebrow {
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      background:rgba(49,209,88,.08);
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:10px 14px;
+      color:var(--green);
+      font-weight:700;
+      font-size:.82rem;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:16px;
+    }
+
+    .pulse {
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      background:var(--green);
+      box-shadow:0 0 0 8px rgba(49,209,88,.12);
+      flex-shrink:0;
+    }
+
+    h1 {
+      margin:0 0 12px;
+      font-size:clamp(2rem,4vw,3.2rem);
+      line-height:1.02;
+      letter-spacing:-.04em;
+      color:var(--green);
+      overflow-wrap:anywhere;
+    }
+
+    .hero-card p {
+      margin:0;
+      color:#fff;
+      line-height:1.75;
+      max-width:720px;
+    }
+
+    .hero-buttons {
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:24px;
+    }
+
+    .hero-side {
+      display:grid;
+      gap:12px;
+      min-width:0;
+    }
+
+    .mini-stat {
+      background:rgba(49,209,88,.05);
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:18px;
+      min-width:0;
+    }
+
+    .mini-stat strong {
+      display:block;
+      color:var(--green);
+      font-size:1.35rem;
+      margin-bottom:6px;
+      overflow-wrap:anywhere;
+      line-height:1.15;
+    }
+
+    .mini-stat span {
+      color:#fff;
+      font-size:.92rem;
+      line-height:1.6;
+      overflow-wrap:anywhere;
+    }
+
+    .section { padding:12px 0 28px; }
+
+    .grid-4 {
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:16px;
+    }
+
+    .grid-2 {
+      display:grid;
+      grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);
+      gap:16px;
+    }
+
+    .card {
+      background:linear-gradient(180deg, rgba(49,209,88,.03), rgba(255,255,255,.01));
+      border:1px solid var(--border);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      padding:24px;
+      min-width:0;
+      overflow:hidden;
+    }
+
+    .card h2,
+    .card h3 {
+      margin:0 0 10px;
+      color:var(--green);
+      letter-spacing:-.02em;
+      overflow-wrap:anywhere;
+    }
+
+    .card p,
+    .card span {
+      color:#fff;
+      line-height:1.7;
+      overflow-wrap:anywhere;
+    }
+
+    .metric-value {
+      display:block;
+      font-size:2rem;
+      color:var(--green);
+      font-weight:800;
+      margin-bottom:6px;
+      line-height:1.1;
+      overflow-wrap:anywhere;
+    }
+
+    .quick-actions {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .quick-action {
+      border:1px solid var(--border);
+      background:rgba(49,209,88,.05);
+      border-radius:18px;
+      padding:16px;
+      font-weight:700;
+      min-width:0;
+      overflow-wrap:anywhere;
+      transition:.2s ease;
+      cursor:pointer;
+    }
+
+    .quick-action:hover {
+      transform:translateY(-1px);
+      border-color:rgba(49,209,88,.4);
+    }
+
+    .list {
+      display:grid;
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .list-item {
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.02);
+      border-radius:18px;
+      padding:16px;
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      align-items:flex-start;
+      min-width:0;
+    }
+
+    .list-item > div {
+      flex:1;
+      min-width:0;
+    }
+
+    .list-item strong {
+      display:block;
+      margin-bottom:4px;
+      color:var(--green);
+      overflow-wrap:anywhere;
+    }
+
+    .badge {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(49,209,88,.08);
+      color:#fff;
+      font-size:.82rem;
+      font-weight:800;
+      white-space:nowrap;
+      flex-shrink:0;
+    }
+
+    .profile-list {
+      display:grid;
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .profile-item {
+      border:1px solid var(--border);
+      background:rgba(49,209,88,.05);
+      border-radius:18px;
+      padding:16px;
+      min-width:0;
+    }
+
+    .profile-item strong {
+      display:block;
+      color:var(--green);
+      margin-bottom:6px;
+      overflow-wrap:anywhere;
+    }
+
+    .footer-note {
+      padding-bottom:42px;
+      color:var(--muted);
+      font-size:.92rem;
+      overflow-wrap:anywhere;
+    }
+
+    footer a {
+      color:var(--green);
+      text-decoration:underline;
+    }
+
+    @media (max-width:1080px) {
+      .grid-4 { grid-template-columns:1fr 1fr; }
+
+      .grid-2,
+      .hero-card {
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width:760px) {
+      .grid-4,
+      .quick-actions {
+        grid-template-columns:1fr;
+      }
+
+      .topbar-inner,
+      .top-actions,
+      .list-item {
+        flex-direction:column;
+        align-items:stretch;
+      }
+
+      .btn { width:100%; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="index.html" class="brand">
+        <div class="brand-badge">TV</div>
+        <div class="brand-text">
+          <strong>LiveFut</strong>
+          <span>Football United Team</span>
+        </div>
+      </a>
+
+      <div class="top-actions">
+        <a class="btn btn-secondary" href="index.html">Home</a>
+        <a class="btn btn-secondary" href="live.html">Live</a>
+        <a class="btn btn-primary" href="profile.html">Configura profilo</a>
+        <button class="btn btn-danger" id="logoutBtn">Esci</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-card">
+        <div>
+          <div class="eyebrow"><span class="pulse"></span> Dashboard utente</div>
+          <h1 id="welcomeTitle">Benvenuto su LiveFut TV</h1>
+          <p>
+            Gestisci il tuo profilo, le partite e l'accesso alle dirette LiveFut TV.
+          </p>
+
+          <div class="hero-buttons">
+            <a class="btn btn-primary" href="live.html">Nuova diretta</a>
+            <a class="btn btn-secondary" href="create-match.html">Crea partita</a>
+            <a class="btn btn-secondary" href="profile.html">Configura profilo</a>
+          </div>
+        </div>
+
+        <div class="hero-side">
+          <div class="mini-stat">
+            <strong id="userRole">user</strong>
+            <span>Ruolo associato al tuo account.</span>
+          </div>
+
+          <div class="mini-stat">
+            <strong id="usernamePreview">—</strong>
+            <span>Username del profilo pubblico.</span>
+          </div>
+
+          <div class="mini-stat">
+            <strong id="favoriteTeamPreview">—</strong>
+            <span>Squadra preferita indicata nel profilo.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="grid-4">
+        <article class="card">
+          <h3>Profilo</h3>
+          <span class="metric-value" id="profileName">—</span>
+          <span id="profileEmail">—</span>
+        </article>
+
+        <article class="card">
+          <h3>Stato account</h3>
+          <span class="metric-value">Attivo</span>
+          <span>Account attivo e pronto all'uso.</span>
+        </article>
+
+        <article class="card">
+          <h3>Streaming</h3>
+          <span class="metric-value">0 live</span>
+          <span>Dirette disponibili dalla sezione Live.</span>
+        </article>
+
+        <article class="card">
+          <h3>Supporto</h3>
+          <span class="metric-value">0 ticket</span>
+          <span>Richieste e comunicazioni dell'account.</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="grid-2">
+        <article class="card">
+          <h2>Azioni rapide</h2>
+          <p>Da qui accedi rapidamente alle funzioni principali della piattaforma.</p>
+
+          <div class="quick-actions">
+            <div class="quick-action" onclick="window.location.href='live.html'">Nuova diretta</div>
+            <div class="quick-action" onclick="window.location.href='create-match.html'">Crea partita</div>
+            <div class="quick-action">Piattaforme</div>
+            <div class="quick-action">Account</div>
+            <div class="quick-action">Impostazioni</div>
+            <div class="quick-action">Apri supporto</div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>Stato piattaforma</h2>
+          <p>Riepilogo operativo del tuo account LiveFut TV.</p>
+
+          <div class="list">
+            <div class="list-item">
+              <div>
+                <strong>Profilo utente</strong>
+                <span>Profilo caricato correttamente.</span>
+              </div>
+              <span class="badge">OK</span>
+            </div>
+
+            <div class="list-item">
+              <div>
+                <strong>Autenticazione</strong>
+                <span>Accesso verificato.</span>
+              </div>
+              <span class="badge">OK</span>
+            </div>
+
+            <div class="list-item">
+              <div>
+                <strong>Dirette</strong>
+                <span>Area live pronta.</span>
+              </div>
+              <span class="badge">In arrivo</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="grid-2">
+        <article class="card">
+          <h2>Dettagli profilo</h2>
+          <p>Dati principali del profilo.</p>
+
+          <div class="profile-list">
+            <div class="profile-item">
+              <strong>Nome profilo</strong>
+              <span id="detailDisplayName">—</span>
+            </div>
+
+            <div class="profile-item">
+              <strong>Username</strong>
+              <span id="detailUsername">—</span>
+            </div>
+
+            <div class="profile-item">
+              <strong>Città</strong>
+              <span id="detailCity">—</span>
+            </div>
+
+            <div class="profile-item">
+              <strong>Squadra del cuore</strong>
+              <span id="detailFavoriteTeam">—</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>Bio</h2>
+          <p id="detailBio">Nessuna bio inserita al momento.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="footer-note">
+      LiveFut TV — Dashboard
+    </section>
+  </main>
+
+  <footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
+    © 2026 LiveFut TV — Football United Team. Tutti i diritti riservati.<br><br>
+
+    <a href="https://www.iubenda.com/privacy-policy/71949704"
+       class="iubenda-white iubenda-noiframe iubenda-embed">
+       Privacy Policy
+    </a> |
+
+    <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy"
+       class="iubenda-white iubenda-noiframe iubenda-embed">
+       Cookie Policy
+    </a> |
+
+    <a href="terms.html">
+       Termini e Condizioni
+    </a>
+  </footer>
+
+  <script>
+    const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
+
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function loadDashboard() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+
+      if (!session) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const user = session.user;
+      document.getElementById('profileEmail').textContent = user.email || '—';
+
+      const { data: profile, error } = await supabaseClient
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (!error && profile) {
+        const displayName = profile.display_name || 'Utente LiveFut';
+        const username = profile.username || 'Nessuno';
+        const role = profile.role || 'user';
+        const city = profile.city || 'Non impostata';
+        const favoriteTeam = profile.favorite_team || 'Non impostata';
+        const bio = profile.bio || 'Nessuna bio inserita al momento.';
+
+        document.getElementById('profileName').textContent = displayName;
+        document.getElementById('userRole').textContent = role;
+        document.getElementById('welcomeTitle').textContent = `Benvenuto, ${displayName}`;
+        document.getElementById('usernamePreview').textContent = username;
+        document.getElementById('favoriteTeamPreview').textContent = favoriteTeam;
+
+        document.getElementById('detailDisplayName').textContent = displayName;
+        document.getElementById('detailUsername').textContent = username;
+        document.getElementById('detailCity').textContent = city;
+        document.getElementById('detailFavoriteTeam').textContent = favoriteTeam;
+        document.getElementById('detailBio').textContent = bio;
+      } else {
+        document.getElementById('profileName').textContent = user.email || 'Utente LiveFut';
+      }
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await supabaseClient.auth.signOut();
+      window.location.href = 'login.html';
+    });
+
+    loadDashboard();
+  </script>
+
+  <script src="https://cdn.iubenda.com/iubenda.js"></script>
+</body>
+</html>

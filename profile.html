@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LiveFut TV — Configura profilo</title>
+  <script src="https://app.termly.io/resource-blocker/XXXX?autoBlock=on"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg: #050505;
+      --panel: #0b0b0b;
+      --panel-2: #101010;
+      --text: #ffffff;
+      --muted: #cfd6cf;
+      --green: #31d158;
+      --border: rgba(49, 209, 88, 0.18);
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+      --danger: #ff6b6b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(49, 209, 88, 0.12), transparent 24%),
+        radial-gradient(circle at top right, rgba(49, 209, 88, 0.08), transparent 22%),
+        linear-gradient(180deg, #020202 0%, #080808 100%);
+      color: var(--text);
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(14px);
+      background: rgba(0, 0, 0, 0.84);
+      border-bottom: 1px solid rgba(49, 209, 88, 0.1);
+    }
+
+    .topbar-inner {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+    }
+
+    .brand-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: rgba(49, 209, 88, 0.12);
+      border: 1px solid var(--border);
+      color: var(--green);
+      font-size: 0.88rem;
+    }
+
+    .brand-text strong {
+      display: block;
+      font-size: 1.12rem;
+    }
+
+    .brand-text span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 0;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-weight: 800;
+      font-family: inherit;
+      font-size: 0.94rem;
+      transition: 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #19a83f, #31d158);
+      color: #000;
+      box-shadow: 0 12px 28px rgba(49, 209, 88, 0.28);
+    }
+
+    .btn-secondary {
+      background: rgba(49, 209, 88, 0.06);
+      color: #fff;
+      border: 1px solid var(--border);
+    }
+
+    .btn-danger {
+      background: rgba(255, 107, 107, 0.1);
+      color: #fff;
+      border: 1px solid rgba(255, 107, 107, 0.22);
+    }
+
+    .hero {
+      padding: 34px 0 22px;
+    }
+
+    .hero-card,
+    .card {
+      background: linear-gradient(180deg, rgba(49,209,88,0.03), rgba(255,255,255,0.01));
+      border: 1px solid var(--border);
+      border-radius: 32px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card {
+      padding: 32px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(49, 209, 88, 0.08);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 10px 14px;
+      color: var(--green);
+      font-weight: 700;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      color: var(--green);
+    }
+
+    .hero-card p,
+    .card p {
+      margin: 0;
+      color: #fff;
+      line-height: 1.75;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+      gap: 16px;
+      padding-bottom: 32px;
+    }
+
+    .card {
+      padding: 24px;
+      min-width: 0;
+    }
+
+    .card h2,
+    .card h3 {
+      margin: 0 0 10px;
+      color: var(--green);
+      letter-spacing: -0.02em;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .field { min-width: 0; }
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.93rem;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      color: #ffffff;
+      border-radius: 18px;
+      padding: 15px 16px;
+      font-size: 1rem;
+      outline: none;
+      font-family: inherit;
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: rgba(49,209,88,0.6);
+      box-shadow: 0 0 0 4px rgba(49,209,88,0.12);
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .status-box {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      display: none;
+      line-height: 1.6;
+      font-size: 0.94rem;
+    }
+
+    .status-box.show { display: block; }
+    .status-box.ok {
+      background: rgba(49,209,88,0.08);
+      border: 1px solid rgba(49,209,88,0.22);
+      color: #c9ffd6;
+    }
+
+    .status-box.error {
+      background: rgba(255,80,80,0.08);
+      border: 1px solid rgba(255,80,80,0.22);
+      color: #ffd4d4;
+    }
+
+    .profile-summary {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .summary-item {
+      border: 1px solid var(--border);
+      background: rgba(49,209,88,0.05);
+      border-radius: 18px;
+      padding: 16px;
+      min-width: 0;
+    }
+
+    .summary-item strong {
+      display: block;
+      color: var(--green);
+      margin-bottom: 6px;
+      overflow-wrap: anywhere;
+    }
+
+    .summary-item span {
+      color: #fff;
+      line-height: 1.65;
+      overflow-wrap: anywhere;
+    }
+
+    .footer-note {
+      padding: 0 0 42px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 980px) {
+      .grid-2,
+      .profile-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar-inner,
+      .top-actions,
+      .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="index.html" class="brand">
+        <div class="brand-badge">TV</div>
+        <div class="brand-text">
+          <strong>LiveFut</strong>
+          <span>Football United Team</span>
+        </div>
+      </a>
+      <div class="top-actions">
+        <a class="btn btn-secondary" href="dashboard.html">Dashboard</a>
+        <button class="btn btn-danger" id="logoutBtn">Esci</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-card">
+        <div class="eyebrow">Configurazione profilo</div>
+        <h1>Completa il tuo profilo LiveFut TV</h1>
+        <p>
+          Qui puoi impostare username, dati personali, squadra del cuore e le informazioni che verranno poi mostrate nella tua dashboard.
+        </p>
+      </div>
+    </section>
+
+    <section class="grid-2">
+      <article class="card">
+        <h2>Dati profilo</h2>
+        <p>Compila i campi che vuoi rendere parte della tua identità dentro la piattaforma.</p>
+
+        <form id="profileForm">
+          <div class="profile-grid">
+            <div class="field">
+              <label for="display_name">Nome profilo</label>
+              <input id="display_name" type="text" placeholder="Es. Marco Rossi" />
+            </div>
+
+            <div class="field">
+              <label for="username">Nome utente</label>
+              <input id="username" type="text" placeholder="Es. marcorossi10" />
+            </div>
+
+            <div class="field">
+              <label for="first_name">Nome</label>
+              <input id="first_name" type="text" placeholder="Nome" />
+            </div>
+
+            <div class="field">
+              <label for="last_name">Cognome</label>
+              <input id="last_name" type="text" placeholder="Cognome" />
+            </div>
+
+            <div class="field">
+              <label for="birth_date">Data di nascita</label>
+              <input id="birth_date" type="date" />
+            </div>
+
+            <div class="field">
+              <label for="city">Città</label>
+              <input id="city" type="text" placeholder="Es. Pescara" />
+            </div>
+
+            <div class="field">
+              <label for="favorite_team">Squadra del cuore</label>
+              <input id="favorite_team" type="text" placeholder="Es. Milan" />
+            </div>
+
+            <div class="field">
+              <label for="role_readonly">Ruolo</label>
+              <input id="role_readonly" type="text" disabled />
+            </div>
+
+            <div class="field full">
+              <label for="bio">Bio</label>
+              <textarea id="bio" placeholder="Racconta qualcosa di te o del tuo ruolo su LiveFut TV."></textarea>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Salva profilo</button>
+            <button class="btn btn-secondary" type="button" id="reloadProfileBtn">Ricarica dati</button>
+          </div>
+
+          <div id="profileStatus" class="status-box"></div>
+        </form>
+      </article>
+
+      <aside class="card">
+        <h2>Anteprima profilo</h2>
+        <p>Questi dati saranno letti poi dalla dashboard e dalle future sezioni utente.</p>
+
+        <div class="profile-summary">
+          <div class="summary-item">
+            <strong>Nome profilo</strong>
+            <span id="previewDisplayName">—</span>
+          </div>
+          <div class="summary-item">
+            <strong>Username</strong>
+            <span id="previewUsername">—</span>
+          </div>
+          <div class="summary-item">
+            <strong>Email</strong>
+            <span id="previewEmail">—</span>
+          </div>
+          <div class="summary-item">
+            <strong>Squadra del cuore</strong>
+            <span id="previewFavoriteTeam">—</span>
+          </div>
+          <div class="summary-item">
+            <strong>Città</strong>
+            <span id="previewCity">—</span>
+          </div>
+          <div class="summary-item">
+            <strong>Bio</strong>
+            <span id="previewBio">—</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="footer-note container">
+    <footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
+  © 2026 LiveFut TV — Football United Team. Tutti i diritti riservati.<br><br>
+
+  <a href="https://www.iubenda.com/privacy-policy/71949704"
+     class="iubenda-white iubenda-noiframe iubenda-embed">
+     Privacy Policy
+  </a> |
+
+  <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy"
+     class="iubenda-white iubenda-noiframe iubenda-embed">
+     Cookie Policy
+  </a> |
+
+  <a href="terms.html">
+     Termini e Condizioni
+  </a>
+</footer>
+</footer>
+  </main>
+
+  <script>
+    const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
+
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    let currentUser = null;
+    let currentProfile = null;
+
+    function showProfileStatus(message, type = 'ok') {
+      const box = document.getElementById('profileStatus');
+      box.textContent = message;
+      box.className = `status-box show ${type}`;
+    }
+
+    function fillProfile(profile, fallbackEmail = '') {
+      document.getElementById('display_name').value = profile?.display_name || '';
+      document.getElementById('username').value = profile?.username || '';
+      document.getElementById('first_name').value = profile?.first_name || '';
+      document.getElementById('last_name').value = profile?.last_name || '';
+      document.getElementById('birth_date').value = profile?.birth_date || '';
+      document.getElementById('city').value = profile?.city || '';
+      document.getElementById('favorite_team').value = profile?.favorite_team || '';
+      document.getElementById('bio').value = profile?.bio || '';
+      document.getElementById('role_readonly').value = profile?.role || 'user';
+
+      document.getElementById('previewDisplayName').textContent = profile?.display_name || '—';
+      document.getElementById('previewUsername').textContent = profile?.username || '—';
+      document.getElementById('previewEmail').textContent = fallbackEmail || '—';
+      document.getElementById('previewFavoriteTeam').textContent = profile?.favorite_team || '—';
+      document.getElementById('previewCity').textContent = profile?.city || '—';
+      document.getElementById('previewBio').textContent = profile?.bio || '—';
+    }
+
+    async function loadProfile() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+
+      if (!session) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      currentUser = session.user;
+
+      const { data: profile, error } = await supabaseClient
+        .from('profiles')
+        .select('*')
+        .eq('id', currentUser.id)
+        .single();
+
+      if (!error && profile) {
+        currentProfile = profile;
+        fillProfile(profile, currentUser.email || '—');
+      } else {
+        fillProfile({ role: 'user' }, currentUser.email || '—');
+      }
+    }
+
+    document.getElementById('profileForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      if (!currentUser) {
+        showProfileStatus('Utente non autenticato.', 'error');
+        return;
+      }
+
+      const payload = {
+        id: currentUser.id,
+        email: currentUser.email,
+        display_name: document.getElementById('display_name').value.trim(),
+        username: document.getElementById('username').value.trim(),
+        first_name: document.getElementById('first_name').value.trim(),
+        last_name: document.getElementById('last_name').value.trim(),
+        birth_date: document.getElementById('birth_date').value || null,
+        city: document.getElementById('city').value.trim(),
+        favorite_team: document.getElementById('favorite_team').value.trim(),
+        bio: document.getElementById('bio').value.trim(),
+        role: currentProfile?.role || 'user'
+      };
+
+      const { data, error } = await supabaseClient
+        .from('profiles')
+        .upsert(payload)
+        .select()
+        .single();
+
+      if (error) {
+        showProfileStatus('Errore durante il salvataggio del profilo: ' + error.message, 'error');
+        return;
+      }
+
+      currentProfile = data;
+      fillProfile(data, currentUser.email || '—');
+      showProfileStatus('Profilo aggiornato con successo.', 'ok');
+    });
+
+    document.getElementById('reloadProfileBtn').addEventListener('click', async () => {
+      await loadProfile();
+      showProfileStatus('Dati profilo ricaricati.', 'ok');
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await supabaseClient.auth.signOut();
+      window.location.href = 'login.html';
+    });
+
+    loadProfile();
+  </script>
+  <script src="https://cdn.iubenda.com/iubenda.js"></script>
+</body>
+</html>

@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>LiveFut TV — Partita</title>
+
+  <script src="https://app.termly.io/resource-blocker/ecfeb307-3d9a-4e26-a7de-4dab9c2345f9?autoBlock=on"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --bg:#050505;
+      --green:#31d158;
+      --border:rgba(49,209,88,0.18);
+      --text:#ffffff;
+      --muted:#cfd6cf;
+      --shadow:0 20px 60px rgba(0,0,0,0.55);
+      --live:#ff5252;
+      --warning:#ffd166;
+    }
+
+    * { box-sizing:border-box; }
+
+    body {
+      margin:0;
+      min-height:100vh;
+      font-family:"Space Grotesk", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(49,209,88,0.12), transparent 24%),
+        linear-gradient(180deg, #020202 0%, #080808 100%);
+      color:var(--text);
+    }
+
+    a { color:inherit; text-decoration:none; }
+
+    .container {
+      width:min(1180px, calc(100% - 32px));
+      margin:0 auto;
+    }
+
+    .topbar {
+      position:sticky;
+      top:0;
+      z-index:30;
+      backdrop-filter:blur(14px);
+      background:rgba(0,0,0,0.84);
+      border-bottom:1px solid var(--border);
+    }
+
+    .topbar-inner {
+      min-height:78px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      flex-wrap:wrap;
+    }
+
+    .brand {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-weight:800;
+    }
+
+    .brand-badge {
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:rgba(49,209,88,0.12);
+      border:1px solid var(--border);
+      color:var(--green);
+    }
+
+    .btn {
+      border:0;
+      cursor:pointer;
+      border-radius:999px;
+      padding:12px 18px;
+      font-weight:800;
+      font-family:inherit;
+      font-size:0.94rem;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      white-space:nowrap;
+      transition:.2s ease;
+    }
+
+    .btn:hover {
+      transform:translateY(-1px);
+    }
+
+    .btn-primary {
+      background:linear-gradient(135deg,#19a83f,#31d158);
+      color:#000;
+      box-shadow:0 12px 28px rgba(49,209,88,0.28);
+    }
+
+    .btn-secondary {
+      background:rgba(49,209,88,0.06);
+      color:#fff;
+      border:1px solid var(--border);
+    }
+
+    .btn-warning {
+      background:linear-gradient(135deg,#ffb703,#ffd166);
+      color:#000;
+      box-shadow:0 12px 28px rgba(255,209,102,0.22);
+    }
+
+    .hero {
+      padding:34px 0 22px;
+    }
+
+    .match-header {
+      background:linear-gradient(180deg, rgba(49,209,88,0.03), rgba(255,255,255,0.01));
+      border:1px solid var(--border);
+      border-radius:32px;
+      box-shadow:var(--shadow);
+      padding:30px;
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) auto;
+      gap:24px;
+      align-items:start;
+    }
+
+    .live-badge {
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      background:rgba(255,82,82,0.12);
+      border:1px solid rgba(255,82,82,0.24);
+      border-radius:999px;
+      padding:10px 14px;
+      font-weight:800;
+      text-transform:uppercase;
+      font-size:0.82rem;
+      margin-bottom:16px;
+    }
+
+    .broadcast-badge {
+      background:rgba(255,209,102,0.12);
+      border-color:rgba(255,209,102,0.28);
+    }
+
+    .dot {
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      background:var(--live);
+      box-shadow:0 0 0 8px rgba(255,82,82,0.12);
+      animation:pulse 1.8s infinite;
+    }
+
+    .broadcast-badge .dot {
+      background:var(--warning);
+      box-shadow:0 0 0 8px rgba(255,209,102,0.12);
+    }
+
+    @keyframes pulse {
+      0%,100% { transform:scale(1); opacity:1; }
+      50% { transform:scale(1.18); opacity:.82; }
+    }
+
+    h1 {
+      margin:0 0 12px;
+      color:var(--green);
+      font-size:clamp(2rem, 4vw, 3.4rem);
+      line-height:1.02;
+      letter-spacing:-0.04em;
+      overflow-wrap:anywhere;
+    }
+
+    .subtitle {
+      color:#fff;
+      line-height:1.7;
+      margin:0;
+    }
+
+    .score-box {
+      min-width:220px;
+      background:rgba(49,209,88,0.05);
+      border:1px solid var(--border);
+      border-radius:24px;
+      padding:22px;
+      text-align:center;
+    }
+
+    .score {
+      color:var(--green);
+      font-size:2.7rem;
+      font-weight:900;
+      line-height:1;
+    }
+
+    .minute {
+      margin-top:10px;
+      color:#fff;
+      font-weight:800;
+    }
+
+    .layout {
+      display:grid;
+      grid-template-columns:minmax(0, 1.4fr) minmax(280px, .6fr);
+      gap:18px;
+      padding-bottom:34px;
+    }
+
+    .player-card,
+    .side-card,
+    .events-card,
+    .notice-card {
+      background:linear-gradient(180deg, rgba(49,209,88,0.03), rgba(255,255,255,0.01));
+      border:1px solid var(--border);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .player {
+      width:100%;
+      aspect-ratio:16/9;
+      background:
+        radial-gradient(circle at center, rgba(49,209,88,0.16), transparent 34%),
+        linear-gradient(135deg, #050505, #000);
+      display:grid;
+      place-items:center;
+      padding:22px;
+      text-align:center;
+    }
+
+    .player-placeholder {
+      max-width:620px;
+    }
+
+    .player-placeholder strong {
+      display:block;
+      color:var(--green);
+      font-size:clamp(1.5rem, 3vw, 2.4rem);
+      margin-bottom:12px;
+      letter-spacing:-0.04em;
+    }
+
+    .player-placeholder span {
+      display:block;
+      color:#fff;
+      line-height:1.7;
+    }
+
+    .card-body {
+      padding:22px;
+    }
+
+    h2, h3 {
+      color:var(--green);
+      margin:0 0 10px;
+      letter-spacing:-0.02em;
+    }
+
+    p {
+      color:#fff;
+      line-height:1.7;
+      margin:0;
+    }
+
+    .info-list {
+      display:grid;
+      gap:12px;
+      margin-top:16px;
+    }
+
+    .info-item {
+      background:rgba(49,209,88,0.05);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:14px;
+    }
+
+    .info-item strong {
+      color:var(--green);
+      display:block;
+      margin-bottom:4px;
+    }
+
+    .platforms {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:16px;
+    }
+
+    .pill {
+      background:rgba(49,209,88,0.09);
+      border:1px solid rgba(49,209,88,0.16);
+      color:#fff;
+      border-radius:999px;
+      padding:9px 12px;
+      font-size:.82rem;
+      font-weight:800;
+    }
+
+    .event-list {
+      display:grid;
+      gap:12px;
+      margin-top:16px;
+    }
+
+    .event {
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      background:rgba(255,255,255,0.02);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:14px;
+    }
+
+    .event strong {
+      color:var(--green);
+    }
+
+    .broadcast-panel {
+      margin-top:16px;
+      display:grid;
+      gap:12px;
+    }
+
+    .broadcast-box {
+      background:rgba(255,209,102,0.07);
+      border:1px solid rgba(255,209,102,0.22);
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .broadcast-box strong {
+      display:block;
+      color:var(--warning);
+      margin-bottom:6px;
+    }
+
+    .error-box {
+      padding:28px;
+      margin:34px 0;
+      border-radius:24px;
+      border:1px solid rgba(255,82,82,0.25);
+      background:rgba(255,82,82,0.08);
+      color:#fff;
+      line-height:1.7;
+    }
+
+    footer a {
+      color:var(--green);
+      text-decoration:underline;
+    }
+
+    @media (max-width: 900px) {
+      .match-header,
+      .layout {
+        grid-template-columns:1fr;
+      }
+
+      .score-box {
+        text-align:left;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .topbar-inner,
+      .topbar-inner > div {
+        flex-direction:column;
+        align-items:stretch;
+      }
+
+      .btn {
+        width:100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="index.html" class="brand">
+        <div class="brand-badge">TV</div>
+        <strong>LiveFut</strong>
+      </a>
+
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <a class="btn btn-secondary" href="live.html">← Torna alle live</a>
+        <a class="btn btn-primary" href="login.html">Accedi</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" id="pageContent">
+    <section class="hero">
+      <div class="match-header">
+        <div>
+          <div class="live-badge" id="modeBadge">
+            <span class="dot"></span>
+            <span id="modeBadgeText">Caricamento</span>
+          </div>
+
+          <h1 id="matchTitle">Partita LiveFut TV</h1>
+          <p class="subtitle" id="matchSubtitle">Caricamento informazioni partita...</p>
+        </div>
+
+        <div class="score-box">
+          <div class="score" id="matchScore">0 - 0</div>
+          <div class="minute" id="matchMinute">LIVE</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <article class="player-card">
+        <div class="player" id="playerArea">
+          <div class="player-placeholder">
+            <strong id="playerHeadline">Diretta LiveFut</strong>
+            <span id="playerText">
+              La diretta sarà disponibile qui appena avviata.
+            </span>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <h2 id="videoTitle">Diretta partita</h2>
+          <p id="videoDescription">
+            Segui la partita su LiveFut TV.
+          </p>
+
+          <div class="platforms">
+            <span class="pill">LiveFut TV</span>
+            <span class="pill">YouTube</span>
+            <span class="pill">Facebook</span>
+            <span class="pill">Twitch</span>
+          </div>
+
+          <div class="broadcast-panel" id="broadcastPanel" style="display:none;">
+            <div class="broadcast-box">
+              <strong>Modalità broadcaster</strong>
+              <p>
+                Gestisci la trasmissione della partita selezionata.
+              </p>
+            </div>
+
+            <a class="btn btn-warning" id="startBroadcastBtn" href="#">
+              Avvia diretta
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <aside class="side-card">
+        <div class="card-body">
+          <h2>Info partita</h2>
+          <p>Dati principali della partita selezionata.</p>
+
+          <div class="info-list">
+            <div class="info-item">
+              <strong>Regione</strong>
+              <span id="matchRegion">—</span>
+            </div>
+
+            <div class="info-item">
+              <strong>Disciplina</strong>
+              <span id="matchDiscipline">—</span>
+            </div>
+
+            <div class="info-item">
+              <strong>Categoria</strong>
+              <span id="matchCategory">—</span>
+            </div>
+
+            <div class="info-item">
+              <strong>Campo</strong>
+              <span id="matchField">—</span>
+            </div>
+
+            <div class="info-item">
+              <strong>Stato</strong>
+              <span id="matchStatus">—</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="events-card" style="margin-bottom:34px;">
+      <div class="card-body">
+        <h2>Eventi partita</h2>
+        <p>Aggiornamenti principali della partita.</p>
+
+        <div class="event-list">
+          <div class="event">
+            <div>
+              <strong id="eventMinute">LIVE</strong>
+              <span> Aggiornamento punteggio</span>
+            </div>
+            <span id="eventScore">—</span>
+          </div>
+
+          <div class="event">
+            <div>
+              <strong>LiveFut</strong>
+              <span id="eventStatusText">Pagina partita pronta</span>
+            </div>
+            <span id="eventStatusBadge">READY</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
+    © 2026 LiveFut TV — Football United Team. Tutti i diritti riservati.<br><br>
+
+    <a href="https://www.iubenda.com/privacy-policy/71949704"
+       class="iubenda-white iubenda-noiframe iubenda-embed">
+       Privacy Policy
+    </a> |
+
+    <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy"
+       class="iubenda-white iubenda-noiframe iubenda-embed">
+       Cookie Policy
+    </a> |
+
+    <a href="terms.html">
+       Termini e Condizioni
+    </a>
+  </footer>
+
+  <script>
+    const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
+
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const params = new URLSearchParams(window.location.search);
+    const matchId = params.get('id');
+    const mode = params.get('mode') || 'view';
+
+    const pageContent = document.getElementById('pageContent');
+
+    function safe(value, fallback = '—') {
+      return value === null || value === undefined || value === '' ? fallback : value;
+    }
+
+    function formatScore(score) {
+      return safe(score, '0-0').replace('-', ' - ');
+    }
+
+    function statusLabel(status) {
+      if (status === 'live') return 'Live';
+      if (status === 'soon') return 'In arrivo';
+      if (status === 'finished') return 'Conclusa';
+      return safe(status, 'In arrivo');
+    }
+
+    function minuteLabel(match) {
+      if (match.status === 'finished') return 'FT';
+      if (match.status === 'soon') return 'Non iniziata';
+      if (match.minute === null || match.minute === undefined) return 'LIVE';
+      return `${match.minute}'`;
+    }
+
+    function showError(message) {
+      pageContent.innerHTML = `
+        <div class="error-box">
+          <strong>Errore</strong><br>
+          ${message}<br><br>
+          <a class="btn btn-secondary" href="live.html">Torna alle live</a>
+        </div>
+      `;
+    }
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    function applyMode(match) {
+      const modeBadge = document.getElementById('modeBadge');
+      const modeBadgeText = document.getElementById('modeBadgeText');
+      const broadcastPanel = document.getElementById('broadcastPanel');
+      const startBroadcastBtn = document.getElementById('startBroadcastBtn');
+      const playerHeadline = document.getElementById('playerHeadline');
+      const playerText = document.getElementById('playerText');
+      const videoDescription = document.getElementById('videoDescription');
+
+      if (mode === 'broadcast') {
+        modeBadge.classList.add('broadcast-badge');
+        modeBadgeText.textContent = 'Modalità broadcaster';
+
+        playerHeadline.textContent = 'Studio diretta';
+        playerText.textContent = 'Questa partita è pronta per la trasmissione. Premi Avvia diretta per entrare nello studio.';
+        videoDescription.textContent = 'Gestione diretta della partita selezionata.';
+
+        broadcastPanel.style.display = 'grid';
+        startBroadcastBtn.href = `studio.html?id=${encodeURIComponent(match.id)}`;
+
+        setText('eventStatusText', 'Modalità broadcaster attiva');
+        setText('eventStatusBadge', 'BROADCAST');
+      } else {
+        modeBadge.classList.remove('broadcast-badge');
+        modeBadgeText.textContent = match.status === 'live' ? 'Diretta live' : statusLabel(match.status);
+
+        playerHeadline.textContent = match.status === 'live' ? 'Diretta in corso' : 'Diretta non ancora avviata';
+        playerText.textContent = match.status === 'live'
+          ? 'La diretta è in corso. Il player LiveFut sarà disponibile qui.'
+          : 'La diretta apparirà qui appena sarà avviata.';
+
+        videoDescription.textContent = 'Pagina spettatore LiveFut TV.';
+        broadcastPanel.style.display = 'none';
+
+        setText('eventStatusText', 'Pagina spettatore');
+        setText('eventStatusBadge', 'READY');
+      }
+    }
+
+    function renderMatch(match) {
+      const home = safe(match.home_team, 'Squadra Casa');
+      const away = safe(match.away_team, 'Squadra Ospite');
+      const score = formatScore(match.score);
+      const region = safe(match.region, 'Non specificata');
+      const discipline = safe(match.discipline, 'Non specificata');
+      const category = safe(match.category, 'Non specificata');
+      const field = safe(match.field, 'Non specificato');
+      const status = safe(match.status, 'soon');
+
+      document.title = `${home} vs ${away} — LiveFut TV`;
+
+      setText('matchTitle', `${home} vs ${away}`);
+      setText('matchSubtitle', `${region} · ${discipline} · ${category} · ${field}`);
+      setText('matchScore', score);
+      setText('matchMinute', minuteLabel(match));
+      setText('matchRegion', region);
+      setText('matchDiscipline', discipline);
+      setText('matchCategory', category);
+      setText('matchField', field);
+      setText('matchStatus', statusLabel(status));
+      setText('videoTitle', `${home} vs ${away}`);
+      setText('eventScore', score);
+      setText('eventMinute', minuteLabel(match));
+
+      applyMode(match);
+    }
+
+    async function loadMatch() {
+      if (!matchId) {
+        showError('ID partita mancante. Apri questa pagina dalla lista live.');
+        return;
+      }
+
+      const { data, error } = await supabaseClient
+        .from('matches')
+        .select('*')
+        .eq('id', matchId)
+        .single();
+
+      if (error) {
+        showError(`Impossibile caricare la partita: <strong>${error.message}</strong>`);
+        return;
+      }
+
+      if (!data) {
+        showError('Partita non trovata.');
+        return;
+      }
+
+      renderMatch(data);
+    }
+
+    loadMatch();
+  </script>
+
+  <script src="https://cdn.iubenda.com/iubenda.js"></script>
+</body>
+</html>
