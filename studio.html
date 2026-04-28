@@ -103,7 +103,8 @@
       text-transform: uppercase;
     }
 
-    .top-actions {
+    .top-actions,
+    .button-row {
       display: flex;
       gap: 12px;
       align-items: center;
@@ -118,11 +119,7 @@
       font-weight: 800;
       font-family: inherit;
       font-size: 0.94rem;
-      transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        border-color 0.2s ease,
-        background 0.2s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
       white-space: nowrap;
       display: inline-flex;
       align-items: center;
@@ -151,9 +148,7 @@
     }
 
     .btn-primary:hover {
-      box-shadow:
-        0 14px 32px rgba(49, 209, 88, 0.32),
-        0 0 0 1px rgba(255, 122, 24, 0.2);
+      box-shadow: 0 14px 32px rgba(49, 209, 88, 0.32), 0 0 0 1px rgba(255, 122, 24, 0.2);
     }
 
     .btn-secondary {
@@ -180,6 +175,11 @@
       box-shadow: 0 14px 32px rgba(255, 122, 24, 0.18);
     }
 
+    .btn-small {
+      padding: 10px 14px;
+      font-size: 0.86rem;
+    }
+
     .hero {
       padding: 28px 0 18px;
     }
@@ -187,7 +187,8 @@
     .studio-header,
     .studio-card,
     .info-card,
-    .status-card {
+    .status-card,
+    .console-card {
       background: linear-gradient(180deg, rgba(49, 209, 88, 0.03), rgba(255, 255, 255, 0.01));
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
@@ -232,15 +233,15 @@
       color: var(--text);
     }
 
-    .badge.live .dot {
+    .badge.live .dot,
+    .live-chip .dot {
       background: var(--orange);
       box-shadow: 0 0 0 8px rgba(255, 122, 24, 0.14);
       animation: pulse 1.8s infinite;
     }
 
     @keyframes pulse {
-      0%,
-      100% {
+      0%, 100% {
         transform: scale(1);
         opacity: 1;
       }
@@ -260,6 +261,13 @@
       overflow-wrap: anywhere;
     }
 
+    h2,
+    h3 {
+      color: var(--green);
+      margin: 0 0 10px;
+      letter-spacing: -0.02em;
+    }
+
     p {
       margin: 0;
       color: var(--text);
@@ -275,7 +283,8 @@
 
     .studio-card,
     .info-card,
-    .status-card {
+    .status-card,
+    .console-card {
       border-radius: 24px;
       overflow: hidden;
     }
@@ -340,7 +349,7 @@
       position: absolute;
       top: 14px;
       left: 14px;
-      z-index: 2;
+      z-index: 4;
       display: none;
       align-items: center;
       gap: 8px;
@@ -356,37 +365,209 @@
       box-shadow: 0 12px 28px rgba(255, 122, 24, 0.14);
     }
 
-    .live-chip .dot {
-      background: var(--orange);
-      box-shadow: 0 0 0 7px rgba(255, 122, 24, 0.14);
-    }
-
     .video-wrap.active .live-chip {
       display: inline-flex;
     }
 
+    .match-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 18px;
+      opacity: 1;
+      transition: opacity 0.2s ease;
+    }
+
+    .match-overlay.is-hidden {
+      opacity: 0;
+    }
+
+    .scoreboard-overlay {
+      display: flex;
+      align-items: stretch;
+      width: min(720px, 100%);
+      min-height: 52px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(49, 209, 88, 0.35);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.46);
+      background: rgba(0, 0, 0, 0.78);
+    }
+
+    .score-team,
+    .score-value,
+    .score-time {
+      display: grid;
+      place-items: center;
+      padding: 10px 12px;
+      text-align: center;
+      font-weight: 900;
+    }
+
+    .score-team {
+      flex: 1;
+      min-width: 0;
+      color: var(--text);
+      overflow-wrap: anywhere;
+    }
+
+    .score-value {
+      min-width: 96px;
+      background: var(--green);
+      color: var(--black);
+      font-size: 1.15rem;
+    }
+
+    .score-time {
+      min-width: 118px;
+      color: var(--orange);
+      border-left: 1px solid rgba(255, 122, 24, 0.28);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .overlay-banner {
+      align-self: center;
+      max-width: min(760px, 100%);
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.78);
+      border: 1px solid rgba(255, 122, 24, 0.34);
+      color: var(--text);
+      font-weight: 900;
+      text-align: center;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.42);
+    }
+
+    .overlay-banner.is-hidden,
+    .scoreboard-overlay.is-hidden {
+      display: none;
+    }
+
     .studio-body,
-    .card-body {
+    .card-body,
+    .console-body {
       padding: 22px;
     }
 
-    h2,
-    h3 {
-      color: var(--green);
-      margin: 0 0 10px;
-      letter-spacing: -0.02em;
-    }
-
-    .controls {
-      display: grid;
-      gap: 12px;
-      margin-top: 18px;
-    }
-
+    .controls,
+    .console-grid,
     .info-list {
       display: grid;
       gap: 12px;
       margin-top: 16px;
+    }
+
+    .console-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .console-panel {
+      background: rgba(49, 209, 88, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      min-width: 0;
+    }
+
+    .console-panel h3 {
+      font-size: 1rem;
+      margin-bottom: 12px;
+    }
+
+    .score-controls {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .score-control-team {
+      min-width: 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .score-control-team strong {
+      color: var(--text);
+      overflow-wrap: anywhere;
+      line-height: 1.25;
+    }
+
+    .score-control-team span {
+      color: var(--green);
+      font-size: 1.7rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .score-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .timer-readout {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 54px;
+      border-radius: 16px;
+      background: rgba(0, 0, 0, 0.34);
+      border: 1px solid rgba(255, 122, 24, 0.22);
+      color: var(--orange);
+      font-size: 1.7rem;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text);
+      font-weight: 800;
+      font-size: 0.92rem;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      border-radius: 16px;
+      padding: 13px 14px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: rgba(49, 209, 88, 0.48);
+      box-shadow: 0 0 0 4px rgba(49, 209, 88, 0.1);
+    }
+
+    .toggle-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(49, 209, 88, 0.1);
+    }
+
+    .toggle-row:last-child {
+      border-bottom: 0;
+    }
+
+    .toggle-row input {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--green);
     }
 
     .info-item {
@@ -395,9 +576,7 @@
       border-radius: 18px;
       padding: 14px;
       min-width: 0;
-      transition:
-        border-color 0.2s ease,
-        background 0.2s ease;
+      transition: border-color 0.2s ease, background 0.2s ease;
     }
 
     .info-item:hover {
@@ -421,8 +600,7 @@
       padding: 14px 16px;
       border-radius: 16px;
       border: 1px solid rgba(49, 209, 88, 0.24);
-      background:
-        linear-gradient(135deg, rgba(49, 209, 88, 0.08), rgba(255, 122, 24, 0.05));
+      background: linear-gradient(135deg, rgba(49, 209, 88, 0.08), rgba(255, 122, 24, 0.05));
       color: var(--text);
       line-height: 1.6;
       display: none;
@@ -453,8 +631,9 @@
       text-decoration: underline;
     }
 
-    @media (max-width: 900px) {
-      .layout {
+    @media (max-width: 980px) {
+      .layout,
+      .console-grid {
         grid-template-columns: 1fr;
       }
 
@@ -470,7 +649,8 @@
       }
 
       .topbar-inner,
-      .top-actions {
+      .top-actions,
+      .button-row {
         flex-direction: column;
         align-items: stretch;
       }
@@ -493,13 +673,44 @@
       }
 
       .studio-body,
-      .card-body {
+      .card-body,
+      .console-body {
         padding: 18px;
       }
 
       .video-wrap {
         aspect-ratio: 16 / 9;
         min-height: 190px;
+      }
+
+      .match-overlay {
+        padding: 10px;
+      }
+
+      .scoreboard-overlay {
+        min-height: 42px;
+        border-radius: 10px;
+      }
+
+      .score-team,
+      .score-value,
+      .score-time {
+        padding: 8px 7px;
+        font-size: 0.76rem;
+      }
+
+      .score-value {
+        min-width: 58px;
+        font-size: 0.9rem;
+      }
+
+      .score-time {
+        min-width: 76px;
+      }
+
+      .overlay-banner {
+        padding: 8px 12px;
+        font-size: 0.78rem;
       }
     }
 
@@ -574,6 +785,17 @@
             Live
           </div>
 
+          <div class="match-overlay" id="matchOverlay">
+            <div class="scoreboard-overlay" id="scoreboardOverlay">
+              <div class="score-team" id="overlayHomeTeam">Casa</div>
+              <div class="score-value" id="overlayScore">0 - 0</div>
+              <div class="score-team" id="overlayAwayTeam">Ospite</div>
+              <div class="score-time" id="overlayTime">00:00</div>
+            </div>
+
+            <div class="overlay-banner" id="overlayBanner">LiveFut TV</div>
+          </div>
+
           <div class="preview-placeholder">
             <strong>Studio diretta</strong>
             <p>Premi Avvia diretta per attivare camera e microfono.</p>
@@ -637,6 +859,77 @@
         </div>
       </aside>
     </section>
+
+    <section class="console-card" style="margin-bottom:34px;">
+      <div class="console-body">
+        <h2>Console overlay</h2>
+        <p>Comandi grafici e dati partita mostrati sopra la preview.</p>
+
+        <div class="console-grid">
+          <div class="console-panel">
+            <h3>Tempo di gioco</h3>
+            <div class="timer-readout" id="timerReadout">00:00</div>
+
+            <div class="button-row">
+              <button class="btn btn-primary btn-small" id="timerStartBtn">Avvia tempo</button>
+              <button class="btn btn-secondary btn-small" id="timerPauseBtn">Pausa</button>
+              <button class="btn btn-secondary btn-small" id="timerResetBtn">Reset</button>
+              <button class="btn btn-danger btn-small" id="recoveryBtn">Recupero</button>
+            </div>
+          </div>
+
+          <div class="console-panel">
+            <h3>Risultato</h3>
+            <div class="score-controls">
+              <div class="score-control-team">
+                <strong id="homeScoreLabel">Casa</strong>
+                <span id="homeScoreValue">0</span>
+                <div class="score-buttons">
+                  <button class="btn btn-secondary btn-small" id="homeMinusBtn">-</button>
+                  <button class="btn btn-primary btn-small" id="homePlusBtn">+</button>
+                </div>
+              </div>
+
+              <strong>VS</strong>
+
+              <div class="score-control-team">
+                <strong id="awayScoreLabel">Ospite</strong>
+                <span id="awayScoreValue">0</span>
+                <div class="score-buttons">
+                  <button class="btn btn-secondary btn-small" id="awayMinusBtn">-</button>
+                  <button class="btn btn-primary btn-small" id="awayPlusBtn">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="console-panel">
+            <h3>Visibilità overlay</h3>
+            <label class="toggle-row">
+              <span>Scoreboard</span>
+              <input id="scoreboardToggle" type="checkbox" checked>
+            </label>
+            <label class="toggle-row">
+              <span>Banner</span>
+              <input id="bannerToggle" type="checkbox" checked>
+            </label>
+            <label class="toggle-row">
+              <span>Tutti gli overlay</span>
+              <input id="overlayToggle" type="checkbox" checked>
+            </label>
+          </div>
+
+          <div class="console-panel">
+            <h3>Banner</h3>
+            <label for="bannerInput">Testo banner</label>
+            <input id="bannerInput" type="text" value="LiveFut TV">
+            <div class="button-row" style="margin-top:12px;">
+              <button class="btn btn-primary btn-small" id="bannerApplyBtn">Aggiorna banner</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
@@ -673,9 +966,32 @@
     const statusMessage = document.getElementById('statusMessage');
     const statusBadge = document.getElementById('statusBadge');
     const matchLink = document.getElementById('matchLink');
+    const matchOverlay = document.getElementById('matchOverlay');
+    const scoreboardOverlay = document.getElementById('scoreboardOverlay');
+    const overlayBanner = document.getElementById('overlayBanner');
+    const overlayHomeTeam = document.getElementById('overlayHomeTeam');
+    const overlayAwayTeam = document.getElementById('overlayAwayTeam');
+    const overlayScore = document.getElementById('overlayScore');
+    const overlayTime = document.getElementById('overlayTime');
+    const timerReadout = document.getElementById('timerReadout');
+    const homeScoreLabel = document.getElementById('homeScoreLabel');
+    const awayScoreLabel = document.getElementById('awayScoreLabel');
+    const homeScoreValue = document.getElementById('homeScoreValue');
+    const awayScoreValue = document.getElementById('awayScoreValue');
+    const scoreboardToggle = document.getElementById('scoreboardToggle');
+    const bannerToggle = document.getElementById('bannerToggle');
+    const overlayToggle = document.getElementById('overlayToggle');
+    const bannerInput = document.getElementById('bannerInput');
 
     let mediaStream = null;
     let currentMatch = null;
+    let homeScore = 0;
+    let awayScore = 0;
+    let elapsedSeconds = 0;
+    let recoverySeconds = 0;
+    let recoveryMode = false;
+    let timerRunning = false;
+    let timerInterval = null;
 
     function safe(value, fallback = '—') {
       return value === null || value === undefined || value === '' ? fallback : value;
@@ -688,14 +1004,32 @@
       return safe(status, 'In arrivo');
     }
 
+    function parseScore(score) {
+      const parts = String(safe(score, '0-0')).split('-').map(value => Number(value.trim()));
+      return {
+        home: Number.isFinite(parts[0]) ? parts[0] : 0,
+        away: Number.isFinite(parts[1]) ? parts[1] : 0
+      };
+    }
+
+    function formatScore(score) {
+      return safe(score, '0-0').replace('-', ' - ');
+    }
+
+    function formatClock(totalSeconds) {
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
     function minuteLabel(match) {
       if (match.status === 'finished') return 'FT';
       if (match.minute === null || match.minute === undefined) return '—';
       return `${match.minute}'`;
     }
 
-    function formatScore(score) {
-      return safe(score, '0-0').replace('-', ' - ');
+    function currentMinute() {
+      return Math.floor(elapsedSeconds / 60);
     }
 
     function setText(id, value) {
@@ -730,6 +1064,21 @@
       }
     }
 
+    function updateOverlay() {
+      const score = `${homeScore} - ${awayScore}`;
+      const time = recoveryMode ? `RECUPERO +${formatClock(recoverySeconds)}` : formatClock(elapsedSeconds);
+
+      overlayScore.textContent = score;
+      overlayTime.textContent = time;
+      timerReadout.textContent = time;
+      homeScoreValue.textContent = homeScore;
+      awayScoreValue.textContent = awayScore;
+
+      scoreboardOverlay.classList.toggle('is-hidden', !scoreboardToggle.checked);
+      overlayBanner.classList.toggle('is-hidden', !bannerToggle.checked);
+      matchOverlay.classList.toggle('is-hidden', !overlayToggle.checked);
+    }
+
     function renderMatch(match) {
       currentMatch = match;
 
@@ -739,6 +1088,11 @@
       const category = safe(match.category, 'Non specificata');
       const region = safe(match.region, 'Non specificata');
       const discipline = safe(match.discipline, 'Non specificata');
+      const parsedScore = parseScore(match.score);
+
+      homeScore = parsedScore.home;
+      awayScore = parsedScore.away;
+      elapsedSeconds = Number.isFinite(Number(match.minute)) ? Number(match.minute) * 60 : elapsedSeconds;
 
       document.title = `${home} vs ${away} — Studio LiveFut TV`;
       matchLink.href = `match.html?id=${encodeURIComponent(match.id)}&mode=broadcast`;
@@ -749,10 +1103,16 @@
       setText('matchCategory', category);
       setText('matchRegion', region);
       setText('matchDiscipline', discipline);
-      setText('scoreLine', `Risultato: ${formatScore(match.score)}`);
+      setText('scoreLine', `Risultato: ${homeScore} - ${awayScore}`);
       setText('minuteLine', `Minuto: ${minuteLabel(match)}`);
 
+      overlayHomeTeam.textContent = home;
+      overlayAwayTeam.textContent = away;
+      homeScoreLabel.textContent = home;
+      awayScoreLabel.textContent = away;
+
       updateStatusUi(match.status);
+      updateOverlay();
     }
 
     async function updateMatchStatus(status) {
@@ -778,6 +1138,32 @@
 
       updateStatusUi(status);
       return { id: matchId, status };
+    }
+
+    async function saveMatchData() {
+      if (!matchId || !currentMatch) return;
+
+      const score = `${homeScore}-${awayScore}`;
+      const minute = currentMinute();
+
+      const { error } = await supabaseClient
+        .from('matches')
+        .update({ score, minute })
+        .eq('id', matchId);
+
+      if (error) {
+        showMessage(`Errore durante il salvataggio dei dati partita: ${error.message}`, 'error');
+        return;
+      }
+
+      currentMatch = {
+        ...currentMatch,
+        score,
+        minute
+      };
+
+      setText('scoreLine', `Risultato: ${homeScore} - ${awayScore}`);
+      setText('minuteLine', `Minuto: ${minute}'`);
     }
 
     async function startBroadcast() {
@@ -816,6 +1202,7 @@
 
     async function stopBroadcast() {
       stopBtn.disabled = true;
+      pauseTimer();
 
       if (mediaStream) {
         mediaStream.getTracks().forEach(track => track.stop());
@@ -824,6 +1211,7 @@
 
       previewVideo.srcObject = null;
       previewWrap.classList.remove('active');
+      await saveMatchData();
 
       const updatedMatch = await updateMatchStatus('finished');
 
@@ -833,6 +1221,60 @@
       } else {
         stopBtn.disabled = false;
       }
+    }
+
+    function startTimer() {
+      if (timerRunning) return;
+
+      timerRunning = true;
+      timerInterval = setInterval(() => {
+        if (recoveryMode) {
+          recoverySeconds += 1;
+        } else {
+          elapsedSeconds += 1;
+        }
+
+        updateOverlay();
+
+        if (!recoveryMode && elapsedSeconds % 60 === 0) {
+          saveMatchData();
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      timerRunning = false;
+      clearInterval(timerInterval);
+      timerInterval = null;
+      saveMatchData();
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      recoveryMode = false;
+      recoverySeconds = 0;
+      elapsedSeconds = 0;
+      updateOverlay();
+      saveMatchData();
+    }
+
+    function startRecovery() {
+      pauseTimer();
+      recoveryMode = true;
+      recoverySeconds = 0;
+      updateOverlay();
+      startTimer();
+    }
+
+    function changeScore(team, delta) {
+      if (team === 'home') {
+        homeScore = Math.max(0, homeScore + delta);
+      } else {
+        awayScore = Math.max(0, awayScore + delta);
+      }
+
+      updateOverlay();
+      saveMatchData();
     }
 
     async function loadMatch() {
@@ -862,6 +1304,21 @@
 
     startBtn.addEventListener('click', startBroadcast);
     stopBtn.addEventListener('click', stopBroadcast);
+    document.getElementById('timerStartBtn').addEventListener('click', startTimer);
+    document.getElementById('timerPauseBtn').addEventListener('click', pauseTimer);
+    document.getElementById('timerResetBtn').addEventListener('click', resetTimer);
+    document.getElementById('recoveryBtn').addEventListener('click', startRecovery);
+    document.getElementById('homeMinusBtn').addEventListener('click', () => changeScore('home', -1));
+    document.getElementById('homePlusBtn').addEventListener('click', () => changeScore('home', 1));
+    document.getElementById('awayMinusBtn').addEventListener('click', () => changeScore('away', -1));
+    document.getElementById('awayPlusBtn').addEventListener('click', () => changeScore('away', 1));
+    scoreboardToggle.addEventListener('change', updateOverlay);
+    bannerToggle.addEventListener('change', updateOverlay);
+    overlayToggle.addEventListener('change', updateOverlay);
+    document.getElementById('bannerApplyBtn').addEventListener('click', () => {
+      overlayBanner.textContent = bannerInput.value.trim() || 'LiveFut TV';
+      updateOverlay();
+    });
 
     window.addEventListener('pagehide', () => {
       if (mediaStream) {
