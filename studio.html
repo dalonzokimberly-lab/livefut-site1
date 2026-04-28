@@ -25,6 +25,12 @@
       --orange-border: rgba(255, 122, 24, 0.28);
       --shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
       --danger: #ff6b6b;
+      --overlay-bg: rgba(0, 0, 0, 0.78);
+      --overlay-text: #ffffff;
+      --overlay-primary: #31d158;
+      --overlay-accent: #ff7a18;
+      --overlay-radius: 14px;
+      --overlay-font: "Space Grotesk", sans-serif;
     }
 
     * {
@@ -380,6 +386,7 @@
       padding: 18px;
       opacity: 1;
       transition: opacity 0.2s ease;
+      font-family: var(--overlay-font);
     }
 
     .match-overlay.is-hidden {
@@ -391,11 +398,11 @@
       align-items: stretch;
       width: min(720px, 100%);
       min-height: 52px;
-      border-radius: 14px;
+      border-radius: var(--overlay-radius);
       overflow: hidden;
-      border: 1px solid rgba(49, 209, 88, 0.35);
+      border: 1px solid color-mix(in srgb, var(--overlay-primary) 55%, transparent);
       box-shadow: 0 14px 34px rgba(0, 0, 0, 0.46);
-      background: rgba(0, 0, 0, 0.78);
+      background: var(--overlay-bg);
     }
 
     .score-team,
@@ -411,21 +418,21 @@
     .score-team {
       flex: 1;
       min-width: 0;
-      color: var(--text);
+      color: var(--overlay-text);
       overflow-wrap: anywhere;
     }
 
     .score-value {
       min-width: 96px;
-      background: var(--green);
+      background: var(--overlay-primary);
       color: var(--black);
       font-size: 1.15rem;
     }
 
     .score-time {
       min-width: 118px;
-      color: var(--orange);
-      border-left: 1px solid rgba(255, 122, 24, 0.28);
+      color: var(--overlay-accent);
+      border-left: 1px solid color-mix(in srgb, var(--overlay-accent) 45%, transparent);
       font-variant-numeric: tabular-nums;
     }
 
@@ -434,9 +441,9 @@
       max-width: min(760px, 100%);
       padding: 10px 16px;
       border-radius: 999px;
-      background: rgba(0, 0, 0, 0.78);
-      border: 1px solid rgba(255, 122, 24, 0.34);
-      color: var(--text);
+      background: var(--overlay-bg);
+      border: 1px solid color-mix(in srgb, var(--overlay-accent) 48%, transparent);
+      color: var(--overlay-text);
       font-weight: 900;
       text-align: center;
       box-shadow: 0 14px 34px rgba(0, 0, 0, 0.42);
@@ -534,7 +541,9 @@
       font-size: 0.92rem;
     }
 
-    input[type="text"] {
+    input[type="text"],
+    input[type="color"],
+    select {
       width: 100%;
       border: 1px solid var(--border);
       background: rgba(255, 255, 255, 0.03);
@@ -546,9 +555,27 @@
       outline: none;
     }
 
-    input[type="text"]:focus {
+    input[type="color"] {
+      height: 48px;
+      padding: 6px;
+      cursor: pointer;
+    }
+
+    select option {
+      color: #000000;
+    }
+
+    input[type="text"]:focus,
+    input[type="color"]:focus,
+    select:focus {
       border-color: rgba(49, 209, 88, 0.48);
       box-shadow: 0 0 0 4px rgba(49, 209, 88, 0.1);
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
     }
 
     .toggle-row {
@@ -650,9 +677,11 @@
 
       .topbar-inner,
       .top-actions,
-      .button-row {
+      .button-row,
+      .field-grid {
         flex-direction: column;
         align-items: stretch;
+        grid-template-columns: 1fr;
       }
 
       .brand {
@@ -920,11 +949,50 @@
           </div>
 
           <div class="console-panel">
-            <h3>Banner</h3>
-            <label for="bannerInput">Testo banner</label>
-            <input id="bannerInput" type="text" value="LiveFut TV">
+            <h3>Grafica overlay</h3>
+
+            <div class="field-grid">
+              <div>
+                <label for="themeSelect">Preset grafico</label>
+                <select id="themeSelect">
+                  <option value="livefutClassic">LiveFut Classic</option>
+                  <option value="orangeMatch">Orange Match</option>
+                  <option value="cleanWhite">Clean White</option>
+                  <option value="stadiumDark">Stadium Dark</option>
+                  <option value="italianStyle">Italian Style</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="fontSelect">Font overlay</label>
+                <select id="fontSelect">
+                  <option value="Space Grotesk">Space Grotesk</option>
+                  <option value="Arial">Arial</option>
+                  <option value="Impact">Impact</option>
+                  <option value="Georgia">Georgia</option>
+                  <option value="Trebuchet MS">Trebuchet MS</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="primaryColorInput">Colore principale</label>
+                <input id="primaryColorInput" type="color" value="#31d158">
+              </div>
+
+              <div>
+                <label for="accentColorInput">Colore accento</label>
+                <input id="accentColorInput" type="color" value="#ff7a18">
+              </div>
+            </div>
+
+            <div style="margin-top:12px;">
+              <label for="bannerInput">Testo banner</label>
+              <input id="bannerInput" type="text" value="LiveFut TV">
+            </div>
+
             <div class="button-row" style="margin-top:12px;">
-              <button class="btn btn-primary btn-small" id="bannerApplyBtn">Aggiorna banner</button>
+              <button class="btn btn-primary btn-small" id="applyGraphicsBtn">Applica grafica</button>
+              <button class="btn btn-secondary btn-small" id="bannerApplyBtn">Aggiorna banner</button>
             </div>
           </div>
         </div>
@@ -958,6 +1026,49 @@
     const params = new URLSearchParams(window.location.search);
     const matchId = params.get('id');
 
+    const overlayThemes = {
+      livefutClassic: {
+        primary: '#31d158',
+        accent: '#ff7a18',
+        background: 'rgba(0, 0, 0, 0.78)',
+        text: '#ffffff',
+        radius: '14px',
+        font: 'Space Grotesk'
+      },
+      orangeMatch: {
+        primary: '#31d158',
+        accent: '#ff7a18',
+        background: 'rgba(12, 8, 4, 0.86)',
+        text: '#ffffff',
+        radius: '999px',
+        font: 'Trebuchet MS'
+      },
+      cleanWhite: {
+        primary: '#ffffff',
+        accent: '#31d158',
+        background: 'rgba(255, 255, 255, 0.94)',
+        text: '#050505',
+        radius: '12px',
+        font: 'Arial'
+      },
+      stadiumDark: {
+        primary: '#31d158',
+        accent: '#ff7a18',
+        background: 'rgba(0, 10, 6, 0.9)',
+        text: '#ffffff',
+        radius: '6px',
+        font: 'Impact'
+      },
+      italianStyle: {
+        primary: '#ffffff',
+        accent: '#31d158',
+        background: 'rgba(245, 247, 250, 0.94)',
+        text: '#07111f',
+        radius: '10px',
+        font: 'Arial'
+      }
+    };
+
     const pageContent = document.getElementById('pageContent');
     const previewVideo = document.getElementById('previewVideo');
     const previewWrap = document.getElementById('previewWrap');
@@ -982,6 +1093,10 @@
     const bannerToggle = document.getElementById('bannerToggle');
     const overlayToggle = document.getElementById('overlayToggle');
     const bannerInput = document.getElementById('bannerInput');
+    const themeSelect = document.getElementById('themeSelect');
+    const fontSelect = document.getElementById('fontSelect');
+    const primaryColorInput = document.getElementById('primaryColorInput');
+    const accentColorInput = document.getElementById('accentColorInput');
 
     let mediaStream = null;
     let currentMatch = null;
@@ -1062,6 +1177,27 @@
       } else {
         statusBadge.classList.remove('live');
       }
+    }
+
+    function applyOverlayTheme(theme) {
+      document.documentElement.style.setProperty('--overlay-bg', theme.background);
+      document.documentElement.style.setProperty('--overlay-text', theme.text);
+      document.documentElement.style.setProperty('--overlay-primary', theme.primary);
+      document.documentElement.style.setProperty('--overlay-accent', theme.accent);
+      document.documentElement.style.setProperty('--overlay-radius', theme.radius);
+      document.documentElement.style.setProperty('--overlay-font', `"${theme.font}", sans-serif`);
+
+      primaryColorInput.value = theme.primary;
+      accentColorInput.value = theme.accent;
+      fontSelect.value = theme.font;
+    }
+
+    function applyCustomGraphics() {
+      document.documentElement.style.setProperty('--overlay-primary', primaryColorInput.value);
+      document.documentElement.style.setProperty('--overlay-accent', accentColorInput.value);
+      document.documentElement.style.setProperty('--overlay-font', `"${fontSelect.value}", sans-serif`);
+      overlayBanner.textContent = bannerInput.value.trim() || 'LiveFut TV';
+      updateOverlay();
     }
 
     function updateOverlay() {
@@ -1315,6 +1451,11 @@
     scoreboardToggle.addEventListener('change', updateOverlay);
     bannerToggle.addEventListener('change', updateOverlay);
     overlayToggle.addEventListener('change', updateOverlay);
+    themeSelect.addEventListener('change', () => {
+      applyOverlayTheme(overlayThemes[themeSelect.value]);
+      updateOverlay();
+    });
+    document.getElementById('applyGraphicsBtn').addEventListener('click', applyCustomGraphics);
     document.getElementById('bannerApplyBtn').addEventListener('click', () => {
       overlayBanner.textContent = bannerInput.value.trim() || 'LiveFut TV';
       updateOverlay();
@@ -1326,6 +1467,7 @@
       }
     });
 
+    applyOverlayTheme(overlayThemes.livefutClassic);
     loadMatch();
   </script>
 
