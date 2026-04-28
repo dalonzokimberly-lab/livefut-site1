@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>LiveFut TV — Live</title>
+  <title>LiveFut TV - Live</title>
 
   <script src="https://app.termly.io/resource-blocker/ecfeb307-3d9a-4e26-a7de-4dab9c2345f9?autoBlock=on"></script>
 
@@ -69,21 +69,8 @@
       align-items:center;
       gap:12px;
       font-weight:800;
-         min-width:0;
+      min-width:0;
       overflow:hidden;
-    }
-
-    .brand-badge {
-      width:42px;
-      height:42px;
-      border-radius:14px;
-      display:grid;
-      place-items:center;
-      background:rgba(49,209,88,0.12);
-      border:1px solid var(--border);
-      color:var(--green);
-      font-size:.88rem;
-      flex-shrink:0;
     }
 
     .brand-text strong {
@@ -201,7 +188,7 @@
       margin:0 0 12px;
       font-size:clamp(2.2rem,4vw,3.8rem);
       line-height:1.02;
-      letter-spacing:-.04em;
+      letter-spacing:0;
       color:var(--green);
       overflow-wrap:anywhere;
     }
@@ -220,10 +207,7 @@
       margin-top:24px;
     }
 
-    .hero-side {
-      display:grid;
-      gap:12px;
-    }
+    .hero-side { display:grid; gap:12px; }
 
     .mini-stat {
       background:rgba(49,209,88,.05);
@@ -252,7 +236,7 @@
       margin:0 0 16px;
       color:var(--green);
       font-size:clamp(1.45rem,3vw,2rem);
-      letter-spacing:-.03em;
+      letter-spacing:0;
     }
 
     .section-text {
@@ -275,7 +259,7 @@
 
     .filters-grid {
       display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
+      grid-template-columns:repeat(6,minmax(0,1fr));
       gap:14px;
     }
 
@@ -435,6 +419,15 @@
       text-decoration:underline;
     }
 
+    .site-logo {
+      height:42px;
+      width:auto;
+      max-height:42px;
+      display:block;
+      object-fit:contain;
+      flex-shrink:0;
+    }
+
     @media (max-width:1080px) {
       .hero-card,
       .filters-grid,
@@ -465,16 +458,6 @@
 
       .btn { width:100%; }
     }
-  
-    .site-logo {
-      height:42px;
-      width:auto;
-      max-height:42px;
-      display:block;
-      object-fit:contain;
-      flex-shrink:0;
-    }
-
   </style>
 </head>
 
@@ -537,8 +520,8 @@
           </div>
 
           <div class="mini-stat">
-            <strong>Calcio locale</strong>
-            <span>Calcio a 11, calcetto, tornei e categorie territoriali.</span>
+            <strong id="totalCompetitions">0 competizioni</strong>
+            <span>Campionati, coppe, under e femminile.</span>
           </div>
         </div>
       </div>
@@ -556,10 +539,6 @@
             <label for="regione">Regione</label>
             <select id="regione">
               <option value="">Tutte le regioni</option>
-              <option value="Abruzzo">Abruzzo</option>
-              <option value="Lazio">Lazio</option>
-              <option value="Marche">Marche</option>
-              <option value="Lombardia">Lombardia</option>
             </select>
           </div>
 
@@ -567,8 +546,20 @@
             <label for="disciplina">Disciplina</label>
             <select id="disciplina">
               <option value="">Tutte</option>
-              <option value="Calcio a 11">Calcio a 11</option>
-              <option value="Calcetto">Calcetto</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="tipoCompetizione">Tipo</label>
+            <select id="tipoCompetizione">
+              <option value="">Tutte</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="fascia">Fascia</label>
+            <select id="fascia">
+              <option value="">Tutte</option>
             </select>
           </div>
 
@@ -576,10 +567,6 @@
             <label for="categoria">Categoria</label>
             <select id="categoria">
               <option value="">Tutte le categorie</option>
-              <option value="Terza Categoria">Terza Categoria</option>
-              <option value="Seconda Categoria">Seconda Categoria</option>
-              <option value="C1">C1</option>
-              <option value="C2">C2</option>
             </select>
           </div>
 
@@ -615,39 +602,7 @@
         Naviga le partite per territorio e area geografica.
       </p>
 
-      <div class="grid-4">
-        <article class="region-card">
-          <h3>Abruzzo</h3>
-          <p>Campionati locali, calcetto e categorie dilettantistiche.</p>
-          <div class="meta-row">
-            <span class="region-badge">Regione attiva</span>
-          </div>
-        </article>
-
-        <article class="region-card">
-          <h3>Lazio</h3>
-          <p>Dirette, tornei e future integrazioni con campionati territoriali.</p>
-          <div class="meta-row">
-            <span class="region-badge">In espansione</span>
-          </div>
-        </article>
-
-        <article class="region-card">
-          <h3>Marche</h3>
-          <p>Hub regionale dedicato a calcio a 11 e calcetto.</p>
-          <div class="meta-row">
-            <span class="region-badge">In arrivo</span>
-          </div>
-        </article>
-
-        <article class="region-card">
-          <h3>Lombardia</h3>
-          <p>Struttura prevista per estensione nazionale della piattaforma.</p>
-          <div class="meta-row">
-            <span class="region-badge">In arrivo</span>
-          </div>
-        </article>
-      </div>
+      <div id="regionsGrid" class="grid-4"></div>
     </section>
 
     <section class="section" id="campionati">
@@ -656,43 +611,16 @@
         Categorie disponibili sulla piattaforma LiveFut TV.
       </p>
 
-      <div class="grid-3">
-        <article class="card">
-          <h3>Calcio a 11</h3>
-          <p>Terza Categoria, Seconda Categoria, tornei locali e competizioni territoriali.</p>
-          <div class="meta-row">
-            <span class="tag">Terza Categoria</span>
-            <span class="tag">Seconda Categoria</span>
-          </div>
-        </article>
-
-        <article class="card">
-          <h3>Calcetto</h3>
-          <p>Campionati di futsal, C1, C2 e tornei locali con forte copertura territoriale.</p>
-          <div class="meta-row">
-            <span class="tag">C1</span>
-            <span class="tag">C2</span>
-          </div>
-        </article>
-
-        <article class="card">
-          <h3>Tornei speciali</h3>
-          <p>Spazio per eventi estivi, memorial, coppe locali e manifestazioni amatoriali.</p>
-          <div class="meta-row">
-            <span class="tag">Memorial</span>
-            <span class="tag">Coppe</span>
-          </div>
-        </article>
-      </div>
+      <div id="competitionsGrid" class="grid-3"></div>
     </section>
 
     <section class="footer-note">
-      LiveFut TV — Dirette e partite
+      LiveFut TV - Dirette e partite
     </section>
   </main>
 
   <footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
-    © 2026 LiveFut TV — Football United Team. Tutti i diritti riservati.<br><br>
+    © 2026 LiveFut TV - Football United Team. Tutti i diritti riservati.<br><br>
 
     <a href="https://www.iubenda.com/privacy-policy/71949704"
        class="iubenda-white iubenda-noiframe iubenda-embed">
@@ -711,7 +639,8 @@
 
   <script>
     const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJIUzI1NiIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
+    const OFFICIAL_DATA_URL = 'data/abruzzo_2025_26_api.json';
 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -719,17 +648,24 @@
     const emptyState = document.getElementById('emptyState');
     const totalMatches = document.getElementById('totalMatches');
     const liveMatches = document.getElementById('liveMatches');
+    const totalCompetitions = document.getElementById('totalCompetitions');
+    const regionsGrid = document.getElementById('regionsGrid');
+    const competitionsGrid = document.getElementById('competitionsGrid');
 
     const filters = {
       regione: document.getElementById('regione'),
       disciplina: document.getElementById('disciplina'),
+      tipoCompetizione: document.getElementById('tipoCompetizione'),
+      fascia: document.getElementById('fascia'),
       categoria: document.getElementById('categoria'),
       stato: document.getElementById('stato')
     };
 
+    let officialPayload = { competitions: [], teams: [], matches: [], sources: [] };
     let allMatches = [];
+    let allCompetitions = [];
 
-    function safe(value, fallback = '—') {
+    function safe(value, fallback = '-') {
       return value === null || value === undefined || value === '' ? fallback : value;
     }
 
@@ -742,10 +678,66 @@
         .replaceAll("'", '&#039;');
     }
 
+    function formatDiscipline(value) {
+      if (value === 'calcio_a_11') return 'Calcio a 11';
+      if (value === 'calcio_a_5') return 'Calcio a 5';
+      return safe(value);
+    }
+
+    function formatCompetitionType(value) {
+      if (value === 'campionato') return 'Campionato';
+      if (value === 'coppa') return 'Coppa';
+      return safe(value);
+    }
+
+    function formatAgeGroup(value) {
+      if (value === 'adult') return 'Adulti';
+      if (value === 'under_19') return 'Under 19';
+      if (value === 'under_17') return 'Under 17';
+      if (value === 'under_15') return 'Under 15';
+      return safe(value);
+    }
+
+    function formatGender(value) {
+      if (value === 'female') return 'Femminile';
+      if (value === 'male') return 'Maschile';
+      return safe(value);
+    }
+
+    function parseLocalDate(dateValue) {
+      if (!dateValue) return null;
+      const [year, month, day] = String(dateValue).split('-').map(Number);
+      if (!year || !month || !day) return null;
+      return new Date(year, month - 1, day);
+    }
+
+    function inferStatus(matchDate) {
+      const date = parseLocalDate(matchDate);
+      if (!date) return 'soon';
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      date.setHours(0, 0, 0, 0);
+
+      if (date < today) return 'finished';
+      return 'soon';
+    }
+
+    function formatDate(dateValue) {
+      const date = parseLocalDate(dateValue);
+      if (!date) return 'Data da definire';
+      return date.toLocaleDateString('it-IT', {
+        weekday: 'short',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    }
+
     function statusLabel(status) {
       if (status === 'live') return 'LIVE';
       if (status === 'soon') return 'IN ARRIVO';
-      if (status === 'finished') return 'FINALE';
+      if (status === 'finished') return 'CALENDARIO';
       return safe(status, 'IN ARRIVO').toUpperCase();
     }
 
@@ -755,24 +747,129 @@
       return 'soon';
     }
 
+    function normalizeScore(score) {
+      return score ? String(score).replace('-', ' - ') : 'vs';
+    }
+
     function buildMatchUrl(match, mode = 'view') {
       const params = new URLSearchParams({
         id: match.id || '',
-        mode: mode
+        match_id: match.match_id || '',
+        competition_id: match.competition_id || '',
+        mode
       });
 
       return `match.html?${params.toString()}`;
     }
 
-    function normalizeScore(score) {
-      return safe(score, '0-0').replace('-', ' - ');
+    function officialMatchToCard(match) {
+      return {
+        id: match.match_id,
+        match_id: match.match_id,
+        competition_id: match.competition_id,
+        region: match.region,
+        discipline: formatDiscipline(match.sport),
+        sport: match.sport,
+        competition_type: match.competition_type,
+        competition_type_label: formatCompetitionType(match.competition_type),
+        age_group: match.age_group,
+        age_group_label: formatAgeGroup(match.age_group),
+        gender: match.gender,
+        gender_label: formatGender(match.gender),
+        category: match.category,
+        group_name: match.group_name,
+        round_number: match.round_number,
+        leg: match.leg,
+        match_date: match.match_date,
+        home_team: match.home_team,
+        away_team: match.away_team,
+        home_team_id: match.home_team_id,
+        away_team_id: match.away_team_id,
+        score: '',
+        minute: '',
+        status: inferStatus(match.match_date),
+        field: formatDate(match.match_date),
+        source_url: match.source_url,
+        source: 'lnd'
+      };
+    }
+
+    function normalizeSupabaseMatch(match) {
+      return {
+        ...match,
+        id: match.id || match.match_id,
+        match_id: match.match_id || match.id,
+        region: match.region || 'Abruzzo',
+        discipline: match.discipline || formatDiscipline(match.sport),
+        category: match.category,
+        group_name: match.group_name,
+        competition_type: match.competition_type,
+        competition_type_label: formatCompetitionType(match.competition_type),
+        age_group: match.age_group,
+        age_group_label: formatAgeGroup(match.age_group),
+        gender: match.gender,
+        gender_label: formatGender(match.gender),
+        status: match.status || inferStatus(match.match_date),
+        field: match.field || formatDate(match.match_date),
+        source: 'supabase'
+      };
+    }
+
+    function mergeMatches(officialMatches, liveRows) {
+      const byId = new Map();
+      officialMatches.forEach(match => byId.set(match.match_id, match));
+
+      liveRows.forEach(row => {
+        const liveMatch = normalizeSupabaseMatch(row);
+        const key = liveMatch.match_id || liveMatch.id;
+        if (key && byId.has(key)) {
+          byId.set(key, { ...byId.get(key), ...liveMatch, source: 'merged' });
+        } else if (key) {
+          byId.set(key, liveMatch);
+        }
+      });
+
+      return Array.from(byId.values()).sort((a, b) => {
+        const aDate = a.match_date || '';
+        const bDate = b.match_date || '';
+        return aDate.localeCompare(bDate) || String(a.category).localeCompare(String(b.category));
+      });
+    }
+
+    function addOptions(select, values, formatter = value => value) {
+      const current = select.value;
+      const firstLabel = select.options[0]?.textContent || 'Tutti';
+      select.innerHTML = `<option value="">${escapeHtml(firstLabel)}</option>`;
+
+      values
+        .filter(value => value !== null && value !== undefined && value !== '')
+        .sort((a, b) => formatter(a).localeCompare(formatter(b), 'it'))
+        .forEach(value => {
+          const option = document.createElement('option');
+          option.value = value;
+          option.textContent = formatter(value);
+          select.appendChild(option);
+        });
+
+      if ([...select.options].some(option => option.value === current)) {
+        select.value = current;
+      }
+    }
+
+    function populateFilters() {
+      addOptions(filters.regione, [...new Set(allMatches.map(match => match.region))]);
+      addOptions(filters.disciplina, [...new Set(allMatches.map(match => match.sport))], formatDiscipline);
+      addOptions(filters.tipoCompetizione, [...new Set(allCompetitions.map(item => item.competition_type))], formatCompetitionType);
+      addOptions(filters.fascia, [...new Set(allCompetitions.map(item => item.age_group))], formatAgeGroup);
+      addOptions(filters.categoria, [...new Set(allCompetitions.map(item => item.category))]);
     }
 
     function renderMatches(matches) {
       matchesGrid.innerHTML = '';
 
       totalMatches.textContent = `${allMatches.length} partite`;
-      liveMatches.textContent = `${allMatches.filter(m => m.status === 'live').length} live`;
+      liveMatches.textContent = `${allMatches.filter(match => match.status === 'live').length} live`;
+      totalCompetitions.textContent = `${allCompetitions.length} competizioni`;
 
       if (!matches.length) {
         emptyState.style.display = 'block';
@@ -781,13 +878,14 @@
 
       emptyState.style.display = 'none';
 
-      matches.forEach(match => {
+      matches.slice(0, 120).forEach(match => {
         const status = safe(match.status, 'soon');
         const score = normalizeScore(match.score);
-        const minute = match.minute ?? 0;
+        const minute = match.minute ? `${match.minute}'` : '';
         const discipline = safe(match.discipline, '');
         const region = safe(match.region, 'Regione non specificata');
         const category = safe(match.category, 'Categoria non specificata');
+        const groupName = safe(match.group_name, '');
         const field = safe(match.field, 'Campo non specificato');
 
         const card = document.createElement('article');
@@ -797,28 +895,26 @@
           <div class="match-top">
             <div>
               <h3>${escapeHtml(safe(match.home_team, 'Squadra Casa'))} vs ${escapeHtml(safe(match.away_team, 'Squadra Ospite'))}</h3>
-              <p>${escapeHtml(region)}${discipline ? ' · ' + escapeHtml(discipline) : ''} · ${escapeHtml(category)}</p>
+              <p>${escapeHtml(region)} · ${escapeHtml(discipline)} · ${escapeHtml(category)}${groupName ? ' · ' + escapeHtml(groupName) : ''}</p>
             </div>
             <span class="status-badge ${statusClass(status)}">${statusLabel(status)}</span>
           </div>
 
           <div class="match-score">
             <span>${escapeHtml(score)}</span>
-            <span style="font-size:.9rem; color:#fff;">${status === 'finished' ? 'FT' : minute + "'"}</span>
+            ${minute ? `<span style="font-size:.9rem; color:#fff;">${escapeHtml(minute)}</span>` : ''}
           </div>
 
           <div class="meta-row">
             <span class="tag">${escapeHtml(field)}</span>
+            <span class="tag">${escapeHtml(safe(match.competition_type_label, 'Competizione'))}</span>
+            <span class="tag">${escapeHtml(safe(match.age_group_label, 'Fascia'))}</span>
+            <span class="tag">${escapeHtml(safe(match.gender_label, 'Genere'))}</span>
           </div>
 
           <div class="row-actions">
-            <a class="btn btn-primary" href="${buildMatchUrl(match, 'view')}">
-              Dettaglio
-            </a>
-
-            <a class="btn btn-secondary" href="${buildMatchUrl(match, 'broadcast')}">
-              Trasmetti
-            </a>
+            <a class="btn btn-primary" href="${buildMatchUrl(match, 'view')}">Dettaglio</a>
+            <a class="btn btn-secondary" href="${buildMatchUrl(match, 'broadcast')}">Trasmetti</a>
           </div>
         `;
 
@@ -826,22 +922,93 @@
       });
     }
 
+    function renderRegions() {
+      const regions = [...new Set(allCompetitions.map(item => item.region))].sort();
+      regionsGrid.innerHTML = '';
+
+      regions.forEach(region => {
+        const competitionsCount = allCompetitions.filter(item => item.region === region).length;
+        const matchesCount = allMatches.filter(item => item.region === region).length;
+        const card = document.createElement('article');
+        card.className = 'region-card';
+        card.innerHTML = `
+          <h3>${escapeHtml(region)}</h3>
+          <p>${competitionsCount} competizioni e ${matchesCount} partite calendario importate da fonti ufficiali.</p>
+          <div class="meta-row">
+            <span class="region-badge">Regione attiva</span>
+          </div>
+        `;
+        regionsGrid.appendChild(card);
+      });
+    }
+
+    function renderCompetitions() {
+      competitionsGrid.innerHTML = '';
+
+      allCompetitions
+        .slice()
+        .sort((a, b) => {
+          return String(a.sport).localeCompare(String(b.sport)) ||
+            String(a.competition_type).localeCompare(String(b.competition_type)) ||
+            String(a.category).localeCompare(String(b.category));
+        })
+        .forEach(competition => {
+          const card = document.createElement('article');
+          card.className = 'card';
+          card.innerHTML = `
+            <h3>${escapeHtml(competition.category)}</h3>
+            <p>${escapeHtml(formatDiscipline(competition.sport))} · ${escapeHtml(competition.group_name)} · ${escapeHtml(formatCompetitionType(competition.competition_type))}</p>
+            <div class="meta-row">
+              <span class="tag">${escapeHtml(formatAgeGroup(competition.age_group))}</span>
+              <span class="tag">${escapeHtml(formatGender(competition.gender))}</span>
+            </div>
+          `;
+          competitionsGrid.appendChild(card);
+        });
+    }
+
     function applyFilters() {
       const selectedRegion = filters.regione.value;
       const selectedDiscipline = filters.disciplina.value;
+      const selectedType = filters.tipoCompetizione.value;
+      const selectedAgeGroup = filters.fascia.value;
       const selectedCategory = filters.categoria.value;
       const selectedStatus = filters.stato.value;
 
       const filtered = allMatches.filter(match => {
         const regionOk = !selectedRegion || match.region === selectedRegion;
-        const disciplineOk = !selectedDiscipline || match.discipline === selectedDiscipline;
+        const disciplineOk = !selectedDiscipline || match.sport === selectedDiscipline;
+        const typeOk = !selectedType || match.competition_type === selectedType;
+        const ageOk = !selectedAgeGroup || match.age_group === selectedAgeGroup;
         const categoryOk = !selectedCategory || match.category === selectedCategory;
         const statusOk = !selectedStatus || match.status === selectedStatus;
 
-        return regionOk && disciplineOk && categoryOk && statusOk;
+        return regionOk && disciplineOk && typeOk && ageOk && categoryOk && statusOk;
       });
 
       renderMatches(filtered);
+    }
+
+    async function loadOfficialDataset() {
+      const response = await fetch(OFFICIAL_DATA_URL, { cache: 'no-store' });
+      if (!response.ok) {
+        throw new Error(`Dataset ufficiale non trovato: ${OFFICIAL_DATA_URL}`);
+      }
+      return response.json();
+    }
+
+    async function loadSupabaseLiveRows() {
+      const { data, error } = await supabaseClient
+        .from('matches')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.warn('Live Supabase non disponibili:', error.message);
+        return [];
+      }
+
+      return data || [];
     }
 
     async function loadMatches() {
@@ -849,22 +1016,26 @@
       emptyState.style.display = 'block';
       emptyState.innerHTML = 'Caricamento partite in corso...';
 
-      const { data, error } = await supabaseClient
-        .from('matches')
-        .select('*')
-        .order('created_at', { ascending: false });
+      try {
+        const [payload, liveRows] = await Promise.all([
+          loadOfficialDataset(),
+          loadSupabaseLiveRows()
+        ]);
 
-      if (error) {
+        officialPayload = payload;
+        allCompetitions = payload.competitions || [];
+        allMatches = mergeMatches((payload.matches || []).map(officialMatchToCard), liveRows);
+
+        emptyState.innerHTML = 'Nessuna partita disponibile con i filtri selezionati.';
+
+        populateFilters();
+        renderRegions();
+        renderCompetitions();
+        renderMatches(allMatches);
+      } catch (error) {
         emptyState.style.display = 'block';
         emptyState.innerHTML = `Errore nel caricamento delle partite: <strong>${escapeHtml(error.message)}</strong>`;
-        return;
       }
-
-      allMatches = data || [];
-
-      emptyState.innerHTML = 'Nessuna partita disponibile con i filtri selezionati.';
-
-      renderMatches(allMatches);
     }
 
     Object.values(filters).forEach(select => {
