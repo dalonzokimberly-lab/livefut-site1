@@ -15,7 +15,6 @@
 
   <style>
     :root {
-      --bg: #050505;
       --black: #000000;
       --green: #31d158;
       --orange: #ff7a18;
@@ -24,18 +23,15 @@
       --border: rgba(49, 209, 88, 0.18);
       --orange-border: rgba(255, 122, 24, 0.28);
       --shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
-      --danger: #ff6b6b;
-      --overlay-bg: rgba(0, 0, 0, 0.78);
+      --overlay-bg: rgba(0, 0, 0, 0.82);
       --overlay-text: #ffffff;
       --overlay-primary: #31d158;
       --overlay-accent: #ff7a18;
-      --overlay-radius: 14px;
+      --overlay-radius: 10px;
       --overlay-font: "Space Grotesk", sans-serif;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -48,10 +44,7 @@
       color: var(--text);
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+    a { color: inherit; text-decoration: none; }
 
     .container {
       width: min(1180px, calc(100% - 32px));
@@ -133,19 +126,9 @@
       text-align: center;
     }
 
-    .btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .btn:active {
-      transform: translateY(0);
-    }
-
-    .btn:disabled {
-      cursor: not-allowed;
-      opacity: 0.58;
-      transform: none;
-    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn:disabled { cursor: not-allowed; opacity: 0.58; transform: none; }
 
     .btn-primary {
       background: linear-gradient(135deg, #19a83f, var(--green));
@@ -153,19 +136,10 @@
       box-shadow: 0 12px 28px rgba(49, 209, 88, 0.28);
     }
 
-    .btn-primary:hover {
-      box-shadow: 0 14px 32px rgba(49, 209, 88, 0.32), 0 0 0 1px rgba(255, 122, 24, 0.2);
-    }
-
     .btn-secondary {
       background: rgba(49, 209, 88, 0.06);
       color: var(--text);
       border: 1px solid var(--border);
-    }
-
-    .btn-secondary:hover {
-      border-color: rgba(49, 209, 88, 0.36);
-      background: rgba(49, 209, 88, 0.09);
     }
 
     .btn-danger {
@@ -175,20 +149,12 @@
       box-shadow: 0 12px 28px rgba(255, 122, 24, 0.12);
     }
 
-    .btn-danger:hover {
-      background: rgba(255, 122, 24, 0.16);
-      border-color: rgba(255, 122, 24, 0.46);
-      box-shadow: 0 14px 32px rgba(255, 122, 24, 0.18);
-    }
-
     .btn-small {
       padding: 10px 14px;
       font-size: 0.86rem;
     }
 
-    .hero {
-      padding: 28px 0 18px;
-    }
+    .hero { padding: 28px 0 18px; }
 
     .studio-header,
     .studio-card,
@@ -198,6 +164,8 @@
       background: linear-gradient(180deg, rgba(49, 209, 88, 0.03), rgba(255, 255, 255, 0.01));
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
+      border-radius: 24px;
+      overflow: hidden;
     }
 
     .studio-header {
@@ -247,15 +215,8 @@
     }
 
     @keyframes pulse {
-      0%, 100% {
-        transform: scale(1);
-        opacity: 1;
-      }
-
-      50% {
-        transform: scale(1.18);
-        opacity: 0.82;
-      }
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.18); opacity: 0.82; }
     }
 
     h1 {
@@ -267,8 +228,7 @@
       overflow-wrap: anywhere;
     }
 
-    h2,
-    h3 {
+    h2, h3 {
       color: var(--green);
       margin: 0 0 10px;
       letter-spacing: -0.02em;
@@ -285,14 +245,6 @@
       grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
       gap: 18px;
       padding: 0 0 34px;
-    }
-
-    .studio-card,
-    .info-card,
-    .status-card,
-    .console-card {
-      border-radius: 24px;
-      overflow: hidden;
     }
 
     .video-wrap {
@@ -316,6 +268,7 @@
       pointer-events: none;
       border: 1px solid rgba(255, 122, 24, 0.08);
       box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.36);
+      z-index: 8;
     }
 
     video {
@@ -326,9 +279,7 @@
       background: var(--black);
     }
 
-    .video-wrap.active video {
-      display: block;
-    }
+    .video-wrap.active video { display: block; }
 
     .preview-placeholder {
       padding: 24px;
@@ -338,9 +289,7 @@
       z-index: 1;
     }
 
-    .video-wrap.active .preview-placeholder {
-      display: none;
-    }
+    .video-wrap.active .preview-placeholder { display: none; }
 
     .preview-placeholder strong {
       display: block;
@@ -354,8 +303,8 @@
     .live-chip {
       position: absolute;
       top: 14px;
-      left: 14px;
-      z-index: 4;
+      right: 14px;
+      z-index: 9;
       display: none;
       align-items: center;
       gap: 8px;
@@ -371,9 +320,7 @@
       box-shadow: 0 12px 28px rgba(255, 122, 24, 0.14);
     }
 
-    .video-wrap.active .live-chip {
-      display: inline-flex;
-    }
+    .video-wrap.active .live-chip { display: inline-flex; }
 
     .match-overlay {
       position: absolute;
@@ -383,21 +330,20 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 18px;
+      padding: 14px;
       opacity: 1;
       transition: opacity 0.2s ease;
       font-family: var(--overlay-font);
     }
 
-    .match-overlay.is-hidden {
-      opacity: 0;
-    }
+    .match-overlay.is-hidden { opacity: 0; }
 
     .scoreboard-overlay {
       display: flex;
       align-items: stretch;
-      width: min(720px, 100%);
-      min-height: 52px;
+      width: max-content;
+      max-width: min(560px, 86%);
+      min-height: 38px;
       border-radius: var(--overlay-radius);
       overflow: hidden;
       border: 1px solid color-mix(in srgb, var(--overlay-primary) 55%, transparent);
@@ -410,49 +356,131 @@
     .score-time {
       display: grid;
       place-items: center;
-      padding: 10px 12px;
+      padding: 8px 10px;
       text-align: center;
       font-weight: 900;
+      font-size: 0.78rem;
     }
 
     .score-team {
-      flex: 1;
-      min-width: 0;
+      min-width: 74px;
+      max-width: 130px;
       color: var(--overlay-text);
-      overflow-wrap: anywhere;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .score-value {
-      min-width: 96px;
+      min-width: 64px;
       background: var(--overlay-primary);
       color: var(--black);
-      font-size: 1.15rem;
+      font-size: 0.92rem;
     }
 
     .score-time {
-      min-width: 118px;
+      min-width: 88px;
       color: var(--overlay-accent);
       border-left: 1px solid color-mix(in srgb, var(--overlay-accent) 45%, transparent);
       font-variant-numeric: tabular-nums;
     }
 
-    .overlay-banner {
+    .sponsor-overlay {
       align-self: center;
-      max-width: min(760px, 100%);
-      padding: 10px 16px;
-      border-radius: 999px;
-      background: var(--overlay-bg);
-      border: 1px solid color-mix(in srgb, var(--overlay-accent) 48%, transparent);
-      color: var(--overlay-text);
-      font-weight: 900;
-      text-align: center;
-      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.42);
+      justify-self: center;
+      max-width: min(420px, 70%);
+      max-height: 34%;
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.78);
+      border: 1px solid color-mix(in srgb, var(--overlay-accent) 50%, transparent);
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5);
+      display: none;
+      place-items: center;
     }
 
-    .overlay-banner.is-hidden,
-    .scoreboard-overlay.is-hidden {
-      display: none;
+    .sponsor-overlay.show { display: grid; }
+
+    .sponsor-overlay img {
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+      object-fit: contain;
+      border-radius: 12px;
     }
+
+    .scene-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 6;
+      display: none;
+      place-items: center;
+      padding: 28px;
+      text-align: center;
+      font-family: var(--overlay-font);
+      background:
+        linear-gradient(115deg, rgba(0, 0, 0, 0.86), rgba(0, 0, 0, 0.62)),
+        repeating-linear-gradient(135deg, rgba(49, 209, 88, 0.12) 0 2px, transparent 2px 22px),
+        radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--overlay-primary) 24%, transparent), transparent 32%),
+        radial-gradient(circle at 80% 70%, color-mix(in srgb, var(--overlay-accent) 22%, transparent), transparent 34%),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: auto, auto, auto, auto, 54px 54px, 54px 54px;
+    }
+
+    .scene-overlay.show { display: grid; }
+
+    .scene-box {
+      width: min(760px, 100%);
+      border-radius: 28px;
+      padding: clamp(22px, 5vw, 46px);
+      background: color-mix(in srgb, var(--overlay-bg) 86%, transparent);
+      border: 1px solid color-mix(in srgb, var(--overlay-primary) 45%, transparent);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+    }
+
+    .scene-kicker {
+      color: var(--overlay-accent);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      margin-bottom: 12px;
+      font-size: clamp(0.78rem, 2vw, 1rem);
+    }
+
+    .scene-title {
+      color: var(--overlay-primary);
+      font-size: clamp(2rem, 7vw, 4.4rem);
+      line-height: 0.98;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      margin-bottom: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .scene-subtitle {
+      color: var(--overlay-text);
+      font-size: clamp(1rem, 3vw, 1.45rem);
+      font-weight: 800;
+    }
+
+    .scene-score {
+      margin-top: 18px;
+      color: var(--overlay-text);
+      font-size: clamp(1.7rem, 6vw, 3.4rem);
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .scene-countdown {
+      margin-top: 18px;
+      color: var(--overlay-accent);
+      font-size: clamp(1.5rem, 5vw, 2.8rem);
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .scoreboard-overlay.is-hidden { display: none; }
 
     .studio-body,
     .card-body,
@@ -462,7 +490,8 @@
 
     .controls,
     .console-grid,
-    .info-list {
+    .info-list,
+    .event-list {
       display: grid;
       gap: 12px;
       margin-top: 16px;
@@ -541,8 +570,7 @@
       font-size: 0.92rem;
     }
 
-    input[type="text"],
-    input[type="color"],
+    input,
     select {
       width: 100%;
       border: 1px solid var(--border);
@@ -561,12 +589,15 @@
       cursor: pointer;
     }
 
+    input[type="file"] {
+      padding: 11px;
+    }
+
     select option {
       color: #000000;
     }
 
-    input[type="text"]:focus,
-    input[type="color"]:focus,
+    input:focus,
     select:focus {
       border-color: rgba(49, 209, 88, 0.48);
       box-shadow: 0 0 0 4px rgba(49, 209, 88, 0.1);
@@ -587,9 +618,7 @@
       border-bottom: 1px solid rgba(49, 209, 88, 0.1);
     }
 
-    .toggle-row:last-child {
-      border-bottom: 0;
-    }
+    .toggle-row:last-child { border-bottom: 0; }
 
     .toggle-row input {
       width: 20px;
@@ -597,29 +626,27 @@
       accent-color: var(--green);
     }
 
-    .info-item {
+    .info-item,
+    .commentary-item {
       background: rgba(49, 209, 88, 0.05);
       border: 1px solid var(--border);
       border-radius: 18px;
       padding: 14px;
       min-width: 0;
-      transition: border-color 0.2s ease, background 0.2s ease;
     }
 
-    .info-item:hover {
-      background: rgba(49, 209, 88, 0.07);
-      border-color: rgba(49, 209, 88, 0.3);
-    }
-
-    .info-item strong {
+    .info-item strong,
+    .commentary-item strong {
       color: var(--green);
       display: block;
       margin-bottom: 4px;
     }
 
-    .info-item span {
+    .info-item span,
+    .commentary-item span {
       color: var(--text);
       overflow-wrap: anywhere;
+      line-height: 1.55;
     }
 
     .status-message {
@@ -633,9 +660,7 @@
       display: none;
     }
 
-    .status-message.show {
-      display: block;
-    }
+    .status-message.show { display: block; }
 
     .status-message.error {
       border-color: rgba(255, 107, 107, 0.28);
@@ -684,22 +709,15 @@
         grid-template-columns: 1fr;
       }
 
-      .brand {
-        justify-content: flex-start;
-      }
-
-      .btn {
-        width: 100%;
-      }
+      .brand { justify-content: flex-start; }
+      .btn { width: 100%; }
 
       .studio-header {
         padding: 22px;
         border-radius: 24px;
       }
 
-      .hero {
-        padding-top: 18px;
-      }
+      .hero { padding-top: 18px; }
 
       .studio-body,
       .card-body,
@@ -712,59 +730,42 @@
         min-height: 190px;
       }
 
-      .match-overlay {
-        padding: 10px;
-      }
+      .match-overlay { padding: 10px; }
 
       .scoreboard-overlay {
-        min-height: 42px;
-        border-radius: 10px;
+        min-height: 34px;
+        border-radius: 8px;
+        max-width: 94%;
       }
 
       .score-team,
       .score-value,
       .score-time {
-        padding: 8px 7px;
-        font-size: 0.76rem;
+        padding: 7px 6px;
+        font-size: 0.66rem;
+      }
+
+      .score-team {
+        min-width: 50px;
+        max-width: 86px;
       }
 
       .score-value {
-        min-width: 58px;
-        font-size: 0.9rem;
+        min-width: 48px;
+        font-size: 0.78rem;
       }
 
       .score-time {
-        min-width: 76px;
+        min-width: 66px;
       }
 
-      .overlay-banner {
-        padding: 8px 12px;
-        font-size: 0.78rem;
-      }
-    }
-
-    @media (orientation: landscape) and (max-height: 520px) {
-      .topbar {
-        position: relative;
+      .scene-overlay {
+        padding: 16px;
       }
 
-      .hero {
-        padding: 16px 0 14px;
-      }
-
-      .studio-header {
-        padding: 18px;
-        border-radius: 22px;
-      }
-
-      .layout {
-        gap: 14px;
-      }
-
-      .video-wrap {
-        aspect-ratio: 16 / 9;
-        min-height: 240px;
-        max-height: calc(100vh - 190px);
+      .sponsor-overlay {
+        max-width: 74%;
+        max-height: 42%;
       }
     }
   </style>
@@ -821,8 +822,20 @@
               <div class="score-team" id="overlayAwayTeam">Ospite</div>
               <div class="score-time" id="overlayTime">00:00</div>
             </div>
+          </div>
 
-            <div class="overlay-banner" id="overlayBanner">LiveFut TV</div>
+          <div class="sponsor-overlay" id="sponsorOverlay">
+            <img id="sponsorImage" alt="Sponsor">
+          </div>
+
+          <div class="scene-overlay" id="sceneOverlay">
+            <div class="scene-box">
+              <div class="scene-kicker" id="sceneKicker">LiveFut TV</div>
+              <div class="scene-title" id="sceneTitle">La partita inizierà tra poco</div>
+              <div class="scene-subtitle" id="sceneSubtitle">Preparati alla diretta</div>
+              <div class="scene-score" id="sceneScore"></div>
+              <div class="scene-countdown" id="sceneCountdown"></div>
+            </div>
           </div>
 
           <div class="preview-placeholder">
@@ -892,7 +905,7 @@
     <section class="console-card" style="margin-bottom:34px;">
       <div class="console-body">
         <h2>Console overlay</h2>
-        <p>Comandi grafici e dati partita mostrati sopra la preview.</p>
+        <p>Comandi grafici, scene e dati partita mostrati sopra la preview.</p>
 
         <div class="console-grid">
           <div class="console-panel">
@@ -933,22 +946,6 @@
           </div>
 
           <div class="console-panel">
-            <h3>Visibilità overlay</h3>
-            <label class="toggle-row">
-              <span>Scoreboard</span>
-              <input id="scoreboardToggle" type="checkbox" checked>
-            </label>
-            <label class="toggle-row">
-              <span>Banner</span>
-              <input id="bannerToggle" type="checkbox" checked>
-            </label>
-            <label class="toggle-row">
-              <span>Tutti gli overlay</span>
-              <input id="overlayToggle" type="checkbox" checked>
-            </label>
-          </div>
-
-          <div class="console-panel">
             <h3>Grafica overlay</h3>
 
             <div class="field-grid">
@@ -985,15 +982,111 @@
               </div>
             </div>
 
-            <div style="margin-top:12px;">
-              <label for="bannerInput">Testo banner</label>
-              <input id="bannerInput" type="text" value="LiveFut TV">
+            <div class="button-row" style="margin-top:12px;">
+              <button class="btn btn-primary btn-small" id="applyGraphicsBtn">Applica grafica</button>
+            </div>
+          </div>
+
+          <div class="console-panel">
+            <h3>Visibilità overlay</h3>
+            <label class="toggle-row">
+              <span>Scoreboard</span>
+              <input id="scoreboardToggle" type="checkbox" checked>
+            </label>
+            <label class="toggle-row">
+              <span>Tutti gli overlay</span>
+              <input id="overlayToggle" type="checkbox" checked>
+            </label>
+            <label class="toggle-row">
+              <span>Sponsor automatici</span>
+              <input id="sponsorAutoToggle" type="checkbox" checked>
+            </label>
+          </div>
+
+          <div class="console-panel">
+            <h3>Sponsor overlay</h3>
+            <div class="field-grid">
+              <div>
+                <label for="sponsorInput1">Sponsor 1</label>
+                <input id="sponsorInput1" type="file" accept="image/*">
+              </div>
+              <div>
+                <label for="sponsorInput2">Sponsor 2</label>
+                <input id="sponsorInput2" type="file" accept="image/*">
+              </div>
+              <div>
+                <label for="sponsorInput3">Sponsor 3</label>
+                <input id="sponsorInput3" type="file" accept="image/*">
+              </div>
             </div>
 
             <div class="button-row" style="margin-top:12px;">
-              <button class="btn btn-primary btn-small" id="applyGraphicsBtn">Applica grafica</button>
-              <button class="btn btn-secondary btn-small" id="bannerApplyBtn">Aggiorna banner</button>
+              <button class="btn btn-primary btn-small" id="showSponsorBtn">Mostra sponsor ora</button>
+              <button class="btn btn-secondary btn-small" id="hideSponsorBtn">Nascondi sponsor</button>
             </div>
+          </div>
+
+          <div class="console-panel">
+            <h3>Scene diretta</h3>
+            <div class="field-grid">
+              <div>
+                <label for="waitingMinutesInput">Attesa minuti</label>
+                <input id="waitingMinutesInput" type="text" value="10">
+              </div>
+              <div>
+                <label for="sceneCustomTextInput">Testo scena</label>
+                <input id="sceneCustomTextInput" type="text" value="Torniamo tra poco">
+              </div>
+            </div>
+
+            <div class="button-row" style="margin-top:12px;">
+              <button class="btn btn-secondary btn-small" id="waitingSceneBtn">Attesa</button>
+              <button class="btn btn-secondary btn-small" id="halftimeSceneBtn">Intervallo</button>
+              <button class="btn btn-danger btn-small" id="finalSceneBtn">Fine partita</button>
+              <button class="btn btn-primary btn-small" id="hideSceneBtn">Camera</button>
+            </div>
+          </div>
+
+          <div class="console-panel">
+            <h3>Eventi partita</h3>
+
+            <div class="field-grid">
+              <div>
+                <label for="eventTeamSelect">Squadra</label>
+                <select id="eventTeamSelect"></select>
+              </div>
+              <div>
+                <label for="cardTypeSelect">Cartellino</label>
+                <select id="cardTypeSelect">
+                  <option value="giallo">Giallo</option>
+                  <option value="rosso">Rosso</option>
+                </select>
+              </div>
+              <div>
+                <label for="scorerInput">Marcatore</label>
+                <input id="scorerInput" type="text" placeholder="Nome marcatore">
+              </div>
+              <div>
+                <label for="assistInput">Assist man</label>
+                <input id="assistInput" type="text" placeholder="Nome assist man">
+              </div>
+              <div>
+                <label for="cardPlayerInput">Giocatore ammonito/espulso</label>
+                <input id="cardPlayerInput" type="text" placeholder="Nome giocatore">
+              </div>
+            </div>
+
+            <div class="button-row" style="margin-top:12px;">
+              <button class="btn btn-primary btn-small" id="goalEventBtn">Gol</button>
+              <button class="btn btn-secondary btn-small" id="chanceEventBtn">Occasione</button>
+              <button class="btn btn-danger btn-small" id="cardEventBtn">Cartellino</button>
+            </div>
+          </div>
+
+          <div class="console-panel">
+            <h3>Telecronaca</h3>
+            <p>Frasi generate dagli input del broadcaster.</p>
+            <div class="event-list" id="commentaryList"></div>
           </div>
         </div>
       </div>
@@ -1030,15 +1123,15 @@
       livefutClassic: {
         primary: '#31d158',
         accent: '#ff7a18',
-        background: 'rgba(0, 0, 0, 0.78)',
+        background: 'rgba(0, 0, 0, 0.82)',
         text: '#ffffff',
-        radius: '14px',
+        radius: '10px',
         font: 'Space Grotesk'
       },
       orangeMatch: {
         primary: '#31d158',
         accent: '#ff7a18',
-        background: 'rgba(12, 8, 4, 0.86)',
+        background: 'rgba(12, 8, 4, 0.88)',
         text: '#ffffff',
         radius: '999px',
         font: 'Trebuchet MS'
@@ -1048,7 +1141,7 @@
         accent: '#31d158',
         background: 'rgba(255, 255, 255, 0.94)',
         text: '#050505',
-        radius: '12px',
+        radius: '10px',
         font: 'Arial'
       },
       stadiumDark: {
@@ -1056,7 +1149,7 @@
         accent: '#ff7a18',
         background: 'rgba(0, 10, 6, 0.9)',
         text: '#ffffff',
-        radius: '6px',
+        radius: '4px',
         font: 'Impact'
       },
       italianStyle: {
@@ -1064,7 +1157,7 @@
         accent: '#31d158',
         background: 'rgba(245, 247, 250, 0.94)',
         text: '#07111f',
-        radius: '10px',
+        radius: '8px',
         font: 'Arial'
       }
     };
@@ -1079,7 +1172,6 @@
     const matchLink = document.getElementById('matchLink');
     const matchOverlay = document.getElementById('matchOverlay');
     const scoreboardOverlay = document.getElementById('scoreboardOverlay');
-    const overlayBanner = document.getElementById('overlayBanner');
     const overlayHomeTeam = document.getElementById('overlayHomeTeam');
     const overlayAwayTeam = document.getElementById('overlayAwayTeam');
     const overlayScore = document.getElementById('overlayScore');
@@ -1090,13 +1182,22 @@
     const homeScoreValue = document.getElementById('homeScoreValue');
     const awayScoreValue = document.getElementById('awayScoreValue');
     const scoreboardToggle = document.getElementById('scoreboardToggle');
-    const bannerToggle = document.getElementById('bannerToggle');
     const overlayToggle = document.getElementById('overlayToggle');
-    const bannerInput = document.getElementById('bannerInput');
+    const sponsorAutoToggle = document.getElementById('sponsorAutoToggle');
     const themeSelect = document.getElementById('themeSelect');
     const fontSelect = document.getElementById('fontSelect');
     const primaryColorInput = document.getElementById('primaryColorInput');
     const accentColorInput = document.getElementById('accentColorInput');
+    const sponsorOverlay = document.getElementById('sponsorOverlay');
+    const sponsorImage = document.getElementById('sponsorImage');
+    const sceneOverlay = document.getElementById('sceneOverlay');
+    const sceneKicker = document.getElementById('sceneKicker');
+    const sceneTitle = document.getElementById('sceneTitle');
+    const sceneSubtitle = document.getElementById('sceneSubtitle');
+    const sceneScore = document.getElementById('sceneScore');
+    const sceneCountdown = document.getElementById('sceneCountdown');
+    const eventTeamSelect = document.getElementById('eventTeamSelect');
+    const commentaryList = document.getElementById('commentaryList');
 
     let mediaStream = null;
     let currentMatch = null;
@@ -1107,6 +1208,13 @@
     let recoveryMode = false;
     let timerRunning = false;
     let timerInterval = null;
+    let sponsorImages = [];
+    let sponsorIndex = 0;
+    let sponsorCycleInterval = null;
+    let sponsorHideTimeout = null;
+    let waitingCountdownInterval = null;
+    let currentHomeTeam = 'Casa';
+    let currentAwayTeam = 'Ospite';
 
     function safe(value, fallback = '—') {
       return value === null || value === undefined || value === '' ? fallback : value;
@@ -1125,10 +1233,6 @@
         home: Number.isFinite(parts[0]) ? parts[0] : 0,
         away: Number.isFinite(parts[1]) ? parts[1] : 0
       };
-    }
-
-    function formatScore(score) {
-      return safe(score, '0-0').replace('-', ' - ');
     }
 
     function formatClock(totalSeconds) {
@@ -1196,7 +1300,6 @@
       document.documentElement.style.setProperty('--overlay-primary', primaryColorInput.value);
       document.documentElement.style.setProperty('--overlay-accent', accentColorInput.value);
       document.documentElement.style.setProperty('--overlay-font', `"${fontSelect.value}", sans-serif`);
-      overlayBanner.textContent = bannerInput.value.trim() || 'LiveFut TV';
       updateOverlay();
     }
 
@@ -1211,15 +1314,15 @@
       awayScoreValue.textContent = awayScore;
 
       scoreboardOverlay.classList.toggle('is-hidden', !scoreboardToggle.checked);
-      overlayBanner.classList.toggle('is-hidden', !bannerToggle.checked);
       matchOverlay.classList.toggle('is-hidden', !overlayToggle.checked);
     }
 
     function renderMatch(match) {
       currentMatch = match;
 
-      const home = safe(match.home_team, 'Squadra Casa');
-      const away = safe(match.away_team, 'Squadra Ospite');
+      currentHomeTeam = safe(match.home_team, 'Squadra Casa');
+      currentAwayTeam = safe(match.away_team, 'Squadra Ospite');
+
       const field = safe(match.field, 'Non specificato');
       const category = safe(match.category, 'Non specificata');
       const region = safe(match.region, 'Non specificata');
@@ -1230,10 +1333,10 @@
       awayScore = parsedScore.away;
       elapsedSeconds = Number.isFinite(Number(match.minute)) ? Number(match.minute) * 60 : elapsedSeconds;
 
-      document.title = `${home} vs ${away} — Studio LiveFut TV`;
+      document.title = `${currentHomeTeam} vs ${currentAwayTeam} — Studio LiveFut TV`;
       matchLink.href = `match.html?id=${encodeURIComponent(match.id)}&mode=broadcast`;
 
-      setText('matchTitle', `${home} vs ${away}`);
+      setText('matchTitle', `${currentHomeTeam} vs ${currentAwayTeam}`);
       setText('matchSubtitle', `${field} · ${category} · ${region}`);
       setText('matchField', field);
       setText('matchCategory', category);
@@ -1242,10 +1345,15 @@
       setText('scoreLine', `Risultato: ${homeScore} - ${awayScore}`);
       setText('minuteLine', `Minuto: ${minuteLabel(match)}`);
 
-      overlayHomeTeam.textContent = home;
-      overlayAwayTeam.textContent = away;
-      homeScoreLabel.textContent = home;
-      awayScoreLabel.textContent = away;
+      overlayHomeTeam.textContent = currentHomeTeam;
+      overlayAwayTeam.textContent = currentAwayTeam;
+      homeScoreLabel.textContent = currentHomeTeam;
+      awayScoreLabel.textContent = currentAwayTeam;
+
+      eventTeamSelect.innerHTML = `
+        <option value="home">${currentHomeTeam}</option>
+        <option value="away">${currentAwayTeam}</option>
+      `;
 
       updateStatusUi(match.status);
       updateOverlay();
@@ -1263,11 +1371,7 @@
       }
 
       if (currentMatch) {
-        const updatedMatch = {
-          ...currentMatch,
-          status
-        };
-
+        const updatedMatch = { ...currentMatch, status };
         renderMatch(updatedMatch);
         return updatedMatch;
       }
@@ -1292,12 +1396,7 @@
         return;
       }
 
-      currentMatch = {
-        ...currentMatch,
-        score,
-        minute
-      };
-
+      currentMatch = { ...currentMatch, score, minute };
       setText('scoreLine', `Risultato: ${homeScore} - ${awayScore}`);
       setText('minuteLine', `Minuto: ${minute}'`);
     }
@@ -1326,6 +1425,7 @@
         if (updatedMatch) {
           stopBtn.disabled = false;
           showMessage('Diretta avviata.');
+          startSponsorCycle();
         } else {
           startBtn.disabled = false;
         }
@@ -1339,6 +1439,9 @@
     async function stopBroadcast() {
       stopBtn.disabled = true;
       pauseTimer();
+      stopSponsorCycle();
+      hideSponsor();
+      hideScene();
 
       if (mediaStream) {
         mediaStream.getTracks().forEach(track => track.stop());
@@ -1413,6 +1516,161 @@
       saveMatchData();
     }
 
+    function teamName(team) {
+      return team === 'home' ? currentHomeTeam : currentAwayTeam;
+    }
+
+    function oppositeTeamName(team) {
+      return team === 'home' ? currentAwayTeam : currentHomeTeam;
+    }
+
+    function addCommentary(title, text) {
+      const item = document.createElement('div');
+      item.className = 'commentary-item';
+      item.innerHTML = `
+        <strong>${title}</strong>
+        <span>${text}</span>
+      `;
+      commentaryList.prepend(item);
+    }
+
+    function goalEvent() {
+      const team = eventTeamSelect.value;
+      const scorer = document.getElementById('scorerInput').value.trim();
+      const assist = document.getElementById('assistInput').value.trim();
+
+      changeScore(team, 1);
+
+      const scoringTeam = teamName(team);
+      const otherTeam = oppositeTeamName(team);
+      const scorerText = scorer ? ` con ${scorer}` : '';
+      const assistText = assist ? ` su assist di ${assist}` : '';
+      const leadText = homeScore === awayScore
+        ? `${scoringTeam} trova il pareggio`
+        : `${scoringTeam} colpisce e cambia il risultato`;
+
+      addCommentary(
+        'Gol',
+        `${leadText}${scorerText}${assistText}. GOL! Ora ${scoringTeam} e ${otherTeam} sono sul ${homeScore} - ${awayScore}.`
+      );
+    }
+
+    function chanceEvent() {
+      const team = eventTeamSelect.value;
+      const player = document.getElementById('scorerInput').value.trim();
+      const playerText = player ? ` con ${player}` : '';
+      addCommentary(
+        'Occasione',
+        `${teamName(team)} si rende pericolosa${playerText}. Azione importante, il risultato resta ${homeScore} - ${awayScore}.`
+      );
+    }
+
+    function cardEvent() {
+      const team = eventTeamSelect.value;
+      const player = document.getElementById('cardPlayerInput').value.trim() || 'un giocatore';
+      const card = document.getElementById('cardTypeSelect').value;
+      addCommentary(
+        `Cartellino ${card}`,
+        `${card === 'rosso' ? 'Espulsione' : 'Ammonizione'} per ${player} della squadra ${teamName(team)}.`
+      );
+    }
+
+    function loadSponsorFile(input) {
+      const file = input.files && input.files[0];
+      if (!file) return;
+
+      const url = URL.createObjectURL(file);
+      sponsorImages.push(url);
+      sponsorImages = sponsorImages.slice(0, 3);
+      showMessage('Sponsor caricato.');
+    }
+
+    function showSponsor() {
+      if (!sponsorImages.length) {
+        showMessage('Carica almeno una immagine sponsor.', 'error');
+        return;
+      }
+
+      sponsorImage.src = sponsorImages[sponsorIndex % sponsorImages.length];
+      sponsorIndex += 1;
+      sponsorOverlay.classList.add('show');
+
+      clearTimeout(sponsorHideTimeout);
+      sponsorHideTimeout = setTimeout(hideSponsor, 10000);
+    }
+
+    function hideSponsor() {
+      sponsorOverlay.classList.remove('show');
+      clearTimeout(sponsorHideTimeout);
+      sponsorHideTimeout = null;
+    }
+
+    function startSponsorCycle() {
+      stopSponsorCycle();
+
+      if (!sponsorAutoToggle.checked) return;
+
+      sponsorCycleInterval = setInterval(() => {
+        if (sponsorAutoToggle.checked && sponsorImages.length) {
+          showSponsor();
+        }
+      }, 600000);
+    }
+
+    function stopSponsorCycle() {
+      clearInterval(sponsorCycleInterval);
+      sponsorCycleInterval = null;
+    }
+
+    function showScene(type) {
+      clearInterval(waitingCountdownInterval);
+      sceneOverlay.classList.add('show');
+
+      const score = `${currentHomeTeam} ${homeScore} - ${awayScore} ${currentAwayTeam}`;
+
+      if (type === 'waiting') {
+        const minutes = Math.max(1, Number(document.getElementById('waitingMinutesInput').value || 10));
+        let remaining = minutes * 60;
+
+        sceneKicker.textContent = 'Pre partita';
+        sceneTitle.textContent = 'La partita inizierà tra poco';
+        sceneSubtitle.textContent = `${currentHomeTeam} vs ${currentAwayTeam}`;
+        sceneScore.textContent = '';
+        sceneCountdown.textContent = formatClock(remaining);
+
+        waitingCountdownInterval = setInterval(() => {
+          remaining = Math.max(0, remaining - 1);
+          sceneCountdown.textContent = formatClock(remaining);
+
+          if (remaining === 0) {
+            clearInterval(waitingCountdownInterval);
+          }
+        }, 1000);
+      }
+
+      if (type === 'halftime') {
+        sceneKicker.textContent = 'Intervallo';
+        sceneTitle.textContent = 'Fine primo tempo';
+        sceneSubtitle.textContent = document.getElementById('sceneCustomTextInput').value.trim() || 'Torniamo tra poco';
+        sceneScore.textContent = score;
+        sceneCountdown.textContent = '';
+      }
+
+      if (type === 'final') {
+        sceneKicker.textContent = 'Full time';
+        sceneTitle.textContent = 'Fine partita';
+        sceneSubtitle.textContent = 'Risultato finale';
+        sceneScore.textContent = score;
+        sceneCountdown.textContent = '';
+      }
+    }
+
+    function hideScene() {
+      clearInterval(waitingCountdownInterval);
+      waitingCountdownInterval = null;
+      sceneOverlay.classList.remove('show');
+    }
+
     async function loadMatch() {
       if (!matchId) {
         showError('ID partita mancante. Apri lo studio dalla scheda partita.');
@@ -1449,22 +1707,33 @@
     document.getElementById('awayMinusBtn').addEventListener('click', () => changeScore('away', -1));
     document.getElementById('awayPlusBtn').addEventListener('click', () => changeScore('away', 1));
     scoreboardToggle.addEventListener('change', updateOverlay);
-    bannerToggle.addEventListener('change', updateOverlay);
     overlayToggle.addEventListener('change', updateOverlay);
+    sponsorAutoToggle.addEventListener('change', startSponsorCycle);
     themeSelect.addEventListener('change', () => {
       applyOverlayTheme(overlayThemes[themeSelect.value]);
       updateOverlay();
     });
     document.getElementById('applyGraphicsBtn').addEventListener('click', applyCustomGraphics);
-    document.getElementById('bannerApplyBtn').addEventListener('click', () => {
-      overlayBanner.textContent = bannerInput.value.trim() || 'LiveFut TV';
-      updateOverlay();
-    });
+    document.getElementById('showSponsorBtn').addEventListener('click', showSponsor);
+    document.getElementById('hideSponsorBtn').addEventListener('click', hideSponsor);
+    document.getElementById('sponsorInput1').addEventListener('change', event => loadSponsorFile(event.target));
+    document.getElementById('sponsorInput2').addEventListener('change', event => loadSponsorFile(event.target));
+    document.getElementById('sponsorInput3').addEventListener('change', event => loadSponsorFile(event.target));
+    document.getElementById('waitingSceneBtn').addEventListener('click', () => showScene('waiting'));
+    document.getElementById('halftimeSceneBtn').addEventListener('click', () => showScene('halftime'));
+    document.getElementById('finalSceneBtn').addEventListener('click', () => showScene('final'));
+    document.getElementById('hideSceneBtn').addEventListener('click', hideScene);
+    document.getElementById('goalEventBtn').addEventListener('click', goalEvent);
+    document.getElementById('chanceEventBtn').addEventListener('click', chanceEvent);
+    document.getElementById('cardEventBtn').addEventListener('click', cardEvent);
 
     window.addEventListener('pagehide', () => {
       if (mediaStream) {
         mediaStream.getTracks().forEach(track => track.stop());
       }
+
+      stopSponsorCycle();
+      clearInterval(waitingCountdownInterval);
     });
 
     applyOverlayTheme(overlayThemes.livefutClassic);
