@@ -1,0 +1,100 @@
+{
+  "meta": {
+    "region": "Abruzzo",
+    "season": "2025/26",
+    "generated_at": "2026-04-28T15:08:35Z",
+    "source_index_url": "https://abruzzo.lnd.it/calendari-stagione-2025-26/",
+    "source_policy": "official_lnd_figc_only_no_tuttocampo"
+  },
+  "sources": [
+    {
+      "source_url": "https://abruzzo.lnd.it/wp-content/uploads/simple-file-list/EC_A_2526abr.pdf",
+      "local_path": "data\\raw\\abruzzo\\2025-26\\839afb0e_EC_A_2526abr.pdf",
+      "sha256": "e4633a665411de58e2adb2cd63991b14e82f29cdaafea956c468875298bbf8c2",
+      "competition_id": "abruzzo_2025_26_calcio_a_11_eccellenza_maschile_girone_unico"
+    },
+    {
+      "source_url": "https://abruzzo.lnd.it/wp-content/uploads/simple-file-list/Eccellenza-Femminile-nuovo-Calendario-2526.pdf",
+      "local_path": "data\\raw\\abruzzo\\2025-26\\b09cfa03_Eccellenza-Femminile-nuovo-Calendario-2526.pdf",
+      "sha256": "aa55627b8713a96b42df10fdba1a8621def9a290144d81611eb6ea3ee29d0690",
+      "competition_id": "abruzzo_2025_26_calcio_a_11_eccellenza_femminile_girone_unico"
+    },
+    {
+      "source_url": "https://abruzzo.lnd.it/wp-content/uploads/simple-file-list/PR_A_2526abr.pdf",
+      "local_path": "data\\raw\\abruzzo\\2025-26\\d1710885_PR_A_2526abr.pdf",
+      "sha256": "7ac4150ee8d9ddee032229bf8138c4a85a740a88a0240892146c0b137bfa56c2",
+      "competition_id": "abruzzo_2025_26_calcio_a_11_promozione_girone_a"
+    },
+    {
+      "source_url": "https://abruzzo.lnd.it/wp-content/uploads/simple-file-list/PR_B_2526abr.pdf",
+      "local_path": "data\\raw\\abruzzo\\2025-26\\d4049002_PR_B_2526abr.pdf",
+      "sha256": "e3edb6be887fa418ed107ae6ec11a8b8c257148661dc490c87f0a624005f1903",
+      "competition_id": "abruzzo_2025_26_calcio_a_11_promozione_girone_b"
+    },
+    {
+      "source_url": "https://abruzzo.lnd.it/wp-content/uploads/simple-file-list/1C_A_2526abr.pdf",
+      "local_path": "data\\raw\\abruzzo\\2025-26\\9713fca5_1C_A_2526abr.pdf",
+      "sha256": "2f75430e5e292bd6ea25ddb16eff838efefe0a74b33bbccd85528628e4971400",
+      "competition_id": "abruzzo_2025_26_calcio_a_11_prima_categoria_girone_a"
+    },
+    {
+      "source_url": "https://abruzzo.lnd.it/wp-content/uploads/simple-file-list/1C_B_2526abr.pdf",
+      "local_path": "data\\raw\\abruzzo\\2025-26\\16a51689_1C_B_2526abr.pdf",
+      "sha256": "8ae5370e0bc035e41df511a4d6881b3d7a215cd4cb1c3d1b3574d2b4b7370fc2",
+      "competition_id": "abruzzo_2025_26_calcio_a_11_prima_categoria_girone_b"
+    },
+    {
+      "source_url": "https://abruzzo.lnd.it/wp-content/uploads/simple-file-list/1C_C_2526abr.pdf",
+      "local_path": "data\\raw\\abruzzo\\2025-26\\8dbfaa53_1C_C_2526abr.pdf",
+      "sha256": "b0db3e80908d158709f7c6c8ab5fae8776ee6593eee06541cac8e93d01040333",
+      "competition_id": "abruzzo_2025_26_calcio_a_11_prima_categoria_girone_c"
+    },
+    {
+      "source_url": "https://abruzzo.lnd.it/wp-content/uploads/simple-file-list/1C_D_2526abr.pdf",
+      "local_path": "data\\raw\\abruzzo\\2025-26\\0fdd4862_1C_D_2526abr.pdf",
+      "sha256": "f308bb83558d1233c15c77c70b1a082fe5daa5500f8ca16186ad20df362bb53f",
+      "competition_id": "abruzzo_2025_26_calcio_a_11_prima_categoria_girone_d"
+    },
+    {
+      "source_url": "https://abruzzo.lnd.it/wp-content/uploads/simple-file-list/2C_A_2526abr.pdf",
+      "local_path": "data\\raw\\abruzzo\\2025-26\\59e9bdbc_2C_A_2526abr.pdf",
+      "sha256": "80b5e071cee65e3df85b584d1a1fbd4759b7088ff5415f7e110cda4931f49c1e",
+      "competition_id": "abruzzo_2025_26_calcio_a_11_seconda_categoria_girone_a"
+    },
+    {
+      "source_url": "https://abruzzo.lnd.it/wp-content/uploads/simple-file-list/2C_B_2526abr.pdf",
+      "local_path": "data\\raw\\abruzzo\\2025-26\\466067e9_2C_B_2526abr.pdf",
+      "sha256": "c7f358fda1d8573b36faa623723016ff68e89c546f9cb3de0e6f53faae39cc2d",
+      "competition_id": "abruzzo_2025_26_calcio_a_11_seconda_categoria_girone_b"
+    },
+    {
+      "source_url": "https://abruzzo.lnd.it/wp-content/uploads/simple-file-list/2C_C_2526abr.pdf",
+      "local_path": "data\\raw\\abruzzo\\2025-26\\c83398a4_2C_C_2526abr.pdf",
+      "sha256": "a4cf6d55faecdbbad84077dda8a3285c56f668faaa22e81bfa3021d0c06eab46",
+      "competition_id": "abruzzo_2025_26_calcio_a_11_seconda_categoria_girone_c"
+    },
+    {
+      "source_url": "https://abruzzo.lnd.it/wp-content/uploads/simple-file-list/2C_D_2526abr.pdf",
+      "local_path": "data\\raw\\abruzzo\\2025-26\\021ac9c3_2C_D_2526abr.pdf",
+      "sha256": "5d2c83294c8b3c2e766bc91e5b426ea1294b96ee9a81ebdd64625a6e17ccd155",
+      "competition_id": "abruzzo_2025_26_calcio_a_11_seconda_categoria_girone_d"
+    },
+    {
+      "source_url": "https://abruzzo.lnd.it/wp-content/uploads/simple-file-list/TERZA_AQ_A_2526.pdf",
+      "local_path": "data\\raw\\abruzzo\\2025-26\\d38f2251_TERZA_AQ_A_2526.pdf",
+      "sha256": "4106fb463c287933a902997d6574ce08c668e9cbcf851a6ca07e901b33602f84",
+      "competition_id": "abruzzo_2025_26_calcio_a_11_terza_categoria_laquila_girone_a"
+    },
+    {
+      "source_url": "https://abruzzo.lnd.it/wp-content/uploads/simple-file-list/TERZA_AQ_B_2526.pdf",
+      "local_path": "data\\raw\\abruzzo\\2025-26\\7bfec165_TERZA_AQ_B_2526.pdf",
+      "sha256": "cc74e5384bdca784702593ea74684c82caac1a090fa00c4c327755f25693eb12",
+      "competition_id": "abruzzo_2025_26_calcio_a_11_terza_categoria_laquila_girone_b"
+    },
+    {
+      "source_url": "https://abruzzo.lnd.it/wp-content/uploads/simple-file-list/TERZA_CHIETI_2526.pdf",
+      "local_path": "data\\raw\\abruzzo\\2025-26\\87896629_TERZA_CHIETI_2526.pdf",
+      "sha256": "37782186d4e4af8df3df721a3f75777e55de4b1715469a756c073dc0b1269e70",
+      "competition_id": "abruzzo_2025_26_calcio_a_11_terza_categoria_chieti_girone_a"
+    },
+    {
