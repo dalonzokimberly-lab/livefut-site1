@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>LiveFut TV — Partita</title>
+  <title>LiveFut TV - Partita</title>
 
   <script src="https://app.termly.io/resource-blocker/ecfeb307-3d9a-4e26-a7de-4dab9c2345f9?autoBlock=on"></script>
 
@@ -67,19 +67,8 @@
       align-items:center;
       gap:12px;
       font-weight:800;
-         min-width:0;
+      min-width:0;
       overflow:hidden;
-    }
-
-    .brand-badge {
-      width:42px;
-      height:42px;
-      border-radius:14px;
-      display:grid;
-      place-items:center;
-      background:rgba(49,209,88,0.12);
-      border:1px solid var(--border);
-      color:var(--green);
     }
 
     .btn {
@@ -97,9 +86,7 @@
       transition:.2s ease;
     }
 
-    .btn:hover {
-      transform:translateY(-1px);
-    }
+    .btn:hover { transform:translateY(-1px); }
 
     .btn-primary {
       background:linear-gradient(135deg,#19a83f,#31d158);
@@ -119,9 +106,7 @@
       box-shadow:0 12px 28px rgba(255,209,102,0.22);
     }
 
-    .hero {
-      padding:34px 0 22px;
-    }
+    .hero { padding:34px 0 22px; }
 
     .match-header {
       background:linear-gradient(180deg, rgba(49,209,88,0.03), rgba(255,255,255,0.01));
@@ -178,7 +163,7 @@
       color:var(--green);
       font-size:clamp(2rem, 4vw, 3.4rem);
       line-height:1.02;
-      letter-spacing:-0.04em;
+      letter-spacing:0;
       overflow-wrap:anywhere;
     }
 
@@ -219,8 +204,7 @@
 
     .player-card,
     .side-card,
-    .events-card,
-    .notice-card {
+    .events-card {
       background:linear-gradient(180deg, rgba(49,209,88,0.03), rgba(255,255,255,0.01));
       border:1px solid var(--border);
       border-radius:24px;
@@ -240,16 +224,14 @@
       text-align:center;
     }
 
-    .player-placeholder {
-      max-width:620px;
-    }
+    .player-placeholder { max-width:620px; }
 
     .player-placeholder strong {
       display:block;
       color:var(--green);
       font-size:clamp(1.5rem, 3vw, 2.4rem);
       margin-bottom:12px;
-      letter-spacing:-0.04em;
+      letter-spacing:0;
     }
 
     .player-placeholder span {
@@ -258,14 +240,12 @@
       line-height:1.7;
     }
 
-    .card-body {
-      padding:22px;
-    }
+    .card-body { padding:22px; }
 
     h2, h3 {
       color:var(--green);
       margin:0 0 10px;
-      letter-spacing:-0.02em;
+      letter-spacing:0;
     }
 
     p {
@@ -326,9 +306,7 @@
       padding:14px;
     }
 
-    .event strong {
-      color:var(--green);
-    }
+    .event strong { color:var(--green); }
 
     .broadcast-panel {
       margin-top:16px;
@@ -364,29 +342,6 @@
       text-decoration:underline;
     }
 
-    @media (max-width: 900px) {
-      .match-header,
-      .layout {
-        grid-template-columns:1fr;
-      }
-
-      .score-box {
-        text-align:left;
-      }
-    }
-
-    @media (max-width: 700px) {
-      .topbar-inner,
-      .topbar-inner > div {
-        flex-direction:column;
-        align-items:stretch;
-      }
-
-      .btn {
-        width:100%;
-      }
-    }
-  
     .site-logo {
       height:42px;
       width:auto;
@@ -396,7 +351,6 @@
       flex-shrink:0;
     }
 
-  
     .brand-text strong {
       display:block;
       font-size:1.12rem;
@@ -412,6 +366,24 @@
       text-transform:uppercase;
     }
 
+    @media (max-width: 900px) {
+      .match-header,
+      .layout {
+        grid-template-columns:1fr;
+      }
+
+      .score-box { text-align:left; }
+    }
+
+    @media (max-width: 700px) {
+      .topbar-inner,
+      .topbar-inner > div {
+        flex-direction:column;
+        align-items:stretch;
+      }
+
+      .btn { width:100%; }
+    }
   </style>
 </head>
 
@@ -427,7 +399,7 @@
       </a>
 
       <div style="display:flex; gap:12px; flex-wrap:wrap;">
-        <a class="btn btn-secondary" href="live.html">← Torna alle live</a>
+        <a class="btn btn-secondary" href="live.html">Torna alle live</a>
         <a class="btn btn-primary" href="login.html">Accedi</a>
       </div>
     </div>
@@ -458,17 +430,13 @@
         <div class="player" id="playerArea">
           <div class="player-placeholder">
             <strong id="playerHeadline">Diretta LiveFut</strong>
-            <span id="playerText">
-              La diretta sarà disponibile qui appena avviata.
-            </span>
+            <span id="playerText">La diretta sarà disponibile qui appena avviata.</span>
           </div>
         </div>
 
         <div class="card-body">
           <h2 id="videoTitle">Diretta partita</h2>
-          <p id="videoDescription">
-            Segui la partita su LiveFut TV.
-          </p>
+          <p id="videoDescription">Segui la partita su LiveFut TV.</p>
 
           <div class="platforms">
             <span class="pill">LiveFut TV</span>
@@ -480,14 +448,10 @@
           <div class="broadcast-panel" id="broadcastPanel" style="display:none;">
             <div class="broadcast-box">
               <strong>Modalità broadcaster</strong>
-              <p>
-                Gestisci la trasmissione della partita selezionata.
-              </p>
+              <p>Gestisci la trasmissione della partita selezionata.</p>
             </div>
 
-            <a class="btn btn-warning" id="startBroadcastBtn" href="#">
-              Avvia diretta
-            </a>
+            <a class="btn btn-warning" id="startBroadcastBtn" href="#">Avvia diretta</a>
           </div>
         </div>
       </article>
@@ -500,27 +464,27 @@
           <div class="info-list">
             <div class="info-item">
               <strong>Regione</strong>
-              <span id="matchRegion">—</span>
+              <span id="matchRegion">-</span>
             </div>
 
             <div class="info-item">
               <strong>Disciplina</strong>
-              <span id="matchDiscipline">—</span>
+              <span id="matchDiscipline">-</span>
             </div>
 
             <div class="info-item">
               <strong>Categoria</strong>
-              <span id="matchCategory">—</span>
+              <span id="matchCategory">-</span>
             </div>
 
             <div class="info-item">
               <strong>Campo</strong>
-              <span id="matchField">—</span>
+              <span id="matchField">-</span>
             </div>
 
             <div class="info-item">
               <strong>Stato</strong>
-              <span id="matchStatus">—</span>
+              <span id="matchStatus">-</span>
             </div>
           </div>
         </div>
@@ -538,7 +502,7 @@
               <strong id="eventMinute">LIVE</strong>
               <span> Aggiornamento punteggio</span>
             </div>
-            <span id="eventScore">—</span>
+            <span id="eventScore">-</span>
           </div>
 
           <div class="event">
@@ -554,7 +518,7 @@
   </main>
 
   <footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
-    © 2026 LiveFut TV — Football United Team. Tutti i diritti riservati.<br><br>
+    © 2026 LiveFut TV - Football United Team. Tutti i diritti riservati.<br><br>
 
     <a href="https://www.iubenda.com/privacy-policy/71949704"
        class="iubenda-white iubenda-noiframe iubenda-embed">
@@ -566,42 +530,108 @@
        Cookie Policy
     </a> |
 
-    <a href="terms.html">
-       Termini e Condizioni
-    </a>
+    <a href="terms.html">Termini e Condizioni</a>
   </footer>
 
   <script>
     const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJIUzI1NiIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSRj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
+    const OFFICIAL_DATA_URL = 'data/abruzzo_2025_26_api.json';
 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const params = new URLSearchParams(window.location.search);
-    const matchId = params.get('id');
+    const supabaseMatchId = params.get('id');
+    const officialMatchId = params.get('match_id');
     const mode = params.get('mode') || 'view';
 
     const pageContent = document.getElementById('pageContent');
 
-    function safe(value, fallback = '—') {
+    function safe(value, fallback = '-') {
       return value === null || value === undefined || value === '' ? fallback : value;
     }
 
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function isUuid(value) {
+      return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value || '');
+    }
+
     function formatScore(score) {
-      return safe(score, '0-0').replace('-', ' - ');
+      return score ? String(score).replace('-', ' - ') : '0 - 0';
+    }
+
+    function formatDiscipline(value) {
+      if (value === 'calcio_a_11') return 'Calcio a 11';
+      if (value === 'calcio_a_5') return 'Calcio a 5';
+      return safe(value, 'Non specificata');
+    }
+
+    function formatCompetitionType(value) {
+      if (value === 'campionato') return 'Campionato';
+      if (value === 'coppa') return 'Coppa';
+      return safe(value, 'Competizione');
+    }
+
+    function formatAgeGroup(value) {
+      if (value === 'adult') return 'Adulti';
+      if (value === 'under_19') return 'Under 19';
+      if (value === 'under_17') return 'Under 17';
+      if (value === 'under_15') return 'Under 15';
+      return safe(value, 'Fascia non specificata');
+    }
+
+    function formatGender(value) {
+      if (value === 'female') return 'Femminile';
+      if (value === 'male') return 'Maschile';
+      return safe(value, 'Genere non specificato');
+    }
+
+    function parseLocalDate(dateValue) {
+      if (!dateValue) return null;
+      const [year, month, day] = String(dateValue).split('-').map(Number);
+      if (!year || !month || !day) return null;
+      return new Date(year, month - 1, day);
+    }
+
+    function formatDate(dateValue) {
+      const date = parseLocalDate(dateValue);
+      if (!date) return 'Data da definire';
+      return date.toLocaleDateString('it-IT', {
+        weekday: 'short',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    }
+
+    function inferStatus(matchDate) {
+      const date = parseLocalDate(matchDate);
+      if (!date) return 'soon';
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      date.setHours(0, 0, 0, 0);
+      return date < today ? 'finished' : 'soon';
     }
 
     function statusLabel(status) {
       if (status === 'live') return 'Live';
       if (status === 'soon') return 'In arrivo';
-      if (status === 'finished') return 'Conclusa';
+      if (status === 'finished') return 'Calendario';
       return safe(status, 'In arrivo');
     }
 
     function minuteLabel(match) {
       if (match.status === 'finished') return 'FT';
       if (match.status === 'soon') return 'Non iniziata';
-      if (match.minute === null || match.minute === undefined) return 'LIVE';
+      if (match.minute === null || match.minute === undefined || match.minute === '') return 'LIVE';
       return `${match.minute}'`;
     }
 
@@ -618,6 +648,65 @@
     function setText(id, value) {
       const el = document.getElementById(id);
       if (el) el.textContent = value;
+    }
+
+    function officialMatchToPage(match) {
+      return {
+        id: match.match_id,
+        match_id: match.match_id,
+        competition_id: match.competition_id,
+        home_team: match.home_team,
+        away_team: match.away_team,
+        region: match.region,
+        discipline: formatDiscipline(match.sport),
+        category: match.category,
+        field: formatDate(match.match_date),
+        status: inferStatus(match.match_date),
+        score: '',
+        minute: '',
+        source: 'lnd',
+        source_url: match.source_url,
+        detailRows: [
+          formatCompetitionType(match.competition_type),
+          formatAgeGroup(match.age_group),
+          formatGender(match.gender),
+          match.group_name ? `Girone: ${match.group_name}` : '',
+          match.round_number ? `Giornata: ${match.round_number}` : '',
+          match.leg ? `Fase: ${match.leg}` : ''
+        ].filter(Boolean)
+      };
+    }
+
+    function normalizeSupabaseMatch(match) {
+      return {
+        ...match,
+        id: match.id || match.match_id,
+        match_id: match.match_id || match.id,
+        region: match.region || 'Abruzzo',
+        discipline: match.discipline || formatDiscipline(match.sport),
+        category: match.category || 'Non specificata',
+        field: match.field || formatDate(match.match_date),
+        status: match.status || inferStatus(match.match_date),
+        detailRows: [
+          match.competition_type ? formatCompetitionType(match.competition_type) : '',
+          match.age_group ? formatAgeGroup(match.age_group) : '',
+          match.gender ? formatGender(match.gender) : '',
+          match.group_name ? `Girone: ${match.group_name}` : ''
+        ].filter(Boolean)
+      };
+    }
+
+    function buildStudioUrl(match) {
+      const params = new URLSearchParams({ mode: 'broadcast' });
+      if (isUuid(match.id)) {
+        params.set('id', match.id);
+      } else if (match.match_id) {
+        params.set('match_id', match.match_id);
+      }
+      if (match.competition_id) {
+        params.set('competition_id', match.competition_id);
+      }
+      return `studio.html?${params.toString()}`;
     }
 
     function applyMode(match) {
@@ -638,7 +727,7 @@
         videoDescription.textContent = 'Gestione diretta della partita selezionata.';
 
         broadcastPanel.style.display = 'grid';
-        startBroadcastBtn.href = `studio.html?id=${encodeURIComponent(match.id)}`;
+        startBroadcastBtn.href = buildStudioUrl(match);
 
         setText('eventStatusText', 'Modalità broadcaster attiva');
         setText('eventStatusBadge', 'BROADCAST');
@@ -668,11 +757,12 @@
       const category = safe(match.category, 'Non specificata');
       const field = safe(match.field, 'Non specificato');
       const status = safe(match.status, 'soon');
+      const extra = match.detailRows && match.detailRows.length ? ` · ${match.detailRows.join(' · ')}` : '';
 
-      document.title = `${home} vs ${away} — LiveFut TV`;
+      document.title = `${home} vs ${away} - LiveFut TV`;
 
       setText('matchTitle', `${home} vs ${away}`);
-      setText('matchSubtitle', `${region} · ${discipline} · ${category} · ${field}`);
+      setText('matchSubtitle', `${region} · ${discipline} · ${category} · ${field}${extra}`);
       setText('matchScore', score);
       setText('matchMinute', minuteLabel(match));
       setText('matchRegion', region);
@@ -687,29 +777,61 @@
       applyMode(match);
     }
 
-    async function loadMatch() {
-      if (!matchId) {
-        showError('ID partita mancante. Apri questa pagina dalla lista live.');
-        return;
-      }
-
+    async function loadSupabaseMatch(id) {
       const { data, error } = await supabaseClient
         .from('matches')
         .select('*')
-        .eq('id', matchId)
+        .eq('id', id)
         .single();
 
       if (error) {
-        showError(`Impossibile caricare la partita: <strong>${error.message}</strong>`);
-        return;
+        throw new Error(error.message);
       }
 
       if (!data) {
-        showError('Partita non trovata.');
-        return;
+        throw new Error('Partita non trovata.');
       }
 
-      renderMatch(data);
+      return normalizeSupabaseMatch(data);
+    }
+
+    async function loadOfficialMatch(matchId) {
+      const response = await fetch(OFFICIAL_DATA_URL, { cache: 'no-store' });
+      if (!response.ok) {
+        throw new Error(`Dataset ufficiale non trovato: ${OFFICIAL_DATA_URL}`);
+      }
+
+      const payload = await response.json();
+      const match = (payload.matches || []).find(item => item.match_id === matchId);
+
+      if (!match) {
+        throw new Error('Partita ufficiale non trovata nel dataset.');
+      }
+
+      return officialMatchToPage(match);
+    }
+
+    async function loadMatch() {
+      try {
+        if (isUuid(supabaseMatchId)) {
+          renderMatch(await loadSupabaseMatch(supabaseMatchId));
+          return;
+        }
+
+        if (officialMatchId) {
+          renderMatch(await loadOfficialMatch(officialMatchId));
+          return;
+        }
+
+        if (supabaseMatchId && !isUuid(supabaseMatchId)) {
+          renderMatch(await loadOfficialMatch(supabaseMatchId));
+          return;
+        }
+
+        showError('ID partita mancante. Apri questa pagina dalla lista live.');
+      } catch (error) {
+        showError(`Impossibile caricare la partita: <strong>${escapeHtml(error.message)}</strong>`);
+      }
     }
 
     loadMatch();
