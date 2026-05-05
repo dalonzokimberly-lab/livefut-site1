@@ -246,6 +246,7 @@
     }
 
     .filters-card,
+    .navigator-card,
     .card,
     .region-card,
     .match-card {
@@ -255,7 +256,97 @@
       box-shadow:var(--shadow);
     }
 
-    .filters-card { padding:22px; }
+    .filters-card { display:none; }
+
+    .navigator-card {
+      padding:22px;
+      display:grid;
+      gap:18px;
+    }
+
+    .step-row {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .step-label {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:34px;
+      height:34px;
+      border-radius:999px;
+      background:rgba(49,209,88,.12);
+      border:1px solid var(--border);
+      color:var(--green);
+      font-weight:900;
+      margin-right:10px;
+    }
+
+    .choice-grid {
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+    }
+
+    .choice-btn {
+      width:100%;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.025);
+      color:#fff;
+      border-radius:14px;
+      padding:13px 14px;
+      font-family:inherit;
+      cursor:pointer;
+      text-align:left;
+      display:grid;
+      gap:4px;
+      min-height:72px;
+      transition:.2s ease;
+    }
+
+    .choice-btn:hover,
+    .choice-btn.active {
+      transform:translateY(-1px);
+      border-color:rgba(49,209,88,.46);
+      background:rgba(49,209,88,.08);
+    }
+
+    .choice-btn strong {
+      color:var(--green);
+      font-size:.98rem;
+      line-height:1.2;
+      overflow-wrap:anywhere;
+    }
+
+    .choice-btn span {
+      color:#fff;
+      font-size:.82rem;
+      line-height:1.35;
+    }
+
+    .choice-btn.disabled {
+      opacity:.58;
+      cursor:not-allowed;
+    }
+
+    .choice-btn.disabled:hover {
+      transform:none;
+      border-color:var(--border);
+      background:rgba(255,255,255,.025);
+    }
+
+    .selection-note {
+      padding:16px;
+      border:1px solid var(--border);
+      border-radius:18px;
+      background:rgba(49,209,88,.04);
+      color:#fff;
+      line-height:1.6;
+    }
 
     .filters-grid {
       display:grid;
@@ -431,6 +522,7 @@
     @media (max-width:1080px) {
       .hero-card,
       .filters-grid,
+      .choice-grid,
       .grid-4,
       .grid-3 {
         grid-template-columns:1fr 1fr;
@@ -441,6 +533,7 @@
 
     @media (max-width:760px) {
       .filters-grid,
+      .choice-grid,
       .grid-4,
       .grid-3 {
         grid-template-columns:1fr;
@@ -597,21 +690,32 @@
     </section>
 
     <section class="section" id="regioni">
-      <h2 class="section-title">Esplora per regione</h2>
+      <h2 class="section-title">Scegli la regione</h2>
       <p class="section-text">
-        Naviga le partite per territorio e area geografica.
+        Parti dal territorio: la lista e compatta e ordinata in colonne.
       </p>
 
-      <div id="regionsGrid" class="grid-4"></div>
+      <div class="navigator-card">
+        <div class="step-row">
+          <p class="section-text" style="margin:0;"><span class="step-label">1</span>Regione</p>
+          <button class="btn btn-secondary" id="resetNavigatorBtn" type="button">Azzera scelta</button>
+        </div>
+        <div id="regionsGrid" class="choice-grid"></div>
+      </div>
     </section>
 
     <section class="section" id="campionati">
-      <h2 class="section-title">Campionati e categorie</h2>
-      <p class="section-text">
-        Categorie disponibili sulla piattaforma LiveFut TV.
+      <h2 class="section-title" id="competitionsTitle">Scegli il campionato</h2>
+      <p class="section-text" id="competitionsText">
+        Dopo aver scelto una regione vedrai qui campionati, coppe, under e femminile disponibili.
       </p>
 
-      <div id="competitionsGrid" class="grid-3"></div>
+      <div class="navigator-card">
+        <div class="step-row">
+          <p class="section-text" style="margin:0;"><span class="step-label">2</span>Campionato o coppa</p>
+        </div>
+        <div id="competitionsGrid" class="choice-grid"></div>
+      </div>
     </section>
 
     <section class="footer-note">
@@ -640,7 +744,7 @@
   <script>
     const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
-    const OFFICIAL_DATA_URL = 'data/abruzzo_2025_26_api.json';
+    const OFFICIAL_DATA_URL = 'data/italia_2025_26_api.json';
 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -651,6 +755,9 @@
     const totalCompetitions = document.getElementById('totalCompetitions');
     const regionsGrid = document.getElementById('regionsGrid');
     const competitionsGrid = document.getElementById('competitionsGrid');
+    const competitionsTitle = document.getElementById('competitionsTitle');
+    const competitionsText = document.getElementById('competitionsText');
+    const resetNavigatorBtn = document.getElementById('resetNavigatorBtn');
 
     const filters = {
       regione: document.getElementById('regione'),
@@ -665,6 +772,7 @@
     let allMatches = [];
     let allCompetitions = [];
     let selectedCompetitionId = '';
+    let selectedRegion = '';
     let currentSession = null;
 
     function safe(value, fallback = '-') {
@@ -931,38 +1039,53 @@
     }
 
     function renderRegions() {
-      const regions = [...new Set(allCompetitions.map(item => item.region))].sort();
+      const regions = [...new Set([
+        ...(officialPayload.meta?.regions || []),
+        ...allCompetitions.map(item => item.region),
+        ...allMatches.map(item => item.region)
+      ].filter(Boolean))].sort((a, b) => a.localeCompare(b, 'it'));
       regionsGrid.innerHTML = '';
 
       regions.forEach(region => {
         const competitionsCount = allCompetitions.filter(item => item.region === region).length;
         const matchesCount = allMatches.filter(item => item.region === region).length;
-        const card = document.createElement('article');
-        card.className = 'region-card';
-        card.style.cursor = 'pointer';
-        card.innerHTML = `
-          <h3>${escapeHtml(region)}</h3>
-          <p>${competitionsCount} competizioni e ${matchesCount} partite calendario importate da fonti ufficiali.</p>
-          <div class="meta-row">
-            <span class="region-badge">Regione attiva</span>
-          </div>
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = `choice-btn${selectedRegion === region ? ' active' : ''}${competitionsCount ? '' : ' disabled'}`;
+        button.innerHTML = `
+          <strong>${escapeHtml(region)}</strong>
+          <span>${competitionsCount} competizioni - ${matchesCount} partite</span>
         `;
-        card.addEventListener('click', () => {
-          selectedCompetitionId = '';
-          filters.regione.value = region;
-          renderCompetitions();
-          document.getElementById('campionati').scrollIntoView({ behavior: 'smooth' });
-        });
-        regionsGrid.appendChild(card);
+        button.addEventListener('click', () => selectRegion(region));
+        regionsGrid.appendChild(button);
       });
+    }
+
+    function selectRegion(region) {
+      selectedRegion = region;
+      selectedCompetitionId = '';
+      filters.regione.value = region;
+      document.getElementById('matchesTitle').textContent = 'In diretta ora';
+      renderRegions();
+      renderCompetitions();
+      renderMatches(allMatches.filter(match => match.status === 'live'));
+      document.getElementById('campionati').scrollIntoView({ behavior: 'smooth' });
     }
 
     function renderCompetitions() {
       competitionsGrid.innerHTML = '';
+      const region = selectedRegion || filters.regione.value;
 
-      allCompetitions
+      if (!region) {
+        competitionsTitle.textContent = 'Scegli il campionato';
+        competitionsText.textContent = 'Prima scegli una regione: poi vedrai qui solo i campionati e le coppe di quel territorio.';
+        competitionsGrid.innerHTML = '<div class="selection-note">Seleziona una regione per aprire il secondo livello.</div>';
+        return;
+      }
+
+      const regionCompetitions = allCompetitions
         .slice()
-        .filter(competition => !filters.regione.value || competition.region === filters.regione.value)
+        .filter(competition => competition.region === region)
         .filter(competition => !filters.disciplina.value || competition.sport === filters.disciplina.value)
         .filter(competition => !filters.tipoCompetizione.value || competition.competition_type === filters.tipoCompetizione.value)
         .filter(competition => !filters.fascia.value || competition.age_group === filters.fascia.value)
@@ -970,32 +1093,41 @@
         .sort((a, b) => {
           return String(a.sport).localeCompare(String(b.sport)) ||
             String(a.competition_type).localeCompare(String(b.competition_type)) ||
-            String(a.category).localeCompare(String(b.category));
-        })
+            String(a.category).localeCompare(String(b.category)) ||
+            String(a.group_name).localeCompare(String(b.group_name));
+        });
+
+      competitionsTitle.textContent = `Campionati - ${region}`;
+      competitionsText.textContent = `${regionCompetitions.length} competizioni disponibili. Clicca una voce per vedere solo le sue partite.`;
+
+      if (!regionCompetitions.length) {
+        competitionsGrid.innerHTML = '<div class="selection-note">Per questa regione non ci sono ancora campionati importati nel dataset ufficiale.</div>';
+        return;
+      }
+
+      regionCompetitions
         .forEach(competition => {
-          const card = document.createElement('article');
-          card.className = 'card';
-          card.style.cursor = 'pointer';
-          card.innerHTML = `
-            <h3>${escapeHtml(competition.category)}</h3>
-            <p>${escapeHtml(formatDiscipline(competition.sport))} - ${escapeHtml(competition.group_name)} - ${escapeHtml(formatCompetitionType(competition.competition_type))}</p>
-            <div class="meta-row">
-              <span class="tag">${escapeHtml(formatAgeGroup(competition.age_group))}</span>
-              <span class="tag">${escapeHtml(formatGender(competition.gender))}</span>
-            </div>
+          const matchesCount = allMatches.filter(match => match.competition_id === competition.competition_id).length;
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = `choice-btn${selectedCompetitionId === competition.competition_id ? ' active' : ''}`;
+          button.innerHTML = `
+            <strong>${escapeHtml(competition.category)}</strong>
+            <span>${escapeHtml(formatDiscipline(competition.sport))} - ${escapeHtml(competition.group_name)} - ${matchesCount} partite</span>
           `;
-          card.addEventListener('click', () => {
+          button.addEventListener('click', () => {
             selectedCompetitionId = competition.competition_id;
-            document.getElementById('matchesTitle').textContent = competition.category;
+            document.getElementById('matchesTitle').textContent = `${competition.category} - ${competition.group_name}`;
+            renderCompetitions();
             renderMatches(allMatches.filter(match => match.competition_id === selectedCompetitionId));
             document.getElementById('live-now').scrollIntoView({ behavior: 'smooth' });
           });
-          competitionsGrid.appendChild(card);
+          competitionsGrid.appendChild(button);
         });
     }
 
     function applyFilters() {
-      const selectedRegion = filters.regione.value;
+      selectedRegion = filters.regione.value;
       const selectedDiscipline = filters.disciplina.value;
       const selectedType = filters.tipoCompetizione.value;
       const selectedAgeGroup = filters.fascia.value;
@@ -1015,7 +1147,21 @@
       });
 
       renderMatches(filtered);
+      renderRegions();
       renderCompetitions();
+    }
+
+    function resetNavigator() {
+      selectedRegion = '';
+      selectedCompetitionId = '';
+      Object.values(filters).forEach(select => {
+        select.value = '';
+      });
+      document.getElementById('matchesTitle').textContent = 'In diretta ora';
+      renderRegions();
+      renderCompetitions();
+      renderMatches(allMatches.filter(match => match.status === 'live'));
+      document.getElementById('regioni').scrollIntoView({ behavior: 'smooth' });
     }
 
     async function loadOfficialDataset() {
@@ -1076,10 +1222,11 @@
       select.addEventListener('change', applyFilters);
     });
 
+    resetNavigatorBtn.addEventListener('click', resetNavigator);
+
     loadMatches();
   </script>
 
   <script src="https://cdn.iubenda.com/iubenda.js"></script>
 </body>
 </html>
-
