@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LiveFut TV - Admin</title>
+  <script src="https://app.termly.io/resource-blocker/ecfeb307-3d9a-4e26-a7de-4dab9c2345f9?autoBlock=on"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --green:#31d158;
+      --border:rgba(49,209,88,.18);
+      --shadow:0 20px 60px rgba(0,0,0,.55);
+      --muted:#cfd6cf;
+      --danger:#ff6b6b;
+      --warning:#ffd166;
+      --panel:rgba(49,209,88,.04);
+    }
+
+    * { box-sizing:border-box; }
+
+    body {
+      margin:0;
+      min-height:100vh;
+      font-family:"Space Grotesk",sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(49,209,88,.12), transparent 24%),
+        radial-gradient(circle at top right, rgba(49,209,88,.08), transparent 22%),
+        linear-gradient(180deg,#020202 0%,#080808 100%);
+      color:#fff;
+    }
+
+    a { color:inherit; text-decoration:none; }
+    button,input,select,textarea { font:inherit; }
+
+    .container { width:min(1220px,calc(100% - 32px)); margin:0 auto; }
+
+    .topbar {
+      position:sticky;
+      top:0;
+      z-index:30;
+      backdrop-filter:blur(14px);
+      background:rgba(0,0,0,.84);
+      border-bottom:1px solid var(--border);
+    }
+
+    .topbar-inner {
+      min-height:78px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      flex-wrap:wrap;
+    }
+
+    .brand {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-weight:800;
+      min-width:0;
+      overflow:hidden;
+    }
+
+    .site-logo {
+      height:42px;
+      width:auto;
+      max-height:42px;
+      display:block;
+      object-fit:contain;
+      flex-shrink:0;
+    }
+
+    .brand-text strong { display:block; font-size:1.12rem; line-height:1.1; }
+    .brand-text span { display:block; margin-top:4px; color:var(--muted); font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; }
+
+    .top-actions,.button-row,.filters-row {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .btn {
+      border:0;
+      cursor:pointer;
+      border-radius:999px;
+      padding:12px 18px;
+      font-weight:800;
+      font-size:.94rem;
+      transition:.2s ease;
+      white-space:nowrap;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+    }
+
+    .btn:hover { transform:translateY(-1px); }
+    .btn:disabled { opacity:.58; cursor:not-allowed; transform:none; }
+    .btn-primary { background:linear-gradient(135deg,#19a83f,#31d158); color:#000; box-shadow:0 12px 28px rgba(49,209,88,.28); }
+    .btn-secondary { background:rgba(49,209,88,.06); color:#fff; border:1px solid var(--border); }
+    .btn-danger { background:rgba(255,107,107,.1); color:#fff; border:1px solid rgba(255,107,107,.28); }
+    .btn-warning { background:rgba(255,209,102,.12); color:#fff; border:1px solid rgba(255,209,102,.28); }
+    .btn-small { padding:9px 12px; font-size:.82rem; }
+
+    .hero { padding:34px 0 22px; }
+
+    .hero-card,.card {
+      background:linear-gradient(180deg,rgba(49,209,88,.03),rgba(255,255,255,.01));
+      border:1px solid var(--border);
+      border-radius:32px;
+      box-shadow:var(--shadow);
+      padding:28px;
+      min-width:0;
+      overflow:hidden;
+    }
+
+    .hero-card {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:24px;
+      align-items:start;
+    }
+
+    .eyebrow {
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      background:rgba(49,209,88,.08);
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:10px 14px;
+      color:var(--green);
+      font-weight:800;
+      font-size:.82rem;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:16px;
+    }
+
+    .pulse {
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      background:var(--green);
+      box-shadow:0 0 0 8px rgba(49,209,88,.12);
+      flex-shrink:0;
+    }
+
+    h1 {
+      margin:0 0 12px;
+      color:var(--green);
+      font-size:clamp(2rem,4vw,3.2rem);
+      line-height:1.02;
+      letter-spacing:0;
+      overflow-wrap:anywhere;
+    }
+
+    h2,h3 { color:var(--green); margin:0 0 10px; letter-spacing:0; }
+    p { margin:0; color:#fff; line-height:1.7; }
+
+    .section { padding:12px 0 28px; }
+    .grid-4 { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; }
+    .grid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+    .grid-2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+
+    .metric {
+      background:rgba(49,209,88,.05);
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:18px;
+      min-width:0;
+    }
+
+    .metric strong {
+      display:block;
+      color:var(--green);
+      font-size:2rem;
+      line-height:1;
+      margin-bottom:8px;
+      overflow-wrap:anywhere;
+    }
+
+    .metric span { color:#fff; line-height:1.5; }
+
+    .status-message {
+      margin-top:16px;
+      padding:14px 16px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:rgba(49,209,88,.06);
+      color:#fff;
+      line-height:1.6;
+      display:none;
+    }
+
+    .status-message.show { display:block; }
+    .status-message.error { border-color:rgba(255,107,107,.28); background:rgba(255,107,107,.1); color:#ffd4d4; }
+
+    .tabs {
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:18px;
+    }
+
+    .tab {
+      border:1px solid var(--border);
+      border-radius:999px;
+      background:rgba(49,209,88,.05);
+      color:#fff;
+      padding:10px 14px;
+      cursor:pointer;
+      font-weight:800;
+    }
+
+    .tab.is-active {
+      background:linear-gradient(135deg,#19a83f,#31d158);
+      color:#000;
+    }
+
+    .panel { display:none; }
+    .panel.is-active { display:block; }
+
+    .table-wrap {
+      margin-top:16px;
+      border:1px solid var(--border);
+      border-radius:20px;
+      overflow:auto;
+      background:rgba(0,0,0,.2);
+    }
+
+    table {
+      width:100%;
+      border-collapse:collapse;
+      min-width:840px;
+    }
+
+    th,td {
+      padding:14px;
+      border-bottom:1px solid rgba(49,209,88,.12);
+      text-align:left;
+      vertical-align:top;
+      color:#fff;
+      line-height:1.5;
+    }
+
+    th {
+      color:var(--green);
+      font-size:.82rem;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      background:rgba(49,209,88,.04);
+      position:sticky;
+      top:0;
+      z-index:1;
+    }
+
+    tr:last-child td { border-bottom:0; }
+
+    .badge {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(49,209,88,.08);
+      color:#fff;
+      font-size:.78rem;
+      font-weight:900;
+      white-space:nowrap;
+    }
+
+    .badge.pending,.badge.new { color:var(--warning); border-color:rgba(255,209,102,.28); background:rgba(255,209,102,.1); }
+    .badge.approved,.badge.live,.badge.ok { color:var(--green); }
+    .badge.rejected,.badge.finished,.badge.error { color:#ffd4d4; border-color:rgba(255,107,107,.28); background:rgba(255,107,107,.1); }
+
+    .empty-state {
+      margin-top:16px;
+      padding:20px;
+      border:1px solid var(--border);
+      border-radius:20px;
+      background:rgba(49,209,88,.04);
+      color:#fff;
+      line-height:1.6;
+    }
+
+    .system-list {
+      display:grid;
+      gap:12px;
+      margin-top:16px;
+    }
+
+    .system-item {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      padding:16px;
+      border:1px solid var(--border);
+      border-radius:18px;
+      background:rgba(49,209,88,.04);
+      min-width:0;
+    }
+
+    .system-item strong { color:var(--green); display:block; margin-bottom:4px; }
+    .system-item span { color:#fff; line-height:1.5; }
+
+    select,textarea {
+      width:100%;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      color:#fff;
+      border-radius:14px;
+      padding:11px 12px;
+      outline:none;
+    }
+
+    select option { color:#000; }
+    textarea { min-height:76px; resize:vertical; }
+
+    .footer-note {
+      padding:0 0 42px;
+      color:var(--muted);
+      font-size:.92rem;
+      line-height:1.6;
+    }
+
+    footer a { color:var(--green); text-decoration:underline; }
+
+    @media (max-width:1080px) {
+      .hero-card,.grid-4,.grid-3,.grid-2 { grid-template-columns:1fr 1fr; }
+      .hero-card { grid-template-columns:1fr; }
+    }
+
+    @media (max-width:760px) {
+      .container { width:min(100% - 20px,1220px); }
+      .grid-4,.grid-3,.grid-2 { grid-template-columns:1fr; }
+      .topbar-inner { min-height:56px; gap:10px; flex-wrap:nowrap; }
+      .site-logo { height:30px; max-height:30px; }
+      .brand { gap:8px; flex:1 1 auto; }
+      .brand-text strong { font-size:.95rem; }
+      .brand-text span { display:none; }
+      .top-actions { flex:0 0 auto; gap:8px; flex-wrap:nowrap; overflow-x:auto; max-width:58vw; padding-bottom:2px; }
+      .top-actions .btn { width:auto; min-height:38px; padding:9px 12px; font-size:.78rem; flex:0 0 auto; }
+      .hero { padding:18px 0 14px; }
+      .hero-card,.card { border-radius:20px; padding:18px; }
+      h1 { font-size:1.65rem; }
+      .metric strong { font-size:1.65rem; }
+      .tabs,.filters-row,.button-row { display:grid; grid-template-columns:1fr; }
+      .tab,.filters-row .btn,.button-row .btn { width:100%; }
+      .system-item { flex-direction:column; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="index.html" class="brand">
+        <img src="livefut-logo.png" alt="LiveFut TV logo" class="site-logo" />
+        <div class="brand-text">
+          <strong>LiveFut</strong>
+          <span>Football United Team</span>
+        </div>
+      </a>
+      <div class="top-actions">
+        <a class="btn btn-secondary" href="dashboard.html">Dashboard</a>
+        <a class="btn btn-secondary" href="live.html">Live</a>
+        <button class="btn btn-danger" id="logoutBtn">Esci</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" id="adminPage">
+    <section class="hero">
+      <div class="hero-card">
+        <div>
+          <div class="eyebrow"><span class="pulse"></span> Pannello admin</div>
+          <h1>Regia operativa LiveFut</h1>
+          <p>Gestione accrediti, richieste, dirette, contenuti e stato piattaforma.</p>
+          <div class="status-message" id="adminMessage"></div>
+        </div>
+        <div class="button-row">
+          <button class="btn btn-primary" id="refreshBtn">Aggiorna dati</button>
+          <button class="btn btn-secondary" id="exportBtn">Esporta report</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="grid-4">
+        <article class="metric"><strong id="metricUsers">-</strong><span>Profili registrati</span></article>
+        <article class="metric"><strong id="metricMatches">-</strong><span>Partite presenti</span></article>
+        <article class="metric"><strong id="metricLive">-</strong><span>Dirette live</span></article>
+        <article class="metric"><strong id="metricPendingAccreditations">-</strong><span>Accrediti in attesa</span></article>
+      </div>
+    </section>
+
+    <section class="section">
+      <article class="card">
+        <h2>Controllo operativo</h2>
+        <p>Le sezioni mostrano i dati salvati su Supabase e permettono di gestire le richieste principali.</p>
+        <div class="tabs">
+          <button class="tab is-active" data-panel="accreditationsPanel">Accrediti</button>
+          <button class="tab" data-panel="contactsPanel">Contatti</button>
+          <button class="tab" data-panel="supportPanel">Supporto</button>
+          <button class="tab" data-panel="matchesPanel">Dirette</button>
+          <button class="tab" data-panel="eventsPanel">Telecronaca</button>
+          <button class="tab" data-panel="systemPanel">Sistema</button>
+        </div>
+      </article>
+    </section>
+
+    <section class="section panel is-active" id="accreditationsPanel">
+      <article class="card">
+        <h2>Richieste accredito</h2>
+        <p>Approva o rifiuta le richieste di associazione a squadre e ruoli operativi.</p>
+        <div class="table-wrap"><table><thead><tr><th>Squadra</th><th>Ruolo</th><th>Stato</th><th>Utente</th><th>Note</th><th>Data</th><th>Azioni</th></tr></thead><tbody id="accreditationsTable"></tbody></table></div>
+        <div class="empty-state" id="accreditationsEmpty">Nessuna richiesta accredito trovata.</div>
+      </article>
+    </section>
+
+    <section class="section panel" id="contactsPanel">
+      <article class="card">
+        <h2>Richieste contatto</h2>
+        <p>Monitora i messaggi arrivati dal sito e segna quelli già gestiti.</p>
+        <div class="table-wrap"><table><thead><tr><th>Nome</th><th>Email</th><th>Oggetto</th><th>Messaggio</th><th>Stato</th><th>Data</th><th>Azioni</th></tr></thead><tbody id="contactsTable"></tbody></table></div>
+        <div class="empty-state" id="contactsEmpty">Nessuna richiesta contatto trovata.</div>
+      </article>
+    </section>
+
+    <section class="section panel" id="supportPanel">
+      <article class="card">
+        <h2>Richieste supporto</h2>
+        <p>Controlla segnalazioni sulle partite e richieste di intervento operativo.</p>
+        <div class="table-wrap"><table><thead><tr><th>Partita</th><th>Motivo</th><th>Stato</th><th>Utente</th><th>Data</th><th>Azioni</th></tr></thead><tbody id="supportTable"></tbody></table></div>
+        <div class="empty-state" id="supportEmpty">Nessuna richiesta supporto trovata.</div>
+      </article>
+    </section>
+
+    <section class="section panel" id="matchesPanel">
+      <article class="card">
+        <h2>Dirette e partite</h2>
+        <p>Vista rapida dello stato delle partite registrate su Supabase.</p>
+        <div class="grid-3" style="margin-top:16px;">
+          <article class="metric"><strong id="metricSoon">-</strong><span>In arrivo</span></article>
+          <article class="metric"><strong id="metricFinished">-</strong><span>Concluse</span></article>
+          <article class="metric"><strong id="metricLocks">-</strong><span>Blocchi diretta attivi</span></article>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>Partita</th><th>Stato</th><th>Risultato</th><th>Minuto</th><th>Data</th><th>Campo</th><th>Azioni</th></tr></thead><tbody id="matchesTable"></tbody></table></div>
+        <div class="empty-state" id="matchesEmpty">Nessuna partita trovata.</div>
+      </article>
+    </section>
+
+    <section class="section panel" id="eventsPanel">
+      <article class="card">
+        <h2>Telecronaca</h2>
+        <p>Ultimi eventi generati dalla console studio durante le dirette.</p>
+        <div class="table-wrap"><table><thead><tr><th>Evento</th><th>Partita</th><th>Minuto</th><th>Risultato</th><th>Testo</th><th>Data</th></tr></thead><tbody id="eventsTable"></tbody></table></div>
+        <div class="empty-state" id="eventsEmpty">Nessun evento telecronaca trovato.</div>
+      </article>
+    </section>
+
+    <section class="section panel" id="systemPanel">
+      <article class="card">
+        <h2>Stato piattaforma</h2>
+        <p>Controlli base attuali e indicatori predisposti per monitoraggi futuri.</p>
+        <div class="system-list" id="systemList"></div>
+      </article>
+    </section>
+
+    <section class="footer-note">
+      LiveFut TV - Area amministrazione
+    </section>
+  </main>
+
+  <footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
+    (c) 2026 LiveFut TV - Football United Team. Tutti i diritti riservati.<br><br>
+    <a href="https://www.iubenda.com/privacy-policy/71949704" class="iubenda-white iubenda-noiframe iubenda-embed">Privacy Policy</a> |
+    <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy" class="iubenda-white iubenda-noiframe iubenda-embed">Cookie Policy</a> |
+    <a href="terms.html">Termini e Condizioni</a>
+  </footer>
+
+  <script>
+    const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const ADMIN_ROLES = ['admin', 'owner', 'superuser', 'super_admin'];
+
+    let currentUser = null;
+    let currentProfile = null;
+    let cachedReport = {};
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function formatDate(value) {
+      if (!value) return '-';
+      return new Intl.DateTimeFormat('it-IT', { dateStyle:'short', timeStyle:'short' }).format(new Date(value));
+    }
+
+    function statusLabel(value) {
+      const labels = {
+        pending:'In attesa',
+        approved:'Approvata',
+        rejected:'Rifiutata',
+        new:'Nuova',
+        open:'Aperta',
+        resolved:'Risolta',
+        archived:'Archiviata',
+        soon:'In arrivo',
+        live:'Live',
+        finished:'Conclusa',
+        active:'Attivo',
+        ended:'Terminato'
+      };
+      return labels[value] || value || '-';
+    }
+
+    function badge(value) {
+      return `<span class="badge ${escapeHtml(value)}">${escapeHtml(statusLabel(value))}</span>`;
+    }
+
+    function showMessage(message, type = 'ok') {
+      const box = document.getElementById('adminMessage');
+      box.textContent = message;
+      box.className = type === 'error' ? 'status-message show error' : 'status-message show';
+    }
+
+    function setMetric(id, value) {
+      document.getElementById(id).textContent = Number(value || 0).toLocaleString('it-IT');
+    }
+
+    async function countRows(table, filter) {
+      let query = supabaseClient.from(table).select('*', { count:'exact', head:true });
+      if (filter) query = filter(query);
+      const { count, error } = await query;
+      if (error) throw error;
+      return count || 0;
+    }
+
+    async function loadTable(table, orderColumn = 'created_at', limit = 50) {
+      const { data, error } = await supabaseClient
+        .from(table)
+        .select('*')
+        .order(orderColumn, { ascending:false })
+        .limit(limit);
+      if (error) throw error;
+      return data || [];
+    }
+
+    function renderRows(tbodyId, emptyId, rows, template) {
+      const tbody = document.getElementById(tbodyId);
+      const empty = document.getElementById(emptyId);
+      tbody.innerHTML = rows.map(template).join('');
+      empty.style.display = rows.length ? 'none' : 'block';
+    }
+
+    function renderAccreditations(rows) {
+      renderRows('accreditationsTable', 'accreditationsEmpty', rows, row => `
+        <tr>
+          <td><strong>${escapeHtml(row.team_name)}</strong><br><span>${escapeHtml(row.team_id)}</span></td>
+          <td>${escapeHtml(statusLabel(row.role))}</td>
+          <td>${badge(row.status)}</td>
+          <td>${escapeHtml(row.user_id || '-')}</td>
+          <td>${escapeHtml(row.notes || '-')}</td>
+          <td>${formatDate(row.created_at)}</td>
+          <td>
+            <div class="button-row">
+              <button class="btn btn-primary btn-small" data-action="approve-accreditation" data-id="${escapeHtml(row.id)}">Approva</button>
+              <button class="btn btn-danger btn-small" data-action="reject-accreditation" data-id="${escapeHtml(row.id)}">Rifiuta</button>
+            </div>
+          </td>
+        </tr>
+      `);
+    }
+
+    function renderContacts(rows) {
+      renderRows('contactsTable', 'contactsEmpty', rows, row => `
+        <tr>
+          <td>${escapeHtml(row.name)}</td>
+          <td>${escapeHtml(row.email)}</td>
+          <td>${escapeHtml(row.subject)}</td>
+          <td>${escapeHtml(row.message)}</td>
+          <td>${badge(row.status)}</td>
+          <td>${formatDate(row.created_at)}</td>
+          <td><button class="btn btn-secondary btn-small" data-action="archive-contact" data-id="${escapeHtml(row.id)}">Archivia</button></td>
+        </tr>
+      `);
+    }
+
+    function renderSupport(rows) {
+      renderRows('supportTable', 'supportEmpty', rows, row => `
+        <tr>
+          <td>${escapeHtml(row.match_id || row.official_match_id || '-')}</td>
+          <td>${escapeHtml(row.reason)}</td>
+          <td>${badge(row.status)}</td>
+          <td>${escapeHtml(row.requester_id || '-')}</td>
+          <td>${formatDate(row.created_at)}</td>
+          <td><button class="btn btn-secondary btn-small" data-action="resolve-support" data-id="${escapeHtml(row.id)}">Risolta</button></td>
+        </tr>
+      `);
+    }
+
+    function renderMatches(rows) {
+      renderRows('matchesTable', 'matchesEmpty', rows, row => `
+        <tr>
+          <td><strong>${escapeHtml(row.home_team || 'Casa')} vs ${escapeHtml(row.away_team || 'Ospite')}</strong><br><span>${escapeHtml(row.category || '-')}</span></td>
+          <td>${badge(row.status)}</td>
+          <td>${escapeHtml(row.score || '0-0')}</td>
+          <td>${escapeHtml(row.minute ?? '-')}</td>
+          <td>${escapeHtml(row.match_date || row.created_at?.slice(0, 10) || '-')}</td>
+          <td>${escapeHtml(row.field || '-')}</td>
+          <td><a class="btn btn-secondary btn-small" href="match.html?id=${encodeURIComponent(row.id)}">Apri</a></td>
+        </tr>
+      `);
+    }
+
+    function renderEvents(rows) {
+      renderRows('eventsTable', 'eventsEmpty', rows, row => `
+        <tr>
+          <td><strong>${escapeHtml(row.title)}</strong><br><span>${escapeHtml(row.event_type)}</span></td>
+          <td>${escapeHtml(row.team_name || row.match_id || row.official_match_id || '-')}</td>
+          <td>${escapeHtml(row.minute ?? '-')}</td>
+          <td>${escapeHtml(row.score || '-')}</td>
+          <td>${escapeHtml(row.body)}</td>
+          <td>${formatDate(row.created_at)}</td>
+        </tr>
+      `);
+    }
+
+    function renderSystem(items) {
+      document.getElementById('systemList').innerHTML = items.map(item => `
+        <div class="system-item">
+          <div><strong>${escapeHtml(item.name)}</strong><span>${escapeHtml(item.description)}</span></div>
+          ${badge(item.status)}
+        </div>
+      `).join('');
+    }
+
+    async function verifyAccess() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        window.location.href = 'login.html?redirect=admin.html';
+        return false;
+      }
+
+      currentUser = session.user;
+
+      const { data: profile, error } = await supabaseClient
+        .from('profiles')
+        .select('*')
+        .eq('id', currentUser.id)
+        .single();
+
+      if (error || !profile || !ADMIN_ROLES.includes(profile.role)) {
+        document.getElementById('adminPage').innerHTML = `
+          <section class="hero">
+            <div class="hero-card">
+              <div>
+                <div class="eyebrow"><span class="pulse"></span> Accesso riservato</div>
+                <h1>Area admin non disponibile</h1>
+                <p>Il tuo profilo non ha i permessi necessari per entrare nel pannello amministrativo.</p>
+              </div>
+              <a class="btn btn-primary" href="dashboard.html">Torna alla dashboard</a>
+            </div>
+          </section>
+        `;
+        return false;
+      }
+
+      currentProfile = profile;
+      return true;
+    }
+
+    async function loadAdminData() {
+      showMessage('Caricamento dati amministrazione...');
+
+      const [
+        usersCount,
+        matchesCount,
+        liveCount,
+        soonCount,
+        finishedCount,
+        pendingAccreditationsCount,
+        activeLocksCount,
+        accreditations,
+        contacts,
+        support,
+        matches,
+        events
+      ] = await Promise.all([
+        countRows('profiles'),
+        countRows('matches'),
+        countRows('matches', query => query.eq('status', 'live')),
+        countRows('matches', query => query.eq('status', 'soon')),
+        countRows('matches', query => query.eq('status', 'finished')),
+        countRows('accreditation_requests', query => query.eq('status', 'pending')),
+        countRows('broadcast_locks', query => query.eq('status', 'active')),
+        loadTable('accreditation_requests'),
+        loadTable('contact_requests'),
+        loadTable('support_requests'),
+        loadTable('matches', 'created_at', 80),
+        loadTable('match_events', 'created_at', 80)
+      ]);
+
+      setMetric('metricUsers', usersCount);
+      setMetric('metricMatches', matchesCount);
+      setMetric('metricLive', liveCount);
+      setMetric('metricSoon', soonCount);
+      setMetric('metricFinished', finishedCount);
+      setMetric('metricPendingAccreditations', pendingAccreditationsCount);
+      setMetric('metricLocks', activeLocksCount);
+
+      renderAccreditations(accreditations);
+      renderContacts(contacts);
+      renderSupport(support);
+      renderMatches(matches);
+      renderEvents(events);
+
+      cachedReport = {
+        generated_at:new Date().toISOString(),
+        metrics:{ usersCount, matchesCount, liveCount, soonCount, finishedCount, pendingAccreditationsCount, activeLocksCount },
+        accreditations,
+        contacts,
+        support,
+        matches,
+        events
+      };
+
+      renderSystem([
+        { name:'Supabase Database', status:'ok', description:'Query principali completate correttamente.' },
+        { name:'Supabase Auth', status:currentUser ? 'ok' : 'error', description:currentUser ? `Sessione attiva per ${currentUser.email || currentUser.id}.` : 'Sessione non disponibile.' },
+        { name:'Realtime partite', status:'ok', description:'Client Supabase caricato. Match e telecronaca sono predisposti per aggiornamenti live.' },
+        { name:'Supabase Storage', status:'pending', description:'Pronto per sponsor, loghi squadra e asset grafici quando abiliterai bucket dedicati.' },
+        { name:'AI telecronaca e highlights', status:'pending', description:'Sezione pronta per futura integrazione server-side con chiavi API protette.' },
+        { name:'Streaming esterno', status:'pending', description:'Area predisposta per stato servizi YouTube, social e multistream quando verranno collegati.' }
+      ]);
+
+      showMessage('Dati amministrazione aggiornati.');
+    }
+
+    async function updateRecord(table, id, payload) {
+      const { error } = await supabaseClient.from(table).update(payload).eq('id', id);
+      if (error) throw error;
+      await loadAdminData();
+    }
+
+    async function handleAction(event) {
+      const button = event.target.closest('[data-action]');
+      if (!button) return;
+
+      const { action, id } = button.dataset;
+      button.disabled = true;
+
+      try {
+        if (action === 'approve-accreditation') {
+          await updateRecord('accreditation_requests', id, { status:'approved', reviewed_by:currentUser.id, reviewed_at:new Date().toISOString() });
+          showMessage('Richiesta accredito approvata.');
+        }
+        if (action === 'reject-accreditation') {
+          await updateRecord('accreditation_requests', id, { status:'rejected', reviewed_by:currentUser.id, reviewed_at:new Date().toISOString() });
+          showMessage('Richiesta accredito rifiutata.');
+        }
+        if (action === 'archive-contact') {
+          await updateRecord('contact_requests', id, { status:'archived' });
+          showMessage('Richiesta contatto archiviata.');
+        }
+        if (action === 'resolve-support') {
+          await updateRecord('support_requests', id, { status:'resolved' });
+          showMessage('Richiesta supporto segnata come risolta.');
+        }
+      } catch (error) {
+        showMessage(`Operazione non riuscita: ${error.message}`, 'error');
+        button.disabled = false;
+      }
+    }
+
+    function setupTabs() {
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.tab').forEach(item => item.classList.remove('is-active'));
+          document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('is-active'));
+          tab.classList.add('is-active');
+          document.getElementById(tab.dataset.panel).classList.add('is-active');
+        });
+      });
+    }
+
+    function exportReport() {
+      const blob = new Blob([JSON.stringify(cachedReport, null, 2)], { type:'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `livefut-admin-report-${new Date().toISOString().slice(0, 10)}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await supabaseClient.auth.signOut();
+      window.location.href = 'login.html';
+    });
+
+    document.getElementById('refreshBtn').addEventListener('click', loadAdminData);
+    document.getElementById('exportBtn').addEventListener('click', exportReport);
+    document.addEventListener('click', handleAction);
+
+    setupTabs();
+
+    verifyAccess().then(allowed => {
+      if (allowed) loadAdminData().catch(error => showMessage(`Errore caricamento admin: ${error.message}`, 'error'));
+    });
+  </script>
+  <script src="https://cdn.iubenda.com/iubenda.js"></script>
+</body>
+</html>
