@@ -612,7 +612,7 @@
     <section class="section">
       <article class="card">
         <h2>Accredito squadra</h2>
-        <p>Richiedi l'associazione come amministratore o responsabile di una squadra presente nel database LiveFut.</p>
+        <p>Richiedi l'associazione a una squadra presente nel database LiveFut. La richiesta resta in attesa finche il super user non la approva.</p>
 
         <div class="profile-list" style="margin-top:16px;">
           <div class="profile-item">
@@ -623,10 +623,11 @@
           <div class="profile-item">
             <strong>Ruolo</strong>
             <select id="accreditationRole" style="width:100%; padding:12px; border-radius:14px; background:rgba(255,255,255,.04); color:#fff; border:1px solid var(--border);">
-              <option value="amministratore_societa">Amministratore societ</option>
-              <option value="responsabile_squadra">Responsabile squadra</option>
-              <option value="addetto_stampa">Addetto stampa</option>
-              <option value="broadcaster">Broadcaster autorizzato</option>
+              <option value="presidente">Presidente</option>
+              <option value="vice_presidente">Vice presidente</option>
+              <option value="segretario">Segretario</option>
+              <option value="amministratore">Amministratore</option>
+              <option value="delegato_dirette">Delegato alle dirette</option>
             </select>
           </div>
 
@@ -771,7 +772,7 @@
       }
 
       document.getElementById('accreditationNotes').value = '';
-      showDashboardMessage('Richiesta accredito inviata. Verr verificata dal team LiveFut.');
+      showDashboardMessage('Richiesta accredito inviata. Rimane in attesa finche il super user LiveFut non la approva.');
     }
 
     async function goLiveNow() {
@@ -828,4 +829,3 @@
   <script src="https://cdn.iubenda.com/iubenda.js"></script>
 </body>
 </html>
-
