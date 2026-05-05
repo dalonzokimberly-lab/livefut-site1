@@ -426,12 +426,39 @@
       background:rgba(255,255,255,.04);
     }
 
+    .accreditation-grid {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+      margin-top:16px;
+    }
+
+    .accreditation-grid .profile-item {
+      min-width:0;
+    }
+
+    .accreditation-grid .wide {
+      grid-column:1 / -1;
+    }
+
+    .team-count-note {
+      margin-top:10px;
+      color:var(--muted);
+      font-size:.9rem;
+      line-height:1.5;
+    }
+
     @media (max-width:1080px) {
       .grid-4 { grid-template-columns:1fr 1fr; }
 
       .grid-2,
+      .accreditation-grid,
       .hero-card {
         grid-template-columns:1fr;
+      }
+
+      .accreditation-grid .wide {
+        grid-column:auto;
       }
     }
 
@@ -631,10 +658,30 @@
         <h2>Accredito squadra</h2>
         <p>Richiedi l'associazione a una squadra presente nel database LiveFut. La richiesta resta in attesa finche il super user non la approva.</p>
 
-        <div class="profile-list" style="margin-top:16px;">
+        <div class="accreditation-grid">
+          <div class="profile-item">
+            <strong>Regione</strong>
+            <select id="accreditationRegion" style="width:100%; padding:12px; border-radius:14px; background:rgba(255,255,255,.04); color:#fff; border:1px solid var(--border);"></select>
+          </div>
+
+          <div class="profile-item">
+            <strong>Disciplina</strong>
+            <select id="accreditationSport" style="width:100%; padding:12px; border-radius:14px; background:rgba(255,255,255,.04); color:#fff; border:1px solid var(--border);">
+              <option value="">Calcio a 11 e calcio a 5</option>
+              <option value="calcio_a_11">Calcio a 11</option>
+              <option value="calcio_a_5">Calcio a 5</option>
+            </select>
+          </div>
+
+          <div class="profile-item">
+            <strong>Cerca squadra</strong>
+            <input id="accreditationSearch" type="search" placeholder="Scrivi almeno 2 lettere" style="width:100%; padding:12px; border-radius:14px; background:rgba(255,255,255,.04); color:#fff; border:1px solid var(--border); font-family:inherit;">
+          </div>
+
           <div class="profile-item">
             <strong>Squadra</strong>
             <select id="accreditationTeam" style="width:100%; padding:12px; border-radius:14px; background:rgba(255,255,255,.04); color:#fff; border:1px solid var(--border);"></select>
+            <div class="team-count-note" id="accreditationTeamCount">Caricamento squadre...</div>
           </div>
 
           <div class="profile-item">
@@ -648,7 +695,7 @@
             </select>
           </div>
 
-          <div class="profile-item">
+          <div class="profile-item wide">
             <strong>Note</strong>
             <textarea id="accreditationNotes" placeholder="Scrivi eventuali dettagli utili per verificare la richiesta" style="width:100%; min-height:90px; padding:12px; border-radius:14px; background:rgba(255,255,255,.04); color:#fff; border:1px solid var(--border); font-family:inherit;"></textarea>
           </div>
@@ -686,11 +733,12 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    const OFFICIAL_DATA_URL = 'data/abruzzo_2025_26_api.json';
+    const OFFICIAL_DATA_URL = 'data/italia_2025_26_api.json';
 
     let currentUser = null;
     let currentProfile = null;
     let officialTeams = [];
+    let officialCompetitionsById = new Map();
 
     function showDashboardMessage(message, type = 'ok') {
       const messageBox = document.getElementById('dashboardMessage');
@@ -753,15 +801,123 @@
       try {
         const response = await fetch(OFFICIAL_DATA_URL, { cache: 'no-store' });
         const payload = await response.json();
-        officialTeams = (payload.teams || []).slice().sort((a, b) => a.name.localeCompare(b.name, 'it'));
-
-        select.innerHTML = '<option value="">Seleziona squadra</option>' + officialTeams
-          .map(team => `<option value="${team.team_id}">${team.name}</option>`)
-          .join('');
+        officialCompetitionsById = new Map((payload.competitions || []).map(item => [item.competition_id, item]));
+        officialTeams = buildAccreditationTeams(payload);
+        populateAccreditationRegions();
+        renderAccreditationTeams();
       } catch (error) {
         select.innerHTML = '<option value="">Squadre non disponibili</option>';
         showDashboardMessage(`Non riesco a caricare le squadre dal database: ${error.message}`, 'error');
       }
+    }
+
+    function formatSport(value) {
+      if (value === 'calcio_a_11') return 'Calcio a 11';
+      if (value === 'calcio_a_5') return 'Calcio a 5';
+      return 'Disciplina non specificata';
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function buildAccreditationTeams(payload) {
+      const teamsById = new Map();
+
+      (payload.teams || []).forEach(team => {
+        if (!team.team_id || !team.name) return;
+        teamsById.set(team.team_id, {
+          team_id: team.team_id,
+          name: team.name,
+          region: team.region || 'Non specificata',
+          sports: new Set(),
+          categories: new Set()
+        });
+      });
+
+      (payload.matches || []).forEach(match => {
+        const competition = officialCompetitionsById.get(match.competition_id) || {};
+        [
+          { id: match.home_team_id, name: match.home_team },
+          { id: match.away_team_id, name: match.away_team }
+        ].forEach(team => {
+          if (!team.id || !team.name) return;
+          if (!teamsById.has(team.id)) {
+            teamsById.set(team.id, {
+              team_id: team.id,
+              name: team.name,
+              region: match.region || 'Non specificata',
+              sports: new Set(),
+              categories: new Set()
+            });
+          }
+
+          const storedTeam = teamsById.get(team.id);
+          if (storedTeam.region === 'Non specificata' && (match.region || competition.region)) {
+            storedTeam.region = match.region || competition.region;
+          }
+          if (match.sport || competition.sport) storedTeam.sports.add(match.sport || competition.sport);
+          if (match.category || competition.category) storedTeam.categories.add(match.category || competition.category);
+        });
+      });
+
+      return Array.from(teamsById.values())
+        .map(team => ({
+          ...team,
+          sports: Array.from(team.sports),
+          categories: Array.from(team.categories)
+        }))
+        .sort((a, b) => a.region.localeCompare(b.region, 'it') || a.name.localeCompare(b.name, 'it'));
+    }
+
+    function populateAccreditationRegions() {
+      const regionSelect = document.getElementById('accreditationRegion');
+      const regions = [...new Set(officialTeams.map(team => team.region).filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b, 'it'));
+
+      regionSelect.innerHTML = '<option value="">Tutte le regioni</option>' + regions
+        .map(region => `<option value="${escapeHtml(region)}">${escapeHtml(region)}</option>`)
+        .join('');
+    }
+
+    function renderAccreditationTeams() {
+      const teamSelect = document.getElementById('accreditationTeam');
+      const countNote = document.getElementById('accreditationTeamCount');
+      const region = document.getElementById('accreditationRegion').value;
+      const sport = document.getElementById('accreditationSport').value;
+      const search = document.getElementById('accreditationSearch').value.trim().toLowerCase();
+
+      const filteredTeams = officialTeams.filter(team => {
+        const regionOk = !region || team.region === region;
+        const sportOk = !sport || team.sports.includes(sport);
+        const searchOk = !search || team.name.toLowerCase().includes(search);
+        return regionOk && sportOk && searchOk;
+      });
+
+      const visibleTeams = filteredTeams.slice(0, 250);
+
+      teamSelect.innerHTML = '<option value="">Seleziona squadra</option>' + visibleTeams
+        .map(team => {
+          const sports = team.sports.length ? team.sports.map(formatSport).join(', ') : 'Disciplina da fonte';
+          const categories = team.categories.slice(0, 2).join(' / ');
+          const label = `${team.name} - ${team.region} - ${sports}${categories ? ' - ' + categories : ''}`;
+          return `<option value="${escapeHtml(team.team_id)}">${escapeHtml(label)}</option>`;
+        })
+        .join('');
+
+      if (!filteredTeams.length) {
+        teamSelect.innerHTML = '<option value="">Nessuna squadra trovata</option>';
+      }
+
+      const limitedText = filteredTeams.length > visibleTeams.length
+        ? `Mostrate ${visibleTeams.length} squadre su ${filteredTeams.length}. Usa la ricerca per restringere.`
+        : `${filteredTeams.length} squadre disponibili con i filtri selezionati.`;
+      countNote.textContent = limitedText;
     }
 
     async function sendAccreditationRequest() {
@@ -839,6 +995,9 @@
     document.getElementById('goLiveBtn').addEventListener('click', goLiveNow);
     document.getElementById('quickGoLiveBtn').addEventListener('click', goLiveNow);
     document.getElementById('sendAccreditationBtn')?.addEventListener('click', sendAccreditationRequest);
+    document.getElementById('accreditationRegion')?.addEventListener('change', renderAccreditationTeams);
+    document.getElementById('accreditationSport')?.addEventListener('change', renderAccreditationTeams);
+    document.getElementById('accreditationSearch')?.addEventListener('input', renderAccreditationTeams);
 
     loadDashboard();
   </script>
