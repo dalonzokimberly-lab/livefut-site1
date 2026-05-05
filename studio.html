@@ -220,7 +220,7 @@
           <div class="scene-overlay" id="sceneOverlay">
             <div class="scene-box">
               <div class="scene-kicker" id="sceneKicker">LiveFut TV</div>
-              <div class="scene-title" id="sceneTitle">La partita iniziera tra poco</div>
+              <div class="scene-title" id="sceneTitle">La partita inizierà tra poco</div>
               <div class="scene-subtitle" id="sceneSubtitle">Preparati alla diretta</div>
               <div class="scene-score" id="sceneScore"></div>
               <div class="scene-countdown" id="sceneCountdown"></div>
@@ -846,7 +846,7 @@
         const updatedMatch = await updateMatchStatus('live');
         if (updatedMatch) {
           stopBtn.disabled = false;
-          showMessage('Diretta avviata. La partita e collegata a Supabase e sara visibile nella pagina live.');
+          showMessage('Diretta avviata. La partita è collegata a Supabase e sarà visibile nella pagina live.');
           startSponsorCycle();
         } else {
           startBtn.disabled = false;
@@ -1067,7 +1067,7 @@
         const minutes = Math.max(1, Number(document.getElementById('waitingMinutesInput').value || 10));
         let remaining = minutes * 60;
         sceneKicker.textContent = 'Pre partita';
-        sceneTitle.textContent = 'La partita iniziera tra poco';
+        sceneTitle.textContent = 'La partita inizierà tra poco';
         sceneSubtitle.textContent = `${currentHomeTeam} vs ${currentAwayTeam}`;
         sceneScore.textContent = '';
         sceneCountdown.textContent = formatClock(remaining);
@@ -1193,8 +1193,8 @@
     function showBlockedBroadcast(activeLock) {
       pageContent.innerHTML = `
         <div class="error-box">
-          <strong>Evento gia in diretta</strong><br>
-          Non puoi trasmettere questa partita perche un altro broadcaster ha gia avviato la diretta.<br><br>
+          <strong>Evento già in diretta</strong><br>
+          Non puoi trasmettere questa partita perché un altro broadcaster ha già avviato la diretta.<br><br>
           Se ritieni che la diretta non rispetti gli standard LiveFut o sei responsabile dell'evento, contatta subito il supporto.
           <div class="button-row" style="margin-top:16px;">
             <button class="btn btn-primary" id="supportOverrideBtn">Contatta supporto</button>

@@ -431,7 +431,7 @@
         <div class="player" id="playerArea">
           <div class="player-placeholder">
             <strong id="playerHeadline">Diretta LiveFut</strong>
-            <span id="playerText">La diretta sara disponibile qui appena avviata.</span>
+            <span id="playerText">La diretta sarà disponibile qui appena avviata.</span>
           </div>
         </div>
 
@@ -448,7 +448,7 @@
 
           <div class="broadcast-panel" id="broadcastPanel" style="display:none;">
             <div class="broadcast-box">
-              <strong>Modalita broadcaster</strong>
+              <strong>Modalità broadcaster</strong>
               <p>Gestisci la trasmissione della partita selezionata.</p>
             </div>
 
@@ -836,7 +836,7 @@
         if (match.status === 'finished') {
           modeBadgeText.textContent = 'Partita conclusa';
           playerHeadline.textContent = 'Partita conclusa';
-          playerText.textContent = 'Questa partita non e piu disponibile per la trasmissione.';
+          playerText.textContent = 'Questa partita non è più disponibile per la trasmissione.';
           videoDescription.textContent = 'La partita resta disponibile come scheda risultato.';
           broadcastPanel.style.display = 'none';
 
@@ -845,16 +845,16 @@
           return;
         }
 
-        modeBadgeText.textContent = 'Modalita broadcaster';
+        modeBadgeText.textContent = 'Modalità broadcaster';
 
         playerHeadline.textContent = 'Studio diretta';
-        playerText.textContent = 'Questa partita e pronta per la trasmissione. Premi Avvia diretta per entrare nello studio.';
+        playerText.textContent = 'Questa partita è pronta per la trasmissione. Premi Avvia diretta per entrare nello studio.';
         videoDescription.textContent = 'Gestione diretta della partita selezionata.';
 
         broadcastPanel.style.display = 'grid';
         startBroadcastBtn.href = buildStudioUrl(match);
 
-        setText('eventStatusText', 'Modalita broadcaster attiva');
+        setText('eventStatusText', 'Modalità broadcaster attiva');
         setText('eventStatusBadge', 'BROADCAST');
       } else {
         modeBadge.classList.remove('broadcast-badge');
@@ -862,8 +862,8 @@
 
         playerHeadline.textContent = match.status === 'live' ? 'Diretta in corso' : 'Diretta non ancora avviata';
         playerText.textContent = match.status === 'live'
-          ? 'La diretta e in corso. Il player LiveFut sara disponibile qui.'
-          : 'La diretta apparira qui appena sara avviata.';
+          ? 'La diretta è in corso. Il player LiveFut sarà disponibile qui.'
+          : 'La diretta apparirà qui appena sarà avviata.';
 
         videoDescription.textContent = 'Pagina spettatore LiveFut TV.';
         broadcastPanel.style.display = 'none';
