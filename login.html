@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LiveFut TV - Login</title>
-  <script src="https://app.termly.io/resource-blocker/XXXX?autoBlock=on"></script>
+  <script src="https://app.termly.io/resource-blocker/ecfeb307-3d9a-4e26-a7de-4dab9c2345f9?autoBlock=on"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -562,7 +562,7 @@
 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const loginParams = new URLSearchParams(window.location.search);
-    const redirectTarget = loginParams.get('redirect') || 'dashboard.html';
+    const redirectTarget = sanitizeRedirectTarget(loginParams.get('redirect'));
 
     const loginTab = document.querySelector('[data-tab="login"]');
     const registerTab = document.querySelector('[data-tab="register"]');
@@ -571,6 +571,33 @@
     const panelHeading = document.getElementById('panelHeading');
     const panelDescription = document.getElementById('panelDescription');
     const statusBox = document.getElementById('statusBox');
+
+    function sanitizeRedirectTarget(value) {
+      if (!value) return 'dashboard.html';
+
+      try {
+        const decoded = decodeURIComponent(value);
+        const target = new URL(decoded, window.location.origin);
+        const allowedPages = new Set([
+          'dashboard.html',
+          'live.html',
+          'match.html',
+          'studio.html',
+          'create-match.html',
+          'profile.html',
+          'index.html'
+        ]);
+        const page = target.pathname.split('/').pop();
+
+        if (target.origin !== window.location.origin || !allowedPages.has(page)) {
+          return 'dashboard.html';
+        }
+
+        return `${page}${target.search}${target.hash}`;
+      } catch (error) {
+        return 'dashboard.html';
+      }
+    }
 
     function showStatus(message, type = 'ok') {
       statusBox.textContent = message;
@@ -683,4 +710,3 @@
   <script src="https://cdn.iubenda.com/iubenda.js"></script>
 </body>
 </html>
-

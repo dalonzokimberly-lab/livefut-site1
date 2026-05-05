@@ -139,6 +139,10 @@
     .console-panel { background:rgba(49,209,88,.05); border:1px solid var(--border); border-radius:18px; padding:16px; min-width:0; }
     .btn.is-active { border-color:rgba(255,183,3,.58); box-shadow:0 0 0 4px rgba(255,122,24,.12); }
     .console-panel h3 { font-size:1rem; margin-bottom:12px; }
+    .panel-toggle { width:100%; border:0; background:transparent; color:var(--green); padding:0 0 12px; margin:0; font:inherit; font-size:1rem; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:12px; text-align:left; }
+    .panel-toggle span:first-child { overflow-wrap:anywhere; }
+    .panel-toggle span:last-child { color:var(--orange); font-size:1.1rem; }
+    .console-panel.is-collapsed > :not(.panel-toggle) { display:none; }
     .score-controls { display:grid; grid-template-columns:1fr auto 1fr; gap:10px; align-items:center; }
     .score-control-team { min-width:0; display:grid; gap:8px; }
     .score-control-team strong { color:var(--text); overflow-wrap:anywhere; line-height:1.25; }
@@ -667,6 +671,64 @@
         : 'Formato orizzontale 16:9 attivo. Consigliato per trasmettere la partita.');
     }
 
+    function mediaConstraints() {
+      const videoSize = currentVideoFormat === 'portrait'
+        ? { width:{ ideal:720 }, height:{ ideal:1280 }, aspectRatio:{ ideal:9 / 16 } }
+        : { width:{ ideal:1280 }, height:{ ideal:720 }, aspectRatio:{ ideal:16 / 9 } };
+
+      return {
+        video:{
+          facingMode:{ ideal:'environment' },
+          ...videoSize
+        },
+        audio:{
+          echoCancellation:true,
+          noiseSuppression:true,
+          autoGainControl:true
+        }
+      };
+    }
+
+    async function requestCameraStream() {
+      try {
+        return await navigator.mediaDevices.getUserMedia(mediaConstraints());
+      } catch (error) {
+        return navigator.mediaDevices.getUserMedia({ video:true, audio:true });
+      }
+    }
+
+    function setupConsoleSections() {
+      const panels = [...document.querySelectorAll('.console-panel')];
+      const shouldCollapse = window.matchMedia('(max-width: 700px)').matches;
+
+      panels.forEach((panel, index) => {
+        const heading = panel.querySelector('h3');
+        if (!heading) return;
+
+        const button = document.createElement('button');
+        const indicator = document.createElement('span');
+        button.type = 'button';
+        button.className = 'panel-toggle';
+        button.setAttribute('aria-expanded', 'true');
+        button.innerHTML = `<span>${escapeHtml(heading.textContent)}</span>`;
+        indicator.textContent = '-';
+        button.appendChild(indicator);
+        heading.replaceWith(button);
+
+        if (shouldCollapse && index > 1) {
+          panel.classList.add('is-collapsed');
+          button.setAttribute('aria-expanded', 'false');
+          indicator.textContent = '+';
+        }
+
+        button.addEventListener('click', () => {
+          const collapsed = panel.classList.toggle('is-collapsed');
+          button.setAttribute('aria-expanded', String(!collapsed));
+          indicator.textContent = collapsed ? '+' : '-';
+        });
+      });
+    }
+
     function toggleVideoFit() {
       previewWrap.classList.toggle('contain');
       fitVideoBtn.classList.toggle('is-active', previewWrap.classList.contains('contain'));
@@ -778,20 +840,13 @@
           return;
         }
 
-        const videoSize = currentVideoFormat === 'portrait'
-          ? { width:{ ideal:720 }, height:{ ideal:1280 } }
-          : { width:{ ideal:1280 }, height:{ ideal:720 } };
-
-        mediaStream = await navigator.mediaDevices.getUserMedia({
-          video:{ facingMode:'environment', ...videoSize },
-          audio:true
-        });
+        mediaStream = await requestCameraStream();
         previewVideo.srcObject = mediaStream;
         previewWrap.classList.add('active');
         const updatedMatch = await updateMatchStatus('live');
         if (updatedMatch) {
           stopBtn.disabled = false;
-        showMessage('Diretta avviata. La partita e collegata a Supabase e sara visibile nella pagina live.');
+          showMessage('Diretta avviata. La partita e collegata a Supabase e sara visibile nella pagina live.');
           startSponsorCycle();
         } else {
           startBtn.disabled = false;
@@ -975,7 +1030,7 @@
         sponsorOverlay.classList.add('show');
         clearTimeout(sponsorHideTimeout);
         sponsorHideTimeout = setTimeout(hideSponsor, 10000);
-        showMessage('Sponsor demo mostrato. Carica immagini sponsor per usare grafiche reali.');
+        showMessage('Carica immagini sponsor per mostrarle durante la diretta.');
         return;
       }
       sponsorImage.src = sponsorImages[sponsorIndex % sponsorImages.length];
@@ -1288,6 +1343,7 @@
     });
 
     setVideoFormat('landscape');
+    setupConsoleSections();
     applyOverlayTheme(overlayThemes.metalBlue);
     applyCustomGraphics();
     loadMatch();

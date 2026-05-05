@@ -537,7 +537,7 @@
   <script>
     const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
-    const OFFICIAL_DATA_URL = 'data/abruzzo_2025_26_api.json';
+    const OFFICIAL_DATA_URL = 'data/italia_2025_26_api.json';
 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -547,7 +547,9 @@
     const mode = params.get('mode') || 'view';
 
     const pageContent = document.getElementById('pageContent');
+    let currentMatch = null;
     let eventsChannel = null;
+    let matchChannel = null;
 
     function safe(value, fallback = '-') {
       return value === null || value === undefined || value === '' ? fallback : value;
@@ -626,7 +628,7 @@
     function statusLabel(status) {
       if (status === 'live') return 'Live';
       if (status === 'soon') return 'In arrivo';
-      if (status === 'finished') return 'Calendario';
+      if (status === 'finished') return 'Conclusa';
       return safe(status, 'In arrivo');
     }
 
@@ -721,7 +723,42 @@
         .on(
           'postgres_changes',
           { event: 'INSERT', schema: 'public', table: 'match_events', filter },
-          () => loadMatchEvents(match)
+          () => loadMatchEvents(currentMatch || match)
+        )
+        .subscribe();
+    }
+
+    function subscribeMatchUpdates(match) {
+      if (matchChannel) {
+        supabaseClient.removeChannel(matchChannel);
+        matchChannel = null;
+      }
+
+      const filter = isUuid(match.id)
+        ? `id=eq.${match.id}`
+        : match.match_id
+          ? `match_id=eq.${match.match_id}`
+          : '';
+
+      if (!filter) return;
+
+      matchChannel = supabaseClient
+        .channel(`match-live-${match.id || match.match_id}`)
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'matches', filter },
+          payload => {
+            if (!payload.new) return;
+
+            const updatedMatch = normalizeSupabaseMatch(payload.new);
+            const mergedMatch = {
+              ...(currentMatch || {}),
+              ...updatedMatch,
+              match_id: currentMatch?.match_id || updatedMatch.match_id
+            };
+
+            renderMatch(mergedMatch, { subscribe: false });
+          }
         )
         .subscribe();
     }
@@ -758,7 +795,7 @@
         ...match,
         id: match.id || match.match_id,
         match_id: match.match_id || match.id,
-        region: match.region || 'Abruzzo',
+        region: match.region || 'Non specificata',
         discipline: match.discipline || formatDiscipline(match.sport),
         category: match.category || 'Non specificata',
         field: match.field || formatDate(match.match_date),
@@ -796,6 +833,18 @@
 
       if (mode === 'broadcast') {
         modeBadge.classList.add('broadcast-badge');
+        if (match.status === 'finished') {
+          modeBadgeText.textContent = 'Partita conclusa';
+          playerHeadline.textContent = 'Partita conclusa';
+          playerText.textContent = 'Questa partita non e piu disponibile per la trasmissione.';
+          videoDescription.textContent = 'La partita resta disponibile come scheda risultato.';
+          broadcastPanel.style.display = 'none';
+
+          setText('eventStatusText', 'Partita conclusa');
+          setText('eventStatusBadge', 'FT');
+          return;
+        }
+
         modeBadgeText.textContent = 'Modalita broadcaster';
 
         playerHeadline.textContent = 'Studio diretta';
@@ -824,7 +873,9 @@
       }
     }
 
-    function renderMatch(match) {
+    function renderMatch(match, options = { subscribe: true }) {
+      currentMatch = match;
+
       const home = safe(match.home_team, 'Squadra Casa');
       const away = safe(match.away_team, 'Squadra Ospite');
       const score = formatScore(match.score);
@@ -852,7 +903,10 @@
 
       applyMode(match);
       loadMatchEvents(match);
-      subscribeMatchEvents(match);
+      if (options.subscribe) {
+        subscribeMatchEvents(match);
+        subscribeMatchUpdates(match);
+      }
     }
 
     async function loadSupabaseMatch(id) {
@@ -929,6 +983,11 @@
         showError(`Impossibile caricare la partita: <strong>${escapeHtml(error.message)}</strong>`);
       }
     }
+
+    window.addEventListener('pagehide', () => {
+      if (eventsChannel) supabaseClient.removeChannel(eventsChannel);
+      if (matchChannel) supabaseClient.removeChannel(matchChannel);
+    });
 
     loadMatch();
   </script>

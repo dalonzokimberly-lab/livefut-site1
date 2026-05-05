@@ -847,7 +847,7 @@
     function statusLabel(status) {
       if (status === 'live') return 'LIVE';
       if (status === 'soon') return 'IN ARRIVO';
-      if (status === 'finished') return 'CALENDARIO';
+      if (status === 'finished') return 'CONCLUSA';
       return safe(status, 'IN ARRIVO').toUpperCase();
     }
 
@@ -859,6 +859,19 @@
 
     function normalizeScore(score) {
       return score ? String(score).replace('-', ' - ') : 'vs';
+    }
+
+    function isBroadcastAvailable(match) {
+      if (match.status === 'finished') return false;
+
+      const date = parseLocalDate(match.match_date);
+      if (!date) return true;
+
+      const deadline = new Date(date);
+      deadline.setDate(deadline.getDate() + 1);
+      deadline.setHours(0, 0, 0, 0);
+
+      return new Date() < deadline;
     }
 
     function buildMatchUrl(match, mode = 'view') {
@@ -1003,6 +1016,7 @@
         const category = safe(match.category, 'Categoria non specificata');
         const groupName = safe(match.group_name, '');
         const field = safe(match.field, 'Campo non specificato');
+        const broadcastAvailable = isBroadcastAvailable(match);
 
         const card = document.createElement('article');
         card.className = 'match-card';
@@ -1030,7 +1044,7 @@
 
           <div class="row-actions">
             <a class="btn btn-primary" href="${protectedMatchUrl(match, 'view')}">Dettaglio</a>
-            <a class="btn btn-secondary" href="${buildMatchUrl(match, 'broadcast')}">Trasmetti</a>
+            ${broadcastAvailable ? `<a class="btn btn-secondary" href="${buildMatchUrl(match, 'broadcast')}">Trasmetti</a>` : ''}
           </div>
         `;
 
