@@ -539,9 +539,6 @@
         grid-template-columns:1fr;
       }
 
-      .topbar-inner,
-      .top-actions,
-      .nav,
       .match-top,
       .hero-buttons,
       .row-actions {
@@ -549,7 +546,41 @@
         align-items:stretch;
       }
 
-      .btn { width:100%; }
+      .topbar-inner {
+        min-height:56px;
+        gap:10px;
+        flex-wrap:nowrap;
+      }
+
+      .site-logo { height:30px; max-height:30px; }
+      .brand { gap:8px; flex:1 1 auto; }
+      .brand-text strong { font-size:.95rem; }
+      .brand-text span { display:none; }
+
+      .nav { display:none; }
+
+      .top-actions {
+        flex:0 0 auto;
+        gap:8px;
+        flex-wrap:nowrap;
+        overflow-x:auto;
+        max-width:58vw;
+        padding-bottom:2px;
+      }
+
+      .top-actions .btn {
+        width:auto;
+        min-height:38px;
+        padding:9px 12px;
+        font-size:.78rem;
+        flex:0 0 auto;
+      }
+
+      .hero { padding:18px 0 14px; }
+      .hero-card,.card { border-radius:20px; padding:18px; }
+      h1 { font-size:1.65rem; letter-spacing:0; }
+      .hero-buttons .btn,
+      .row-actions .btn { width:100%; }
     }
   </style>
 </head>

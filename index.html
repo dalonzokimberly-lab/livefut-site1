@@ -503,10 +503,7 @@
     }
 
     @media (max-width: 820px) {
-      .nav,
-      .actions .btn-secondary:first-child {
-        display: none;
-      }
+      .nav { display:none; }
 
       .features,
       .live-grid,
@@ -517,22 +514,44 @@
       }
 
       .cta-box,
-      .section-head,
-      .topbar-inner {
+      .section-head {
         flex-direction: column;
         align-items: flex-start;
       }
 
-      .btn {
-        width: 100%;
+      .topbar-inner {
+        min-height:56px;
+        gap:10px;
       }
+
+      .site-logo { width:112px; }
+      .brand { flex:1 1 auto; }
 
       .actions {
-        width: 100%;
+        width:auto;
+        flex:0 0 auto;
+        gap:8px;
+        overflow-x:auto;
+        max-width:62vw;
+        padding-bottom:2px;
       }
 
+      .actions .btn {
+        width:auto;
+        min-height:38px;
+        padding:9px 12px;
+        font-size:.78rem;
+        flex:0 0 auto;
+      }
+
+      .cta-box .btn,
+      .hero-actions .btn {
+        width:100%;
+      }
+
+      .hero { padding:26px 0 22px; }
       .hero-copy {
-        padding: 28px;
+        padding: 22px;
       }
     }
   </style>
@@ -548,7 +567,7 @@
       <nav class="nav">
         <a href="live.html">Live</a>
         <a href="#funzioni">Funzioni</a>
-        <a href="#perchi">Per chi è</a>
+        <a href="#perchi">Per chi e</a>
         <a href="#come">Come funziona</a>
         <a href="#contatti">Contatti</a>
       </nav>
@@ -690,7 +709,7 @@
         <div class="section-head">
           <div>
             <h2>Per chi è pensato LiveFut TV</h2>
-            <p>La piattaforma nasce per valorizzare chi gioca, organizza, racconta e segue il calcio locale, ma soprattutto per tutte le piccole realtà con una grande storia da scrivere e raccontare.</p>
+            <p>La piattaforma nasce per valorizzare chi gioca, organizza, racconta e segue il calcio locale.</p>
           </div>
         </div>
 
@@ -723,7 +742,7 @@
         <div class="section-head">
           <div>
             <h2>Come funziona</h2>
-            <p>Ti registri ed è tutto nelle tue mani</p>
+            <p>Il flusso è stato pensato per ridurre al minimo i passaggi tecnici e lasciare spazio alla partita.</p>
           </div>
         </div>
 
