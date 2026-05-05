@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LiveFut TV â€” Dashboard</title>
+  <title>LiveFut TV - Dashboard</title>
 
   <script src="https://app.termly.io/resource-blocker/ecfeb307-3d9a-4e26-a7de-4dab9c2345f9?autoBlock=on"></script>
 
@@ -486,12 +486,12 @@
           </div>
 
           <div class="mini-stat">
-            <strong id="usernamePreview">â€”</strong>
+            <strong id="usernamePreview">-</strong>
             <span>Username del profilo pubblico.</span>
           </div>
 
           <div class="mini-stat">
-            <strong id="favoriteTeamPreview">â€”</strong>
+            <strong id="favoriteTeamPreview">-</strong>
             <span>Squadra preferita indicata nel profilo.</span>
           </div>
         </div>
@@ -502,8 +502,8 @@
       <div class="grid-4">
         <article class="card">
           <h3>Profilo</h3>
-          <span class="metric-value" id="profileName">â€”</span>
-          <span id="profileEmail">â€”</span>
+          <span class="metric-value" id="profileName">-</span>
+          <span id="profileEmail">-</span>
         </article>
 
         <article class="card">
@@ -582,22 +582,22 @@
           <div class="profile-list">
             <div class="profile-item">
               <strong>Nome profilo</strong>
-              <span id="detailDisplayName">â€”</span>
+              <span id="detailDisplayName">-</span>
             </div>
 
             <div class="profile-item">
               <strong>Username</strong>
-              <span id="detailUsername">â€”</span>
+              <span id="detailUsername">-</span>
             </div>
 
             <div class="profile-item">
-              <strong>CittÃ </strong>
-              <span id="detailCity">â€”</span>
+              <strong>Citta</strong>
+              <span id="detailCity">-</span>
             </div>
 
             <div class="profile-item">
               <strong>Squadra del cuore</strong>
-              <span id="detailFavoriteTeam">â€”</span>
+              <span id="detailFavoriteTeam">-</span>
             </div>
           </div>
         </article>
@@ -623,7 +623,7 @@
           <div class="profile-item">
             <strong>Ruolo</strong>
             <select id="accreditationRole" style="width:100%; padding:12px; border-radius:14px; background:rgba(255,255,255,.04); color:#fff; border:1px solid var(--border);">
-              <option value="amministratore_societa">Amministratore società</option>
+              <option value="amministratore_societa">Amministratore societ</option>
               <option value="responsabile_squadra">Responsabile squadra</option>
               <option value="addetto_stampa">Addetto stampa</option>
               <option value="broadcaster">Broadcaster autorizzato</option>
@@ -641,12 +641,12 @@
     </section>
 
     <section class="footer-note">
-      LiveFut TV â€” Dashboard
+      LiveFut TV - Dashboard
     </section>
   </main>
 
   <footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
-    Â© 2026 LiveFut TV â€” Football United Team. Tutti i diritti riservati.<br><br>
+    (c) 2026 LiveFut TV - Football United Team. Tutti i diritti riservati.<br><br>
 
     <a href="https://www.iubenda.com/privacy-policy/71949704"
        class="iubenda-white iubenda-noiframe iubenda-embed">
@@ -692,7 +692,7 @@
 
       currentUser = session.user;
 
-      document.getElementById('profileEmail').textContent = currentUser.email || 'â€”';
+      document.getElementById('profileEmail').textContent = currentUser.email || '-';
 
       const { data: profile, error } = await supabaseClient
         .from('profiles')
@@ -771,7 +771,7 @@
       }
 
       document.getElementById('accreditationNotes').value = '';
-      showDashboardMessage('Richiesta accredito inviata. Verrà verificata dal team LiveFut.');
+      showDashboardMessage('Richiesta accredito inviata. Verr verificata dal team LiveFut.');
     }
 
     async function goLiveNow() {

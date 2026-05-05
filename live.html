@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
@@ -498,7 +498,7 @@
           <h1>Tutte le live, tutte le regioni, tutte le categorie.</h1>
 
           <p>
-            Questa Ã¨ la pagina centrale di LiveFut TV: qui gli utenti possono scoprire le dirette in corso,
+            Questa e la pagina centrale di LiveFut TV: qui gli utenti possono scoprire le dirette in corso,
             navigare per regione, filtrare le categorie e aprire ogni scheda partita.
           </p>
 
@@ -620,7 +620,7 @@
   </main>
 
   <footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
-    Â© 2026 LiveFut TV - Football United Team. Tutti i diritti riservati.<br><br>
+    (c) 2026 LiveFut TV - Football United Team. Tutti i diritti riservati.<br><br>
 
     <a href="https://www.iubenda.com/privacy-policy/71949704"
        class="iubenda-white iubenda-noiframe iubenda-embed">
@@ -903,7 +903,7 @@
           <div class="match-top">
             <div>
               <h3>${escapeHtml(safe(match.home_team, 'Squadra Casa'))} vs ${escapeHtml(safe(match.away_team, 'Squadra Ospite'))}</h3>
-              <p>${escapeHtml(region)} Â· ${escapeHtml(discipline)} Â· ${escapeHtml(category)}${groupName ? ' Â· ' + escapeHtml(groupName) : ''}</p>
+              <p>${escapeHtml(region)} - ${escapeHtml(discipline)} - ${escapeHtml(category)}${groupName ? ' - ' + escapeHtml(groupName) : ''}</p>
             </div>
             <span class="status-badge ${statusClass(status)}">${statusLabel(status)}</span>
           </div>
@@ -978,7 +978,7 @@
           card.style.cursor = 'pointer';
           card.innerHTML = `
             <h3>${escapeHtml(competition.category)}</h3>
-            <p>${escapeHtml(formatDiscipline(competition.sport))} Â· ${escapeHtml(competition.group_name)} Â· ${escapeHtml(formatCompetitionType(competition.competition_type))}</p>
+            <p>${escapeHtml(formatDiscipline(competition.sport))} - ${escapeHtml(competition.group_name)} - ${escapeHtml(formatCompetitionType(competition.competition_type))}</p>
             <div class="meta-row">
               <span class="tag">${escapeHtml(formatAgeGroup(competition.age_group))}</span>
               <span class="tag">${escapeHtml(formatGender(competition.gender))}</span>

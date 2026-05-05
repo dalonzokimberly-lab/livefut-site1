@@ -431,7 +431,7 @@
         <div class="player" id="playerArea">
           <div class="player-placeholder">
             <strong id="playerHeadline">Diretta LiveFut</strong>
-            <span id="playerText">La diretta sarà disponibile qui appena avviata.</span>
+            <span id="playerText">La diretta sara disponibile qui appena avviata.</span>
           </div>
         </div>
 
@@ -448,7 +448,7 @@
 
           <div class="broadcast-panel" id="broadcastPanel" style="display:none;">
             <div class="broadcast-box">
-              <strong>Modalità broadcaster</strong>
+              <strong>Modalita broadcaster</strong>
               <p>Gestisci la trasmissione della partita selezionata.</p>
             </div>
 
@@ -519,7 +519,7 @@
   </main>
 
   <footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
-    © 2026 LiveFut TV - Football United Team. Tutti i diritti riservati.<br><br>
+    (c) 2026 LiveFut TV - Football United Team. Tutti i diritti riservati.<br><br>
 
     <a href="https://www.iubenda.com/privacy-policy/71949704"
        class="iubenda-white iubenda-noiframe iubenda-embed">
@@ -796,16 +796,16 @@
 
       if (mode === 'broadcast') {
         modeBadge.classList.add('broadcast-badge');
-        modeBadgeText.textContent = 'Modalità broadcaster';
+        modeBadgeText.textContent = 'Modalita broadcaster';
 
         playerHeadline.textContent = 'Studio diretta';
-        playerText.textContent = 'Questa partita è pronta per la trasmissione. Premi Avvia diretta per entrare nello studio.';
+        playerText.textContent = 'Questa partita e pronta per la trasmissione. Premi Avvia diretta per entrare nello studio.';
         videoDescription.textContent = 'Gestione diretta della partita selezionata.';
 
         broadcastPanel.style.display = 'grid';
         startBroadcastBtn.href = buildStudioUrl(match);
 
-        setText('eventStatusText', 'Modalità broadcaster attiva');
+        setText('eventStatusText', 'Modalita broadcaster attiva');
         setText('eventStatusBadge', 'BROADCAST');
       } else {
         modeBadge.classList.remove('broadcast-badge');
@@ -813,8 +813,8 @@
 
         playerHeadline.textContent = match.status === 'live' ? 'Diretta in corso' : 'Diretta non ancora avviata';
         playerText.textContent = match.status === 'live'
-          ? 'La diretta è in corso. Il player LiveFut sarà disponibile qui.'
-          : 'La diretta apparirà qui appena sarà avviata.';
+          ? 'La diretta e in corso. Il player LiveFut sara disponibile qui.'
+          : 'La diretta apparira qui appena sara avviata.';
 
         videoDescription.textContent = 'Pagina spettatore LiveFut TV.';
         broadcastPanel.style.display = 'none';
@@ -833,12 +833,12 @@
       const category = safe(match.category, 'Non specificata');
       const field = safe(match.field, 'Non specificato');
       const status = safe(match.status, 'soon');
-      const extra = match.detailRows && match.detailRows.length ? ` · ${match.detailRows.join(' · ')}` : '';
+      const extra = match.detailRows && match.detailRows.length ? ` - ${match.detailRows.join(' - ')}` : '';
 
       document.title = `${home} vs ${away} - LiveFut TV`;
 
       setText('matchTitle', `${home} vs ${away}`);
-      setText('matchSubtitle', `${region} · ${discipline} · ${category} · ${field}${extra}`);
+      setText('matchSubtitle', `${region} - ${discipline} - ${category} - ${field}${extra}`);
       setText('matchScore', score);
       setText('matchMinute', minuteLabel(match));
       setText('matchRegion', region);

@@ -176,7 +176,7 @@
           <div class="scene-overlay" id="sceneOverlay">
             <div class="scene-box">
               <div class="scene-kicker" id="sceneKicker">LiveFut TV</div>
-              <div class="scene-title" id="sceneTitle">La partita inizierà tra poco</div>
+              <div class="scene-title" id="sceneTitle">La partita iniziera tra poco</div>
               <div class="scene-subtitle" id="sceneSubtitle">Preparati alla diretta</div>
               <div class="scene-score" id="sceneScore"></div>
               <div class="scene-countdown" id="sceneCountdown"></div>
@@ -288,7 +288,7 @@
             <div class="button-row" style="margin-top:12px;"><button class="btn btn-primary btn-small" id="applyGraphicsBtn">Applica grafica</button></div>
           </div>
           <div class="console-panel">
-            <h3>Visibilità overlay</h3>
+            <h3>Visibilita overlay</h3>
             <label class="toggle-row"><span>Scoreboard</span><input id="scoreboardToggle" type="checkbox" checked></label>
             <label class="toggle-row"><span>Tutti gli overlay</span><input id="overlayToggle" type="checkbox" checked></label>
             <label class="toggle-row"><span>Sponsor automatici</span><input id="sponsorAutoToggle" type="checkbox" checked></label>
@@ -344,7 +344,7 @@
   </main>
 
   <footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
-    © 2026 LiveFut TV - Football United Team. Tutti i diritti riservati.<br><br>
+    (c) 2026 LiveFut TV - Football United Team. Tutti i diritti riservati.<br><br>
     <a href="https://www.iubenda.com/privacy-policy/71949704" class="iubenda-white iubenda-noiframe iubenda-embed">Privacy Policy</a> |
     <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy" class="iubenda-white iubenda-noiframe iubenda-embed">Cookie Policy</a> |
     <a href="terms.html">Termini e Condizioni</a>
@@ -620,7 +620,7 @@
       if (match.competition_id) matchParams.set('competition_id', match.competition_id);
       matchLink.href = `match.html?${matchParams.toString()}`;
       setText('matchTitle', `${currentHomeTeam} vs ${currentAwayTeam}`);
-      setText('matchSubtitle', `${field} · ${category} · ${region}`);
+      setText('matchSubtitle', `${field} - ${category} - ${region}`);
       setText('matchField', field);
       setText('matchCategory', category);
       setText('matchRegion', region);
@@ -688,7 +688,7 @@
         const updatedMatch = await updateMatchStatus('live');
         if (updatedMatch) {
           stopBtn.disabled = false;
-        showMessage('Diretta avviata. La partita è collegata a Supabase e sarà visibile nella pagina live.');
+        showMessage('Diretta avviata. La partita e collegata a Supabase e sara visibile nella pagina live.');
           startSponsorCycle();
         } else {
           startBtn.disabled = false;
@@ -909,7 +909,7 @@
         const minutes = Math.max(1, Number(document.getElementById('waitingMinutesInput').value || 10));
         let remaining = minutes * 60;
         sceneKicker.textContent = 'Pre partita';
-        sceneTitle.textContent = 'La partita inizierà tra poco';
+        sceneTitle.textContent = 'La partita iniziera tra poco';
         sceneSubtitle.textContent = `${currentHomeTeam} vs ${currentAwayTeam}`;
         sceneScore.textContent = '';
         sceneCountdown.textContent = formatClock(remaining);
@@ -1029,14 +1029,14 @@
         reason
       });
 
-      showMessage(error ? `Richiesta non inviata: ${error.message}` : 'Richiesta supporto inviata. Il team LiveFut potrà intervenire sulla diretta.', error ? 'error' : 'ok');
+      showMessage(error ? `Richiesta non inviata: ${error.message}` : 'Richiesta supporto inviata. Il team LiveFut potra intervenire sulla diretta.', error ? 'error' : 'ok');
     }
 
     function showBlockedBroadcast(activeLock) {
       pageContent.innerHTML = `
         <div class="error-box">
-          <strong>Evento già in diretta</strong><br>
-          Non puoi trasmettere questa partita perché un altro broadcaster ha già avviato la diretta.<br><br>
+          <strong>Evento gia in diretta</strong><br>
+          Non puoi trasmettere questa partita perche un altro broadcaster ha gia avviato la diretta.<br><br>
           Se ritieni che la diretta non rispetti gli standard LiveFut o sei responsabile dell'evento, contatta subito il supporto.
           <div class="button-row" style="margin-top:16px;">
             <button class="btn btn-primary" id="supportOverrideBtn">Contatta supporto</button>
