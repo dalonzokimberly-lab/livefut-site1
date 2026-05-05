@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "region": "Trento",
+    "season": "2025/26",
+    "generated_at": "2026-05-05T19:24:38Z",
+    "source_policy": "official_lnd_figc_only_no_tuttocampo",
+    "dataset_variant": "online_slim",
+    "match_cutoff_date": "2026-05-05"
+  },
+  "sources": [
+    {
+      "source_url": "https://comunicati.lnd.it/storage/comunicati/2025/2026/lnd/Attivit___ufficiale_della_Lega_Nazionale_Dilettanti_Stagione_Sportiva_2025_2026.pdf",
+      "local_path": "data\\raw\\trento\\2025-26\\3371869f_Attivit___ufficiale_della_Lega_Nazionale_Dilettanti_Stagione_Sportiva_2025_2026.pdf",
+      "sha256": "9f914059d9f4b5dafe74d90c6b04f2251eed55c565159e9688e8eb50790cb066",
+      "competition_id": "trento_2025_26_calcio_a_11_c_u_n_1_lnd_stag_2025_2026_programma_gare"
+    }
+  ],
+  "competitions": [
+    {
+      "competition_id": "trento_2025_26_calcio_a_11_c_u_n_1_lnd_stag_2025_2026_programma_gare",
+      "region": "Trento",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "C.U. N° 1 LND STAG. 2025/2026",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://comunicati.lnd.it/storage/comunicati/2025/2026/lnd/Attivit___ufficiale_della_Lega_Nazionale_Dilettanti_Stagione_Sportiva_2025_2026.pdf"
+    }
+  ],
+  "teams": [],
+  "matches": []
+}

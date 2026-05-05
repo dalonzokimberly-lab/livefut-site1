@@ -1,0 +1,298 @@
+{
+  "meta": {
+    "region": "Lazio",
+    "season": "2025/26",
+    "generated_at": "2026-05-05T19:22:17Z",
+    "source_policy": "official_lnd_figc_only_no_tuttocampo",
+    "dataset_variant": "online_slim",
+    "match_cutoff_date": "2026-05-05"
+  },
+  "sources": [
+    {
+      "source_url": "http://lazio.lnd.it/wp-content/uploads/2018/04/388_26_04_2018_segr.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\5cd05d2e_388_26_04_2018_segr.pdf",
+      "sha256": "fb22f4db74628102f39125bc7979701c26e875ac34472ece179c9ed384572d14",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "http://lazio.lnd.it/wp-content/uploads/2018/04/389_26_04_2018_variazioni-programma-gare-dal-28-al-29_04_18recuperi.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\2086cacd_389_26_04_2018_variazioni-programma-gare-dal-28-al-29_04_18recuperi.pdf",
+      "sha256": "6f6121b6fe0a4c40cba14aba3fc2aabc729fb0789c641f48f795b048f7388cc2",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "http://lazio.lnd.it/wp-content/uploads/2018/04/218_26-_04_2018-sgs-variazioni-del-28-29-4-2018-.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\61b1310c_218_26-_04_2018-sgs-variazioni-del-28-29-4-2018-.pdf",
+      "sha256": "f57023f3677e3b329c9c15571a471e221e93916131921df4e54ae21fdfd49c3c",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "http://lazio.lnd.it/wp-content/uploads/2018/04/352_26_04_18-Variazioni-Programma-Gare-.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\5df47383_352_26_04_18-Variazioni-Programma-Gare-.pdf",
+      "sha256": "a31188a34e2075f6e56f05bbc0cc8a2203026be77bb91e61a186f63c751c10c8",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "http://lazio.lnd.it/wp-content/uploads/2018/04/124_26_04_18_variazioni-del-28_29-04-2018-Terza-Cat.e-juniores.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\748d42d0_124_26_04_18_variazioni-del-28_29-04-2018-Terza-Cat.e-juniores.pdf",
+      "sha256": "d84ae6a3c7a174d90f0f61287c6d35b67cf2ee266bfe5a8d210783ca6d7f8d2e",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "http://lazio.lnd.it/wp-content/uploads/2018/04/200_26_04_2018_SGS-VARIAZIONI-dal-28-al-29-04-2018.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\da0284b0_200_26_04_2018_SGS-VARIAZIONI-dal-28-al-29-04-2018.pdf",
+      "sha256": "e5f4de6be30554c3da7bb8303825d1e8c26c9d5ac4a44955f0ffdbe2b9453c8f",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "http://lazio.lnd.it/wp-content/uploads/2018/04/C.U.c5_61-2.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\7091bd6e_C.U.c5_61-2.pdf",
+      "sha256": "9f3eac4b166bb07231a36d362aab87ad7d19e2bb03491cfb16ed181923b5cc10",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "http://lazio.lnd.it/wp-content/uploads/2018/04/cu-lnd-48.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\a387ebcb_cu-lnd-48.pdf",
+      "sha256": "0ea606f3f921f6d56e3e7b670660b82047ad47619c0066c697dee299ae817398",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "http://lazio.lnd.it/wp-content/uploads/2018/04/prog-gare-del-2018-05-06-LND.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\32f6995f_prog-gare-del-2018-05-06-LND.pdf",
+      "sha256": "ac929b0bd7a531ea89d7625a5a1aee026d747f4a63833fd2501e5989ce153a2d",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/160_29_01_26-Variazioni-al-Programma-Gare.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\d6b176d6_160_29_01_26-Variazioni-al-Programma-Gare.pdf",
+      "sha256": "e37ada159cc0ce000dc4c1f74d3351643ca5f704b11008cd79ca852405a8c523",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/Convocazione-n°3-Rappresentativa-Under-17-1.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\5d569925_Convocazione-n°3-Rappresentativa-Under-17-1.pdf",
+      "sha256": "f91f1d9057e23eb15f3b6d48400b345d64185bad05b7efde7bbbc61c3e6839d7",
+      "competition_id": "lazio_2025_26_calcio_a_11_convocazione_n_3_rappresentativa_under_17_girone_unico"
+    },
+    {
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/158_Risultati-Giustiza-Sportiva-_-Allegato.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\17dd51c6_158_Risultati-Giustiza-Sportiva-_-Allegato.pdf",
+      "sha256": "5f59f2d02616e00fae7f0baa710c57273e4a928b148866644077f2d05fb87bd8",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/157_27_01_26-Variazioni-al-Programma-Gare.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\646e44f0_157_27_01_26-Variazioni-al-Programma-Gare.pdf",
+      "sha256": "e99a6a8fd0b6b0bae8bc7070b86f6c597172cb17619f2399665d699867c300ef",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/156_27_01_26-Programmi-Gare.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\31496e03_156_27_01_26-Programmi-Gare.pdf",
+      "sha256": "ec766428b7551e5ac0e080e7d26b3b70e7991d1497f8fbbd42152eb6c029bdf1",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/156_27_01_26-Programmi-Gare.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\31496e03_156_27_01_26-Programmi-Gare.pdf",
+      "sha256": "ec766428b7551e5ac0e080e7d26b3b70e7991d1497f8fbbd42152eb6c029bdf1",
+      "competition_id": "lazio_2025_26_calcio_a_11_156_27_01_26_programmi_gare_programma_gare"
+    },
+    {
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/155_23_01_26-Variazioni-al-Programma-Gare.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\59a0931d_155_23_01_26-Variazioni-al-Programma-Gare.pdf",
+      "sha256": "761624d19875735e4ad8fb0180b6396159d25011ca64ccb944c28c2b93d42e3e",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/154_22_01_26-Variazioni-al-Programma-Gare.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\80b68dc6_154_22_01_26-Variazioni-al-Programma-Gare.pdf",
+      "sha256": "4048f4629024551814a9f5592a826ccc49825b570bb6e426d27203413d1eabc6",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/Convocazione-n°3-Rappresentativa-Under-19.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\d6773735_Convocazione-n°3-Rappresentativa-Under-19.pdf",
+      "sha256": "98f46051bd4c527c81d9f5bcb2c9aa85244a00a69c21c406ae3277e1e72a2dec",
+      "competition_id": "lazio_2025_26_calcio_a_11_convocazione_n_3_rappresentativa_under_19_girone_unico"
+    },
+    {
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/Convocazione-n°4-U15.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\e5768120_Convocazione-n°4-U15.pdf",
+      "sha256": "da8afcf4510856d0a0bcd1ae541c53107906429e0d66a1f5dada6005d4f1617a",
+      "competition_id": "lazio_2025_26_calcio_a_11_convocazione_n_4_rappresentativa_under_15_girone_unico"
+    },
+    {
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/151_20_01_26-Variazioni-al-Programma-Gare.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\495ff035_151_20_01_26-Variazioni-al-Programma-Gare.pdf",
+      "sha256": "e2b6e2fffc5659c2a7f9c3d566e35b03bff127100a626f3799aacb2d0fa7ba9d",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/136_30_01_2026_segr.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\f6cbe1ab_136_30_01_2026_segr.pdf",
+      "sha256": "5947fb9ac42c2933862bd9e744c7a47c8b6a5b171d2c1c589596abf475626675",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/135_29_01_26-Variaz.dal-01-_02_26.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\9f844ac3_135_29_01_26-Variaz.dal-01-_02_26.pdf",
+      "sha256": "c235450b32d5244b08a20e14dbe1a2f93582d5c5cb9dd1665c09d10d0f0c3c14",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/134_29_01_2026_segr.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\1773093e_134_29_01_2026_segr.pdf",
+      "sha256": "a09bbc6cc7a666c97c70cceeb5703f693f6e8e0dbd3347fabd2f7f6b1741d1cd",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/PROGRAMMA-GARE-U14-PRO-07-08022026.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\b5901f48_PROGRAMMA-GARE-U14-PRO-07-08022026.pdf",
+      "sha256": "bc5975d4735f174d4dd72eaa97b03079cbae9d955ebbf692572fc3141f44e5f7",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_del_7_ed_8_febbraio_2026_torneo_under_14_pro_girone_unico"
+    },
+    {
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/132_27_01_26-RECUPERIPROG.GARE-DEL-08_02_26-.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\021da90d_132_27_01_26-RECUPERIPROG.GARE-DEL-08_02_26-.pdf",
+      "sha256": "b61a0bf5389114220c9f2e7ab849236b14a30f5acc7dfb9243b274aa214916ab",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/132_27_01_26-RECUPERIPROG.GARE-DEL-08_02_26-.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\021da90d_132_27_01_26-RECUPERIPROG.GARE-DEL-08_02_26-.pdf",
+      "sha256": "b61a0bf5389114220c9f2e7ab849236b14a30f5acc7dfb9243b274aa214916ab",
+      "competition_id": "lazio_2025_26_calcio_a_11_132_27_01_26_recuperiprog_gare_del_08_02_26_programma_gare"
+    },
+    {
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/131_23_01_2026_segr.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\d1e207db_131_23_01_2026_segr.pdf",
+      "sha256": "1cd388e612a91af70f20a346ffb603f6c009ce64288622cfc33afd4b2bb2010f",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/130_22_01_26-Variaz.dal-25-_01_26-1-1.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\3a694fb5_130_22_01_26-Variaz.dal-25-_01_26-1-1.pdf",
+      "sha256": "45fc0871493181f9a4d47f3d82f117af6ac27a5ae3bf48b1018c14363f18ff00",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/129_22_01_2026_segr.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\b7b9caa0_129_22_01_2026_segr.pdf",
+      "sha256": "dd55163b1091ddd8d7c2d9fc6cf3592af0b0b70174d47da98da7870b501ce5a7",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/127_20_01_26-PROG.GARE-DEL-01_02_26-.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\5426aadc_127_20_01_26-PROG.GARE-DEL-01_02_26-.pdf",
+      "sha256": "6a8d55483b80899d5baefcaaaa5ff78b6192de6c53271dff59a61a3eb1eac3b1",
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/127_20_01_26-PROG.GARE-DEL-01_02_26-.pdf",
+      "local_path": "data\\raw\\lazio\\2025-26\\5426aadc_127_20_01_26-PROG.GARE-DEL-01_02_26-.pdf",
+      "sha256": "6a8d55483b80899d5baefcaaaa5ff78b6192de6c53271dff59a61a3eb1eac3b1",
+      "competition_id": "lazio_2025_26_calcio_a_11_127_20_01_26_prog_gare_del_01_02_26_programma_gare"
+    }
+  ],
+  "competitions": [
+    {
+      "competition_id": "lazio_2025_26_calcio_a_11_127_20_01_26_prog_gare_del_01_02_26_programma_gare",
+      "region": "Lazio",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "127_20_01_26-PROG.GARE-DEL-01_02_26",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/127_20_01_26-PROG.GARE-DEL-01_02_26-.pdf"
+    },
+    {
+      "competition_id": "lazio_2025_26_calcio_a_11_132_27_01_26_recuperiprog_gare_del_08_02_26_programma_gare",
+      "region": "Lazio",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "132_27_01_26-RECUPERIPROG.GARE-DEL-08_02_26",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/132_27_01_26-RECUPERIPROG.GARE-DEL-08_02_26-.pdf"
+    },
+    {
+      "competition_id": "lazio_2025_26_calcio_a_11_156_27_01_26_programmi_gare_programma_gare",
+      "region": "Lazio",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "156_27_01_26-PROGRAMMI-GARE",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/156_27_01_26-Programmi-Gare.pdf"
+    },
+    {
+      "competition_id": "lazio_2025_26_calcio_a_11_convocazione_n_3_rappresentativa_under_17_girone_unico",
+      "region": "Lazio",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "CONVOCAZIONE N.3 RAPPRESENTATIVA UNDER 17",
+      "group_name": "Girone unico",
+      "age_group": "under_17",
+      "gender": "male",
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/Convocazione-n°3-Rappresentativa-Under-17-1.pdf"
+    },
+    {
+      "competition_id": "lazio_2025_26_calcio_a_11_convocazione_n_3_rappresentativa_under_19_girone_unico",
+      "region": "Lazio",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "CONVOCAZIONE N.3 RAPPRESENTATIVA UNDER 19",
+      "group_name": "Girone unico",
+      "age_group": "under_19",
+      "gender": "male",
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/Convocazione-n°3-Rappresentativa-Under-19.pdf"
+    },
+    {
+      "competition_id": "lazio_2025_26_calcio_a_11_convocazione_n_4_rappresentativa_under_15_girone_unico",
+      "region": "Lazio",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "CONVOCAZIONE N.4 RAPPRESENTATIVA UNDER 15",
+      "group_name": "Girone unico",
+      "age_group": "under_15",
+      "gender": "male",
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/Convocazione-n°4-U15.pdf"
+    },
+    {
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_programma_gare",
+      "region": "Lazio",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "PROGRAMMA GARE",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "http://lazio.lnd.it/wp-content/uploads/2018/04/388_26_04_2018_segr.pdf"
+    },
+    {
+      "competition_id": "lazio_2025_26_calcio_a_11_programma_gare_del_7_ed_8_febbraio_2026_torneo_under_14_pro_girone_unico",
+      "region": "Lazio",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "PROGRAMMA GARE DEL 7 ED 8 FEBBRAIO 2026 - TORNEO UNDER 14 PRO",
+      "group_name": "Girone unico",
+      "age_group": "under_14",
+      "gender": "male",
+      "source_url": "https://lazio.lnd.it/wp-content/uploads/2026/01/PROGRAMMA-GARE-U14-PRO-07-08022026.pdf"
+    }
+  ],
+  "teams": [],
+  "matches": []
+}

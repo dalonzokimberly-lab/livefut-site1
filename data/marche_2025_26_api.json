@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "region": "Marche",
+    "season": "2025/26",
+    "generated_at": "2026-05-05T19:21:27Z",
+    "source_policy": "official_lnd_figc_only_no_tuttocampo",
+    "dataset_variant": "online_slim",
+    "match_cutoff_date": "2026-05-05"
+  },
+  "sources": [
+    {
+      "source_url": "https://www.figcmarche.it/wp-content/uploads/2026/05/Comunicato-Ufficiale-n°-109-Calcio-a-Cinque-S.S.-2025-2026.pdf",
+      "local_path": "data\\raw\\marche\\2025-26\\abc03bcc_Comunicato-Ufficiale-n°-109-Calcio-a-Cinque-S.S.-2025-2026.pdf",
+      "sha256": "4d9e1b7ce0b6c10230aee8e379b38be6e579f4b7bd05250faf3e8965bd8b00f0",
+      "competition_id": "marche_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://www.figcmarche.it/wp-content/uploads/2026/05/C.U.-n°-226-CSAT-04-maggio-2026.pdf",
+      "local_path": "data\\raw\\marche\\2025-26\\5fd7feda_C.U.-n°-226-CSAT-04-maggio-2026.pdf",
+      "sha256": "4bc1fb31950da740905d6c5442c6a6646d6f5485454037313de2a47b9a5138c8",
+      "competition_id": "marche_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://www.figcmarche.it/wp-content/uploads/2026/05/C.U.-n°-225-TFT-04-maggio-2026.pdf",
+      "local_path": "data\\raw\\marche\\2025-26\\0b848b61_C.U.-n°-225-TFT-04-maggio-2026.pdf",
+      "sha256": "def3756e965b6493eb9d8da96ee11e4577af246548b7551d1896a1e687719925",
+      "competition_id": "marche_2025_26_calcio_a_11_programma_gare_programma_gare"
+    }
+  ],
+  "competitions": [
+    {
+      "competition_id": "marche_2025_26_calcio_a_11_programma_gare_programma_gare",
+      "region": "Marche",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "PROGRAMMA GARE",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.figcmarche.it/wp-content/uploads/2026/05/Comunicato-Ufficiale-n°-109-Calcio-a-Cinque-S.S.-2025-2026.pdf"
+    }
+  ],
+  "teams": [],
+  "matches": []
+}

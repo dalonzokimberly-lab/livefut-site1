@@ -1,0 +1,346 @@
+{
+  "meta": {
+    "region": "Sicilia",
+    "season": "2025/26",
+    "generated_at": "2026-05-05T19:24:31Z",
+    "source_policy": "official_lnd_figc_only_no_tuttocampo",
+    "dataset_variant": "online_slim",
+    "match_cutoff_date": "2026-05-05"
+  },
+  "sources": [
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-05/Fase%20Regionale%20Torneo%20under%2012%20femminle%203.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\8a2087d6_Fase Regionale Torneo under 12 femminle 3.pdf",
+      "sha256": "0f40177a887a359ec52b7be355d1b200c5ab13a27ab4441f5ba817d210656cec",
+      "competition_id": "sicilia_2025_26_calcio_a_11_fase_regionale_torneo_under_12_femminle_3_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-05/Fase%20Regionale%20Torneo%20under%2012%20femminle%203.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\8a2087d6_Fase Regionale Torneo under 12 femminle 3.pdf",
+      "sha256": "0f40177a887a359ec52b7be355d1b200c5ab13a27ab4441f5ba817d210656cec",
+      "competition_id": "sicilia_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n198_A_FIGC_-_modifica_artt__31__32__39__96__99__100__101__103__113_e_114_delle_N_O_I_F__1.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\c302d5fd_CU n198_A_FIGC_-_modifica_artt__31__32__39__96__99__100__101__103__113_e_114_delle_N_O_I_F__1.pdf",
+      "sha256": "018f368445ed926ffe9dbd1c3d0f102dd7d2f017c84b7e17b535fa19ae2f13a4",
+      "competition_id": "sicilia_2025_26_calcio_a_11_cu_n198_a_figc_modifica_artt_31_32_39_96_99_100_101_103_113_e_114_delle_n_o_i_f_1_pd_programma_gare"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n198_A_FIGC_-_modifica_artt__31__32__39__96__99__100__101__103__113_e_114_delle_N_O_I_F__1.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\c302d5fd_CU n198_A_FIGC_-_modifica_artt__31__32__39__96__99__100__101__103__113_e_114_delle_N_O_I_F__1.pdf",
+      "sha256": "018f368445ed926ffe9dbd1c3d0f102dd7d2f017c84b7e17b535fa19ae2f13a4",
+      "competition_id": "sicilia_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/Fase%20Interprovinciale%20Torneo%20Under%2012%20Femminile.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\c189ff10_Fase Interprovinciale Torneo Under 12 Femminile.pdf",
+      "sha256": "9d5453531b56519e8209048bfe7b12063a18b35b9d525da27b7988006bd2b10a",
+      "competition_id": "sicilia_2025_26_calcio_a_11_fase_interprovinciale_torneo_under_12_femminile_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/Fase%20Interprovinciale%20Torneo%20Under%2012%20Femminile.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\c189ff10_Fase Interprovinciale Torneo Under 12 Femminile.pdf",
+      "sha256": "9d5453531b56519e8209048bfe7b12063a18b35b9d525da27b7988006bd2b10a",
+      "competition_id": "sicilia_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CAMPIONATO_JUNIORES_DILLETTANTI_2025_2026_-_FASE_NAZIONALE_-_PROGRAMMA_GARE_PRIMA_FASE.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\de655c6c_CAMPIONATO_JUNIORES_DILLETTANTI_2025_2026_-_FASE_NAZIONALE_-_PROGRAMMA_GARE_PRIMA_FASE.pdf",
+      "sha256": "682a3c9ca1df82d346aa6c5d86873139039c9a0b02d2b1cd2f5b54a3f780704f",
+      "competition_id": "sicilia_2025_26_calcio_a_11_campionato_juniores_dillettanti_2025_2026_fase_nazionale_programma_gare_prima_fase_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CAMPIONATO_JUNIORES_DILLETTANTI_2025_2026_-_FASE_NAZIONALE_-_PROGRAMMA_GARE_PRIMA_FASE.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\de655c6c_CAMPIONATO_JUNIORES_DILLETTANTI_2025_2026_-_FASE_NAZIONALE_-_PROGRAMMA_GARE_PRIMA_FASE.pdf",
+      "sha256": "682a3c9ca1df82d346aa6c5d86873139039c9a0b02d2b1cd2f5b54a3f780704f",
+      "competition_id": "sicilia_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CIRCOLARE%20n.39%20_12_2026_CENTRO_STUDI_TRIBUTARI_LND.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\21a98c4c_CIRCOLARE n.39 _12_2026_CENTRO_STUDI_TRIBUTARI_LND.pdf",
+      "sha256": "2f92c78ab58e73700fe61e990e622929c3597cad0dbdc2ed7c7b8b6c32d69e98",
+      "competition_id": "sicilia_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n197_A_FIGC_-_modalit___di_presentazione_delle_candidature_a_Presidente_Federale_e_Consigliere_Federale.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\88184d4f_CU n197_A_FIGC_-_modalit___di_presentazione_delle_candidature_a_Presidente_Federale_e_Consigliere_Federale.pdf",
+      "sha256": "d52c51765cbdd36c239b4165d6b4d7db383b105abd0446d91594942dd483e89b",
+      "competition_id": "sicilia_2025_26_calcio_a_11_cu_n197_a_figc_modalit_di_presentazione_delle_candidature_a_presidente_federale_e_consiglier_programma_gare"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n197_A_FIGC_-_modalit___di_presentazione_delle_candidature_a_Presidente_Federale_e_Consigliere_Federale.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\88184d4f_CU n197_A_FIGC_-_modalit___di_presentazione_delle_candidature_a_Presidente_Federale_e_Consigliere_Federale.pdf",
+      "sha256": "d52c51765cbdd36c239b4165d6b4d7db383b105abd0446d91594942dd483e89b",
+      "competition_id": "sicilia_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n198_A_FIGC_-_modifica_artt__31__32__39__96__99__100__101__103__113_e_114_delle_N_O_I_F_.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\377032a3_CU n198_A_FIGC_-_modifica_artt__31__32__39__96__99__100__101__103__113_e_114_delle_N_O_I_F_.pdf",
+      "sha256": "018f368445ed926ffe9dbd1c3d0f102dd7d2f017c84b7e17b535fa19ae2f13a4",
+      "competition_id": "sicilia_2025_26_calcio_a_11_cu_n198_a_figc_modifica_artt_31_32_39_96_99_100_101_103_113_e_114_delle_n_o_i_f_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n198_A_FIGC_-_modifica_artt__31__32__39__96__99__100__101__103__113_e_114_delle_N_O_I_F_.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\377032a3_CU n198_A_FIGC_-_modifica_artt__31__32__39__96__99__100__101__103__113_e_114_delle_N_O_I_F_.pdf",
+      "sha256": "018f368445ed926ffe9dbd1c3d0f102dd7d2f017c84b7e17b535fa19ae2f13a4",
+      "competition_id": "sicilia_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n199_A_FIGC_-_modifica_art__30_del_Regolamento_LND.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\ebc9df41_CU n199_A_FIGC_-_modifica_art__30_del_Regolamento_LND.pdf",
+      "sha256": "7d1ee9492cdf7a7f70457ade7e73f63d19ae2e0f6b9c7b05809ba143b8b7d6ef",
+      "competition_id": "sicilia_2025_26_calcio_a_11_cu_n199_a_figc_modifica_art_30_del_regolamento_lnd_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n199_A_FIGC_-_modifica_art__30_del_Regolamento_LND.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\ebc9df41_CU n199_A_FIGC_-_modifica_art__30_del_Regolamento_LND.pdf",
+      "sha256": "7d1ee9492cdf7a7f70457ade7e73f63d19ae2e0f6b9c7b05809ba143b8b7d6ef",
+      "competition_id": "sicilia_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n201_A_FIGC_-_designazioni_arbitrali_gare_di_Play-Off__Play-Out_e_di_Supercoppa_del_Campionato_Primavera_2__della_LNP_Serie_B.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\87dba719_CU n201_A_FIGC_-_designazioni_arbitrali_gare_di_Play-Off__Play-Out_e_di_Supercoppa_del_Campionato_Primavera_2__della_LNP_Serie_B.pdf",
+      "sha256": "7ff389d940d1b7e39c89d5c7f0f1f53ba2254f3e2851eee9f4b4d717b5179647",
+      "competition_id": "sicilia_2025_26_calcio_a_11_cu_n201_a_figc_designazioni_arbitrali_gare_di_play_off_play_out_e_di_supercoppa_del_campionat_girone_unico"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n201_A_FIGC_-_designazioni_arbitrali_gare_di_Play-Off__Play-Out_e_di_Supercoppa_del_Campionato_Primavera_2__della_LNP_Serie_B.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\87dba719_CU n201_A_FIGC_-_designazioni_arbitrali_gare_di_Play-Off__Play-Out_e_di_Supercoppa_del_Campionato_Primavera_2__della_LNP_Serie_B.pdf",
+      "sha256": "7ff389d940d1b7e39c89d5c7f0f1f53ba2254f3e2851eee9f4b4d717b5179647",
+      "competition_id": "sicilia_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n202_A_F_I_G_C__-_Deroga_LND_art__72_NOIF_-_maglie_da_gioco_s_s__2026_2027.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\1a8ec3cc_CU n202_A_F_I_G_C__-_Deroga_LND_art__72_NOIF_-_maglie_da_gioco_s_s__2026_2027.pdf",
+      "sha256": "ece85178e83488638203f6db8b25a99dc834c0f0487f5d00a63a192ee4b1f452",
+      "competition_id": "sicilia_2025_26_calcio_a_11_cu_n202_a_f_i_g_c_deroga_lnd_art_72_noif_maglie_da_gioco_s_s_2026_2027_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n202_A_F_I_G_C__-_Deroga_LND_art__72_NOIF_-_maglie_da_gioco_s_s__2026_2027.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\1a8ec3cc_CU n202_A_F_I_G_C__-_Deroga_LND_art__72_NOIF_-_maglie_da_gioco_s_s__2026_2027.pdf",
+      "sha256": "ece85178e83488638203f6db8b25a99dc834c0f0487f5d00a63a192ee4b1f452",
+      "competition_id": "sicilia_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n203_A_FIGC_-_Deroga_Regola_3_del_Giuoco_del_Calcio_-_numero_riserve_distinta_di_gara_competizioni_LND_2026-2027.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\1c399bad_CU n203_A_FIGC_-_Deroga_Regola_3_del_Giuoco_del_Calcio_-_numero_riserve_distinta_di_gara_competizioni_LND_2026-2027.pdf",
+      "sha256": "de294e84e56b91f7ce62a92cea74554b0337c1a27f25bebca2513366ad3de040",
+      "competition_id": "sicilia_2025_26_calcio_a_11_cu_n203_a_figc_deroga_regola_3_del_giuoco_del_calcio_numero_riserve_distinta_di_gara_competi_programma_gare"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n203_A_FIGC_-_Deroga_Regola_3_del_Giuoco_del_Calcio_-_numero_riserve_distinta_di_gara_competizioni_LND_2026-2027.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\1c399bad_CU n203_A_FIGC_-_Deroga_Regola_3_del_Giuoco_del_Calcio_-_numero_riserve_distinta_di_gara_competizioni_LND_2026-2027.pdf",
+      "sha256": "de294e84e56b91f7ce62a92cea74554b0337c1a27f25bebca2513366ad3de040",
+      "competition_id": "sicilia_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n204_A_FIGC_-_sostituzione_aggiuntiva_nei_tempi_supplementari_nelle_competizioni_di_calcio_a_11_LND_2026-2027.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\e2f5bb78_CU n204_A_FIGC_-_sostituzione_aggiuntiva_nei_tempi_supplementari_nelle_competizioni_di_calcio_a_11_LND_2026-2027.pdf",
+      "sha256": "e3615bf39c384e9bf34a400956f50eaba7ddf6b4f4e32f7265c64875ff781559",
+      "competition_id": "sicilia_2025_26_calcio_a_11_cu_n204_a_figc_sostituzione_aggiuntiva_nei_tempi_supplementari_nelle_competizioni_di_calcio_a_programma_gare"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n204_A_FIGC_-_sostituzione_aggiuntiva_nei_tempi_supplementari_nelle_competizioni_di_calcio_a_11_LND_2026-2027.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\e2f5bb78_CU n204_A_FIGC_-_sostituzione_aggiuntiva_nei_tempi_supplementari_nelle_competizioni_di_calcio_a_11_LND_2026-2027.pdf",
+      "sha256": "e3615bf39c384e9bf34a400956f50eaba7ddf6b4f4e32f7265c64875ff781559",
+      "competition_id": "sicilia_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n205_A_FIGC_-_deroga_LND_agli_artt__31_e_32_delle_N_O_I_F___s_s__2026-2027.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\871f6ea7_CU n205_A_FIGC_-_deroga_LND_agli_artt__31_e_32_delle_N_O_I_F___s_s__2026-2027.pdf",
+      "sha256": "97ad11bd6cfb7e8489e628edf19454de38640071ea5fa229e6b3ce8ad9386510",
+      "competition_id": "sicilia_2025_26_calcio_a_11_cu_n205_a_figc_deroga_lnd_agli_artt_31_e_32_delle_n_o_i_f_s_s_2026_2027_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n205_A_FIGC_-_deroga_LND_agli_artt__31_e_32_delle_N_O_I_F___s_s__2026-2027.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\871f6ea7_CU n205_A_FIGC_-_deroga_LND_agli_artt__31_e_32_delle_N_O_I_F___s_s__2026-2027.pdf",
+      "sha256": "97ad11bd6cfb7e8489e628edf19454de38640071ea5fa229e6b3ce8ad9386510",
+      "competition_id": "sicilia_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n206_A_FIGC_-_Deroga_Funzioni_Arbitrali_e_Norme_attuative_Dirigente_-_Arbitro_s_s__26-27.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\a2fd06a0_CU n206_A_FIGC_-_Deroga_Funzioni_Arbitrali_e_Norme_attuative_Dirigente_-_Arbitro_s_s__26-27.pdf",
+      "sha256": "08f20113f81ec3fe389476b2390c4fc896283597244a01c9d7ea3db004c09ba1",
+      "competition_id": "sicilia_2025_26_calcio_a_11_cu_n206_a_figc_deroga_funzioni_arbitrali_e_norme_attuative_dirigente_arbitro_s_s_26_27_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n206_A_FIGC_-_Deroga_Funzioni_Arbitrali_e_Norme_attuative_Dirigente_-_Arbitro_s_s__26-27.pdf",
+      "local_path": "data\\raw\\sicilia\\2025-26\\a2fd06a0_CU n206_A_FIGC_-_Deroga_Funzioni_Arbitrali_e_Norme_attuative_Dirigente_-_Arbitro_s_s__26-27.pdf",
+      "sha256": "08f20113f81ec3fe389476b2390c4fc896283597244a01c9d7ea3db004c09ba1",
+      "competition_id": "sicilia_2025_26_calcio_a_11_programma_gare_programma_gare"
+    }
+  ],
+  "competitions": [
+    {
+      "competition_id": "sicilia_2025_26_calcio_a_11_campionato_juniores_dillettanti_2025_2026_fase_nazionale_programma_gare_prima_fase_pdf_girone_unico",
+      "region": "Sicilia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "CAMPIONATO_JUNIORES_DILLETTANTI_2025_2026_-_FASE_NAZIONALE_-_PROGRAMMA_GARE_PRIMA_FASE.PDF",
+      "group_name": "Girone unico",
+      "age_group": "under_19",
+      "gender": "male",
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CAMPIONATO_JUNIORES_DILLETTANTI_2025_2026_-_FASE_NAZIONALE_-_PROGRAMMA_GARE_PRIMA_FASE.pdf"
+    },
+    {
+      "competition_id": "sicilia_2025_26_calcio_a_11_cu_n197_a_figc_modalit_di_presentazione_delle_candidature_a_presidente_federale_e_consiglier_programma_gare",
+      "region": "Sicilia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "CU N197_A_FIGC_-_MODALIT___DI_PRESENTAZIONE_DELLE_CANDIDATURE_A_PRESIDENTE_FEDERALE_E_CONSIGLIER",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n197_A_FIGC_-_modalit___di_presentazione_delle_candidature_a_Presidente_Federale_e_Consigliere_Federale.pdf"
+    },
+    {
+      "competition_id": "sicilia_2025_26_calcio_a_11_cu_n198_a_figc_modifica_artt_31_32_39_96_99_100_101_103_113_e_114_delle_n_o_i_f_pdf_programma_gare",
+      "region": "Sicilia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "CU N198_A_FIGC_-_MODIFICA_ARTT__31__32__39__96__99__100__101__103__113_E_114_DELLE_N_O_I_F_.PDF",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n198_A_FIGC_-_modifica_artt__31__32__39__96__99__100__101__103__113_e_114_delle_N_O_I_F_.pdf"
+    },
+    {
+      "competition_id": "sicilia_2025_26_calcio_a_11_cu_n198_a_figc_modifica_artt_31_32_39_96_99_100_101_103_113_e_114_delle_n_o_i_f_1_pd_programma_gare",
+      "region": "Sicilia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "CU N198_A_FIGC_-_MODIFICA_ARTT__31__32__39__96__99__100__101__103__113_E_114_DELLE_N_O_I_F__1.PD",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n198_A_FIGC_-_modifica_artt__31__32__39__96__99__100__101__103__113_e_114_delle_N_O_I_F__1.pdf"
+    },
+    {
+      "competition_id": "sicilia_2025_26_calcio_a_11_cu_n199_a_figc_modifica_art_30_del_regolamento_lnd_pdf_programma_gare",
+      "region": "Sicilia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "CU N199_A_FIGC_-_MODIFICA_ART__30_DEL_REGOLAMENTO_LND.PDF",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n199_A_FIGC_-_modifica_art__30_del_Regolamento_LND.pdf"
+    },
+    {
+      "competition_id": "sicilia_2025_26_calcio_a_11_cu_n201_a_figc_designazioni_arbitrali_gare_di_play_off_play_out_e_di_supercoppa_del_campionat_girone_unico",
+      "region": "Sicilia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "coppa",
+      "category": "CU N201_A_FIGC_-_DESIGNAZIONI_ARBITRALI_GARE_DI_PLAY-OFF__PLAY-OUT_E_DI_SUPERCOPPA_DEL_CAMPIONAT",
+      "group_name": "Girone unico",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n201_A_FIGC_-_designazioni_arbitrali_gare_di_Play-Off__Play-Out_e_di_Supercoppa_del_Campionato_Primavera_2__della_LNP_Serie_B.pdf"
+    },
+    {
+      "competition_id": "sicilia_2025_26_calcio_a_11_cu_n202_a_f_i_g_c_deroga_lnd_art_72_noif_maglie_da_gioco_s_s_2026_2027_pdf_programma_gare",
+      "region": "Sicilia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "CU N202_A_F_I_G_C__-_DEROGA_LND_ART__72_NOIF_-_MAGLIE_DA_GIOCO_S_S__2026_2027.PDF",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n202_A_F_I_G_C__-_Deroga_LND_art__72_NOIF_-_maglie_da_gioco_s_s__2026_2027.pdf"
+    },
+    {
+      "competition_id": "sicilia_2025_26_calcio_a_11_cu_n203_a_figc_deroga_regola_3_del_giuoco_del_calcio_numero_riserve_distinta_di_gara_competi_programma_gare",
+      "region": "Sicilia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "CU N203_A_FIGC_-_DEROGA_REGOLA_3_DEL_GIUOCO_DEL_CALCIO_-_NUMERO_RISERVE_DISTINTA_DI_GARA_COMPETI",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n203_A_FIGC_-_Deroga_Regola_3_del_Giuoco_del_Calcio_-_numero_riserve_distinta_di_gara_competizioni_LND_2026-2027.pdf"
+    },
+    {
+      "competition_id": "sicilia_2025_26_calcio_a_11_cu_n204_a_figc_sostituzione_aggiuntiva_nei_tempi_supplementari_nelle_competizioni_di_calcio_a_programma_gare",
+      "region": "Sicilia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "CU N204_A_FIGC_-_SOSTITUZIONE_AGGIUNTIVA_NEI_TEMPI_SUPPLEMENTARI_NELLE_COMPETIZIONI_DI_CALCIO_A_",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n204_A_FIGC_-_sostituzione_aggiuntiva_nei_tempi_supplementari_nelle_competizioni_di_calcio_a_11_LND_2026-2027.pdf"
+    },
+    {
+      "competition_id": "sicilia_2025_26_calcio_a_11_cu_n205_a_figc_deroga_lnd_agli_artt_31_e_32_delle_n_o_i_f_s_s_2026_2027_pdf_programma_gare",
+      "region": "Sicilia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "CU N205_A_FIGC_-_DEROGA_LND_AGLI_ARTT__31_E_32_DELLE_N_O_I_F___S_S__2026-2027.PDF",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n205_A_FIGC_-_deroga_LND_agli_artt__31_e_32_delle_N_O_I_F___s_s__2026-2027.pdf"
+    },
+    {
+      "competition_id": "sicilia_2025_26_calcio_a_11_cu_n206_a_figc_deroga_funzioni_arbitrali_e_norme_attuative_dirigente_arbitro_s_s_26_27_pdf_programma_gare",
+      "region": "Sicilia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "CU N206_A_FIGC_-_DEROGA_FUNZIONI_ARBITRALI_E_NORME_ATTUATIVE_DIRIGENTE_-_ARBITRO_S_S__26-27.PDF",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/CU%20n206_A_FIGC_-_Deroga_Funzioni_Arbitrali_e_Norme_attuative_Dirigente_-_Arbitro_s_s__26-27.pdf"
+    },
+    {
+      "competition_id": "sicilia_2025_26_calcio_a_11_fase_interprovinciale_torneo_under_12_femminile_pdf_girone_unico",
+      "region": "Sicilia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "FASE INTERPROVINCIALE TORNEO UNDER 12 FEMMINILE.PDF",
+      "group_name": "Girone unico",
+      "age_group": "adult",
+      "gender": "female",
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-04/Fase%20Interprovinciale%20Torneo%20Under%2012%20Femminile.pdf"
+    },
+    {
+      "competition_id": "sicilia_2025_26_calcio_a_11_fase_regionale_torneo_under_12_femminle_3_pdf_girone_unico",
+      "region": "Sicilia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "FASE REGIONALE TORNEO UNDER 12 FEMMINLE 3.PDF",
+      "group_name": "Girone unico",
+      "age_group": "adult",
+      "gender": "female",
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-05/Fase%20Regionale%20Torneo%20under%2012%20femminle%203.pdf"
+    },
+    {
+      "competition_id": "sicilia_2025_26_calcio_a_11_programma_gare_programma_gare",
+      "region": "Sicilia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "PROGRAMMA GARE",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://sicilia.lnd.it/sites/default/files/comunicati/2026-05/Fase%20Regionale%20Torneo%20under%2012%20femminle%203.pdf"
+    }
+  ],
+  "teams": [],
+  "matches": []
+}

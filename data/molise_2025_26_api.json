@@ -1,0 +1,196 @@
+{
+  "meta": {
+    "region": "Molise",
+    "season": "2025/26",
+    "generated_at": "2026-05-05T19:22:36Z",
+    "source_policy": "official_lnd_figc_only_no_tuttocampo",
+    "dataset_variant": "online_slim",
+    "match_cutoff_date": "2026-05-05"
+  },
+  "sources": [
+    {
+      "source_url": "https://molise.lnd.it/index.php?option=com_docman&view=download&alias=3877-comuff-146-2025-2026&category_slug=comunicato-ufficiale-n-146-del-04-maggio-2026-classifiche-finali-gare-playoff-e-playout-campionati-regionali-eccellenza-promozione-seconda-categoria-under-17-e-under-15&Itemid=3241",
+      "local_path": "data\\raw\\molise\\2025-26\\42f89b23_index.php",
+      "sha256": "24e6e939b8a4c064359f3aecd05d7318df130acc27e3876b40171c006173fe8d",
+      "competition_id": "molise_2025_26_calcio_a_11_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://molise.lnd.it/index.php?option=com_docman&view=download&alias=3877-comuff-146-2025-2026&category_slug=comunicato-ufficiale-n-146-del-04-maggio-2026-classifiche-finali-gare-playoff-e-playout-campionati-regionali-eccellenza-promozione-seconda-categoria-under-17-e-under-15&Itemid=3241",
+      "local_path": "data\\raw\\molise\\2025-26\\42f89b23_index.php",
+      "sha256": "24e6e939b8a4c064359f3aecd05d7318df130acc27e3876b40171c006173fe8d",
+      "competition_id": "molise_2025_26_calcio_a_11_comuff_146_2025_2026_programma_gare"
+    },
+    {
+      "source_url": "https://molise.lnd.it/index.php?option=com_docman&view=download&alias=3875-comuff-144-2025-2026&category_slug=comunicato-ufficiale-n-144-del-01-maggio-2026-variazioni-gare&Itemid=3241",
+      "local_path": "data\\raw\\molise\\2025-26\\9b4be959_index.php",
+      "sha256": "3f13bae4f16d344551ade89bb0cc56bbcef084917bbfc8b9feb9f2fbeb70cff4",
+      "competition_id": "molise_2025_26_calcio_a_11_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://molise.lnd.it/index.php?option=com_docman&view=download&alias=3875-comuff-144-2025-2026&category_slug=comunicato-ufficiale-n-144-del-01-maggio-2026-variazioni-gare&Itemid=3241",
+      "local_path": "data\\raw\\molise\\2025-26\\9b4be959_index.php",
+      "sha256": "3f13bae4f16d344551ade89bb0cc56bbcef084917bbfc8b9feb9f2fbeb70cff4",
+      "competition_id": "molise_2025_26_calcio_a_11_comuff_144_2025_2026_programma_gare"
+    },
+    {
+      "source_url": "https://molise.lnd.it/index.php?option=com_docman&view=download&alias=3868-comuff-140-2025-2026&category_slug=comunicato-ufficiale-n-140-del-27-aprile-2026-abbinamenti-e-programmi-gara-semifinali-playoff-campionati-regionali-under-15-e-under-17&Itemid=3241",
+      "local_path": "data\\raw\\molise\\2025-26\\31823a2a_index.php",
+      "sha256": "e45a8dc66aea6b1b5c67cddfbed5e6043767b83c144f031c2236e52f0274d73c",
+      "competition_id": "molise_2025_26_calcio_a_11_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://molise.lnd.it/index.php?option=com_docman&view=download&alias=3868-comuff-140-2025-2026&category_slug=comunicato-ufficiale-n-140-del-27-aprile-2026-abbinamenti-e-programmi-gara-semifinali-playoff-campionati-regionali-under-15-e-under-17&Itemid=3241",
+      "local_path": "data\\raw\\molise\\2025-26\\31823a2a_index.php",
+      "sha256": "e45a8dc66aea6b1b5c67cddfbed5e6043767b83c144f031c2236e52f0274d73c",
+      "competition_id": "molise_2025_26_calcio_a_11_comuff_140_2025_2026_programma_gare"
+    },
+    {
+      "source_url": "https://molise.lnd.it/index.php?option=com_docman&view=download&alias=3861-comuff-137-2025-2026&category_slug=comunicato-ufficiale-n-137-del-23-aprile-2026-motivazioni-decisione-corte-sportiva-di-appello-territoriale&Itemid=3241",
+      "local_path": "data\\raw\\molise\\2025-26\\b56001c3_index.php",
+      "sha256": "2dcae05672b6ffd1cc762db55a7068970f76a589cf2b16f3fd20847999e05a09",
+      "competition_id": "molise_2025_26_calcio_a_11_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://molise.lnd.it/index.php?option=com_docman&view=download&alias=3861-comuff-137-2025-2026&category_slug=comunicato-ufficiale-n-137-del-23-aprile-2026-motivazioni-decisione-corte-sportiva-di-appello-territoriale&Itemid=3241",
+      "local_path": "data\\raw\\molise\\2025-26\\b56001c3_index.php",
+      "sha256": "2dcae05672b6ffd1cc762db55a7068970f76a589cf2b16f3fd20847999e05a09",
+      "competition_id": "molise_2025_26_calcio_a_11_comuff_137_2025_2026_programma_gare"
+    },
+    {
+      "source_url": "https://molise.lnd.it/index.php?option=com_docman&view=download&alias=3858-comuff-136-2025-2026&category_slug=comunicato-ufficiale-n-136-del-22-aprile-2026-dispositivo-della-corte-sportiva-di-appello-territoriale&Itemid=3241",
+      "local_path": "data\\raw\\molise\\2025-26\\d7e18d70_index.php",
+      "sha256": "78af9736b52d32dc320a7e87361850d82eb636b54536e40231ccf1762b1d8f2d",
+      "competition_id": "molise_2025_26_calcio_a_11_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://molise.lnd.it/index.php?option=com_docman&view=download&alias=3858-comuff-136-2025-2026&category_slug=comunicato-ufficiale-n-136-del-22-aprile-2026-dispositivo-della-corte-sportiva-di-appello-territoriale&Itemid=3241",
+      "local_path": "data\\raw\\molise\\2025-26\\d7e18d70_index.php",
+      "sha256": "78af9736b52d32dc320a7e87361850d82eb636b54536e40231ccf1762b1d8f2d",
+      "competition_id": "molise_2025_26_calcio_a_11_comuff_136_2025_2026_programma_gare"
+    },
+    {
+      "source_url": "https://molise.lnd.it/index.php?option=com_docman&view=download&alias=3842-comuff-133-2025-2026&category_slug=comunicato-ufficiale-n-133-del-21-aprile-2026-variazioni-gare-delibera-gst&Itemid=3241",
+      "local_path": "data\\raw\\molise\\2025-26\\75188499_index.php",
+      "sha256": "78e3b54f0394b9d2effc5c34484863253ec993699514808cd9dbfd2fe970381e",
+      "competition_id": "molise_2025_26_calcio_a_11_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://molise.lnd.it/index.php?option=com_docman&view=download&alias=3842-comuff-133-2025-2026&category_slug=comunicato-ufficiale-n-133-del-21-aprile-2026-variazioni-gare-delibera-gst&Itemid=3241",
+      "local_path": "data\\raw\\molise\\2025-26\\75188499_index.php",
+      "sha256": "78e3b54f0394b9d2effc5c34484863253ec993699514808cd9dbfd2fe970381e",
+      "competition_id": "molise_2025_26_calcio_a_11_comuff_133_2025_2026_programma_gare"
+    },
+    {
+      "source_url": "https://molise.lnd.it/index.php?option=com_docman&view=download&alias=3840-comuff-132-2025-2026&category_slug=comunicato-ufficiale-n-132-del-20-aprile-2026-campionato-regionale-2-categoria-gir-b-campionati-regionali-under-15-e-under-17-campionato-regionale-c2-calcio-a-5-classifiche-definitive-programmi-gare-playoff-e-playout&Itemid=3241",
+      "local_path": "data\\raw\\molise\\2025-26\\99e391d3_index.php",
+      "sha256": "4ff38001680b84834351d5a34e83e97449a148fc45d922b12d1607598b3f23c8",
+      "competition_id": "molise_2025_26_calcio_a_11_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://molise.lnd.it/index.php?option=com_docman&view=download&alias=3840-comuff-132-2025-2026&category_slug=comunicato-ufficiale-n-132-del-20-aprile-2026-campionato-regionale-2-categoria-gir-b-campionati-regionali-under-15-e-under-17-campionato-regionale-c2-calcio-a-5-classifiche-definitive-programmi-gare-playoff-e-playout&Itemid=3241",
+      "local_path": "data\\raw\\molise\\2025-26\\99e391d3_index.php",
+      "sha256": "4ff38001680b84834351d5a34e83e97449a148fc45d922b12d1607598b3f23c8",
+      "competition_id": "molise_2025_26_calcio_a_11_comuff_132_2025_2026_programma_gare"
+    }
+  ],
+  "competitions": [
+    {
+      "competition_id": "molise_2025_26_calcio_a_11_comuff_132_2025_2026_programma_gare",
+      "region": "Molise",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "COMUFF 132 2025 2026",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://molise.lnd.it/index.php?option=com_docman&view=download&alias=3840-comuff-132-2025-2026&category_slug=comunicato-ufficiale-n-132-del-20-aprile-2026-campionato-regionale-2-categoria-gir-b-campionati-regionali-under-15-e-under-17-campionato-regionale-c2-calcio-a-5-classifiche-definitive-programmi-gare-playoff-e-playout&Itemid=3241"
+    },
+    {
+      "competition_id": "molise_2025_26_calcio_a_11_comuff_133_2025_2026_programma_gare",
+      "region": "Molise",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "COMUFF 133 2025 2026",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://molise.lnd.it/index.php?option=com_docman&view=download&alias=3842-comuff-133-2025-2026&category_slug=comunicato-ufficiale-n-133-del-21-aprile-2026-variazioni-gare-delibera-gst&Itemid=3241"
+    },
+    {
+      "competition_id": "molise_2025_26_calcio_a_11_comuff_136_2025_2026_programma_gare",
+      "region": "Molise",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "COMUFF 136 2025 2026",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://molise.lnd.it/index.php?option=com_docman&view=download&alias=3858-comuff-136-2025-2026&category_slug=comunicato-ufficiale-n-136-del-22-aprile-2026-dispositivo-della-corte-sportiva-di-appello-territoriale&Itemid=3241"
+    },
+    {
+      "competition_id": "molise_2025_26_calcio_a_11_comuff_137_2025_2026_programma_gare",
+      "region": "Molise",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "COMUFF 137 2025 2026",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://molise.lnd.it/index.php?option=com_docman&view=download&alias=3861-comuff-137-2025-2026&category_slug=comunicato-ufficiale-n-137-del-23-aprile-2026-motivazioni-decisione-corte-sportiva-di-appello-territoriale&Itemid=3241"
+    },
+    {
+      "competition_id": "molise_2025_26_calcio_a_11_comuff_140_2025_2026_programma_gare",
+      "region": "Molise",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "COMUFF 140 2025 2026",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://molise.lnd.it/index.php?option=com_docman&view=download&alias=3868-comuff-140-2025-2026&category_slug=comunicato-ufficiale-n-140-del-27-aprile-2026-abbinamenti-e-programmi-gara-semifinali-playoff-campionati-regionali-under-15-e-under-17&Itemid=3241"
+    },
+    {
+      "competition_id": "molise_2025_26_calcio_a_11_comuff_144_2025_2026_programma_gare",
+      "region": "Molise",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "COMUFF 144 2025 2026",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://molise.lnd.it/index.php?option=com_docman&view=download&alias=3875-comuff-144-2025-2026&category_slug=comunicato-ufficiale-n-144-del-01-maggio-2026-variazioni-gare&Itemid=3241"
+    },
+    {
+      "competition_id": "molise_2025_26_calcio_a_11_comuff_146_2025_2026_programma_gare",
+      "region": "Molise",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "COMUFF 146 2025 2026",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://molise.lnd.it/index.php?option=com_docman&view=download&alias=3877-comuff-146-2025-2026&category_slug=comunicato-ufficiale-n-146-del-04-maggio-2026-classifiche-finali-gare-playoff-e-playout-campionati-regionali-eccellenza-promozione-seconda-categoria-under-17-e-under-15&Itemid=3241"
+    },
+    {
+      "competition_id": "molise_2025_26_calcio_a_11_pdf_programma_gare",
+      "region": "Molise",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "PDF",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://molise.lnd.it/index.php?option=com_docman&view=download&alias=3877-comuff-146-2025-2026&category_slug=comunicato-ufficiale-n-146-del-04-maggio-2026-classifiche-finali-gare-playoff-e-playout-campionati-regionali-eccellenza-promozione-seconda-categoria-under-17-e-under-15&Itemid=3241"
+    }
+  ],
+  "teams": [],
+  "matches": []
+}

@@ -1,0 +1,76 @@
+{
+  "meta": {
+    "region": "Liguria",
+    "season": "2025/26",
+    "generated_at": "2026-05-05T19:21:08Z",
+    "source_policy": "official_lnd_figc_only_no_tuttocampo",
+    "dataset_variant": "online_slim",
+    "match_cutoff_date": "2026-05-05"
+  },
+  "sources": [
+    {
+      "source_url": "https://liguria.lnd.it/index.php?Itemid=3369&alias=1288-c-u-n-64-d-p-ge&option=com_docman&view=download",
+      "local_path": "data\\raw\\liguria\\2025-26\\099a3753_index.php",
+      "sha256": "09f89e92091e71c9abef98829843d040dbf43b0e18c2cf744b4686f8538610de",
+      "competition_id": "liguria_2025_26_calcio_a_11_campionato_regionale_juniores_under_19_programma_gare"
+    },
+    {
+      "source_url": "https://liguria.lnd.it/index.php?Itemid=3373&alias=1294-cu-70-26-sv&option=com_docman&view=download",
+      "local_path": "data\\raw\\liguria\\2025-26\\b7b21327_index.php",
+      "sha256": "121de0f29b4a18311698b3003b5e8a1d1cf03029d0c016b00b780c312312f6c4",
+      "competition_id": "liguria_2025_26_calcio_a_11_campionato_regionale_juniores_under_19_programma_gare"
+    },
+    {
+      "source_url": "https://liguria.lnd.it/index.php?Itemid=3368&alias=1076-cu4726&option=com_docman&view=download",
+      "local_path": "data\\raw\\liguria\\2025-26\\29d6a10a_index.php",
+      "sha256": "1e29e5cf8ccda800e6b166a8c6fc54208754fc377b7198463a4cfc3a310e193e",
+      "competition_id": "liguria_2025_26_calcio_a_5_serie_c_femminile_calcio_a_5_programma_gare"
+    },
+    {
+      "source_url": "https://liguria.lnd.it/index.php?Itemid=3368&alias=1245-cu6826&option=com_docman&view=download",
+      "local_path": "data\\raw\\liguria\\2025-26\\d9d6b095_index.php",
+      "sha256": "47b3131d1426bfe6a28a1c6805ffbffef3f4cd5185a49af63afc03834fb5e352",
+      "competition_id": "liguria_2025_26_calcio_a_11_eccellenza_femminile_programma_gare"
+    }
+  ],
+  "competitions": [
+    {
+      "competition_id": "liguria_2025_26_calcio_a_11_campionato_regionale_juniores_under_19_programma_gare",
+      "region": "Liguria",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "CAMPIONATO REGIONALE JUNIORES UNDER 19",
+      "group_name": "Programma gare",
+      "age_group": "under_19",
+      "gender": "male",
+      "source_url": "https://liguria.lnd.it/index.php?Itemid=3369&alias=1288-c-u-n-64-d-p-ge&option=com_docman&view=download"
+    },
+    {
+      "competition_id": "liguria_2025_26_calcio_a_11_eccellenza_femminile_programma_gare",
+      "region": "Liguria",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "ECCELLENZA FEMMINILE",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "female",
+      "source_url": "https://liguria.lnd.it/index.php?Itemid=3368&alias=1245-cu6826&option=com_docman&view=download"
+    },
+    {
+      "competition_id": "liguria_2025_26_calcio_a_5_serie_c_femminile_calcio_a_5_programma_gare",
+      "region": "Liguria",
+      "season": "2025/26",
+      "sport": "calcio_a_5",
+      "competition_type": "campionato",
+      "category": "SERIE C FEMMINILE CALCIO A 5",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "female",
+      "source_url": "https://liguria.lnd.it/index.php?Itemid=3368&alias=1076-cu4726&option=com_docman&view=download"
+    }
+  ],
+  "teams": [],
+  "matches": []
+}

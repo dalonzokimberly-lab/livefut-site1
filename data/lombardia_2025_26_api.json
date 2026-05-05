@@ -1,0 +1,286 @@
+{
+  "meta": {
+    "region": "Lombardia",
+    "season": "2025/26",
+    "generated_at": "2026-05-05T19:21:00Z",
+    "source_policy": "official_lnd_figc_only_no_tuttocampo",
+    "dataset_variant": "online_slim",
+    "match_cutoff_date": "2026-05-05"
+  },
+  "sources": [
+    {
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d657f9e9_1 Classifica avulsa Promozione.pdf",
+      "local_path": "data\\raw\\lombardia\\2025-26\\0cb5b96a_69f36d657f9e9_1 Classifica avulsa Promozione.pdf",
+      "sha256": "2281aa49282355f3c311f8523768bbed8f8f7790d731fdeae284b57de4880b50",
+      "competition_id": "lombardia_2025_26_calcio_a_11_1_classifica_avulsa_promozione_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65902a2_2 Classifica avulsa Prima Categoria.pdf",
+      "local_path": "data\\raw\\lombardia\\2025-26\\50c876e0_69f36d65902a2_2 Classifica avulsa Prima Categoria.pdf",
+      "sha256": "7674661e88c24003d8a9065e107e2dcb25ea01fef409cb43646d6644ddd2f9c3",
+      "competition_id": "lombardia_2025_26_calcio_a_11_2_classifica_avulsa_prima_categoria_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65a3625_3 Classifica avulsa Terza Categoria U21.pdf",
+      "local_path": "data\\raw\\lombardia\\2025-26\\9eb50266_69f36d65a3625_3 Classifica avulsa Terza Categoria U21.pdf",
+      "sha256": "0e78a4685911dc7e55ef5896eb8197ff4ee32a250c0e738b8cc164726e599dd3",
+      "competition_id": "lombardia_2025_26_calcio_a_11_3_classifica_avulsa_terza_categoria_u21_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65ad7b9_4 Classifica avulsa Under 19 Elite.pdf",
+      "local_path": "data\\raw\\lombardia\\2025-26\\6214edd5_69f36d65ad7b9_4 Classifica avulsa Under 19 Elite.pdf",
+      "sha256": "36b0817332830fdd98c73631b14d75d818e0ffaec62b45a1120b569190f55573",
+      "competition_id": "lombardia_2025_26_calcio_a_11_4_classifica_avulsa_under_19_elite_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65b61f0_5 Classifica avulsa Under19 Regionale.pdf",
+      "local_path": "data\\raw\\lombardia\\2025-26\\1244f846_69f36d65b61f0_5 Classifica avulsa Under19 Regionale.pdf",
+      "sha256": "e5b2067c7b3cb6ba0fcb563a6cf88c12f57c61c67d9639afefd5c61aa2e01dc2",
+      "competition_id": "lombardia_2025_26_calcio_a_11_5_classifica_avulsa_under19_regionale_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65b6caa_6 Classifica Avulsa Allievi Under 17 Regionale.pdf",
+      "local_path": "data\\raw\\lombardia\\2025-26\\361bd92f_69f36d65b6caa_6 Classifica Avulsa Allievi Under 17 Regionale.pdf",
+      "sha256": "f61084ab440b150a88f24949d0c4dc816bed21afc4b6d5004f025e50cd91db63",
+      "competition_id": "lombardia_2025_26_calcio_a_11_6_classifica_avulsa_allievi_under_17_regionale_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65c08ec_7 Classifica avulsa Under16 Elite.pdf",
+      "local_path": "data\\raw\\lombardia\\2025-26\\2ae74162_69f36d65c08ec_7 Classifica avulsa Under16 Elite.pdf",
+      "sha256": "e0ddd5b03db4e53448cb00093e87aa9f0f42eafc1d1796b2262db8da9948aab1",
+      "competition_id": "lombardia_2025_26_calcio_a_11_7_classifica_avulsa_under16_elite_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65c083d_8 Classifica avulsa Allievi Under 16 regionali.pdf",
+      "local_path": "data\\raw\\lombardia\\2025-26\\5db0d2d6_69f36d65c083d_8 Classifica avulsa Allievi Under 16 regionali.pdf",
+      "sha256": "1e0aba1b55ad8bd5d2d96305877ff257f24082818e400ae6b0f7a2bb92404044",
+      "competition_id": "lombardia_2025_26_calcio_a_11_8_classifica_avulsa_allievi_under_16_regionali_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65c8736_9 Classifica avulsa Under 15 regionale.pdf",
+      "local_path": "data\\raw\\lombardia\\2025-26\\dd4ad2c4_69f36d65c8736_9 Classifica avulsa Under 15 regionale.pdf",
+      "sha256": "0aaba90952a8c4833bbbb00eaa4a591cbde1abe07cb0ab596e75b7b15fa5d8b3",
+      "competition_id": "lombardia_2025_26_calcio_a_11_9_classifica_avulsa_under_15_regionale_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65ca0a3_10 Classifica avulsa Under 14 regionale.pdf",
+      "local_path": "data\\raw\\lombardia\\2025-26\\c082e2dd_69f36d65ca0a3_10 Classifica avulsa Under 14 regionale.pdf",
+      "sha256": "5c10bbc998bd1e352d383be902fc4dbf2c778292260216a6f5105be7c2962a6c",
+      "competition_id": "lombardia_2025_26_calcio_a_11_10_classifica_avulsa_under_14_regionale_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65d4860_11 Classifica Eccellenza Femm..pdf",
+      "local_path": "data\\raw\\lombardia\\2025-26\\37eae664_69f36d65d4860_11 Classifica Eccellenza Femm..pdf",
+      "sha256": "673d21b9804c9795610effec8c93e25313c57e023dc3580327c2fae9a70b2b8d",
+      "competition_id": "lombardia_2025_26_calcio_a_11_11_classifica_eccellenza_femm_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65d9335_12 Classifica Promozione Femminile.pdf",
+      "local_path": "data\\raw\\lombardia\\2025-26\\df785cde_69f36d65d9335_12 Classifica Promozione Femminile.pdf",
+      "sha256": "3c00d4bbfb9da8f440d8b597b666c8aa6b7cf99347c32d60b62b4701a93edc3a",
+      "competition_id": "lombardia_2025_26_calcio_a_11_12_classifica_promozione_femminile_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65d9973_13 Classifica U15 Femm.pdf",
+      "local_path": "data\\raw\\lombardia\\2025-26\\f6c3a2eb_69f36d65d9973_13 Classifica U15 Femm.pdf",
+      "sha256": "11c6543965f8674d0846cdb13cf5eb37041778b12d82f37e9a94896b56ac504b",
+      "competition_id": "lombardia_2025_26_calcio_a_11_13_classifica_u15_femm_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65de946_14 Classifica U17 Femm..pdf",
+      "local_path": "data\\raw\\lombardia\\2025-26\\35812f3f_69f36d65de946_14 Classifica U17 Femm..pdf",
+      "sha256": "aaedd7a9421cbe42921071b831252a406ef72fcaf165d14a49818d11e0d87477",
+      "competition_id": "lombardia_2025_26_calcio_a_11_14_classifica_u17_femm_pdf_programma_gare"
+    },
+    {
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65e21bd_U17Fem_FaseNazionale.pdf",
+      "local_path": "data\\raw\\lombardia\\2025-26\\b4851871_69f36d65e21bd_U17Fem_FaseNazionale.pdf",
+      "sha256": "b2be61a7ed4ccc1561b8c920fb65d750d6495f9b1328365388787b0383c56765",
+      "competition_id": "lombardia_2025_26_calcio_a_11_u17fem_fasenazionale_pdf_programma_gare"
+    }
+  ],
+  "competitions": [
+    {
+      "competition_id": "lombardia_2025_26_calcio_a_11_1_classifica_avulsa_promozione_pdf_programma_gare",
+      "region": "Lombardia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "1 CLASSIFICA AVULSA PROMOZIONE.PDF",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d657f9e9_1 Classifica avulsa Promozione.pdf"
+    },
+    {
+      "competition_id": "lombardia_2025_26_calcio_a_11_10_classifica_avulsa_under_14_regionale_pdf_programma_gare",
+      "region": "Lombardia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "10 CLASSIFICA AVULSA UNDER 14 REGIONALE.PDF",
+      "group_name": "Programma gare",
+      "age_group": "under_14",
+      "gender": "male",
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65ca0a3_10 Classifica avulsa Under 14 regionale.pdf"
+    },
+    {
+      "competition_id": "lombardia_2025_26_calcio_a_11_11_classifica_eccellenza_femm_pdf_programma_gare",
+      "region": "Lombardia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "11 CLASSIFICA ECCELLENZA FEMM..PDF",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "female",
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65d4860_11 Classifica Eccellenza Femm..pdf"
+    },
+    {
+      "competition_id": "lombardia_2025_26_calcio_a_11_12_classifica_promozione_femminile_pdf_programma_gare",
+      "region": "Lombardia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "12 CLASSIFICA PROMOZIONE FEMMINILE.PDF",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "female",
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65d9335_12 Classifica Promozione Femminile.pdf"
+    },
+    {
+      "competition_id": "lombardia_2025_26_calcio_a_11_13_classifica_u15_femm_pdf_programma_gare",
+      "region": "Lombardia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "13 CLASSIFICA U15 FEMM.PDF",
+      "group_name": "Programma gare",
+      "age_group": "under_15",
+      "gender": "female",
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65d9973_13 Classifica U15 Femm.pdf"
+    },
+    {
+      "competition_id": "lombardia_2025_26_calcio_a_11_14_classifica_u17_femm_pdf_programma_gare",
+      "region": "Lombardia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "14 CLASSIFICA U17 FEMM..PDF",
+      "group_name": "Programma gare",
+      "age_group": "under_17",
+      "gender": "female",
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65de946_14 Classifica U17 Femm..pdf"
+    },
+    {
+      "competition_id": "lombardia_2025_26_calcio_a_11_2_classifica_avulsa_prima_categoria_pdf_programma_gare",
+      "region": "Lombardia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "2 CLASSIFICA AVULSA PRIMA CATEGORIA.PDF",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65902a2_2 Classifica avulsa Prima Categoria.pdf"
+    },
+    {
+      "competition_id": "lombardia_2025_26_calcio_a_11_3_classifica_avulsa_terza_categoria_u21_pdf_programma_gare",
+      "region": "Lombardia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "3 CLASSIFICA AVULSA TERZA CATEGORIA U21.PDF",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65a3625_3 Classifica avulsa Terza Categoria U21.pdf"
+    },
+    {
+      "competition_id": "lombardia_2025_26_calcio_a_11_4_classifica_avulsa_under_19_elite_pdf_programma_gare",
+      "region": "Lombardia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "4 CLASSIFICA AVULSA UNDER 19 ELITE.PDF",
+      "group_name": "Programma gare",
+      "age_group": "under_19",
+      "gender": "male",
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65ad7b9_4 Classifica avulsa Under 19 Elite.pdf"
+    },
+    {
+      "competition_id": "lombardia_2025_26_calcio_a_11_5_classifica_avulsa_under19_regionale_pdf_programma_gare",
+      "region": "Lombardia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "5 CLASSIFICA AVULSA UNDER19 REGIONALE.PDF",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65b61f0_5 Classifica avulsa Under19 Regionale.pdf"
+    },
+    {
+      "competition_id": "lombardia_2025_26_calcio_a_11_6_classifica_avulsa_allievi_under_17_regionale_pdf_programma_gare",
+      "region": "Lombardia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "6 CLASSIFICA AVULSA ALLIEVI UNDER 17 REGIONALE.PDF",
+      "group_name": "Programma gare",
+      "age_group": "under_17",
+      "gender": "male",
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65b6caa_6 Classifica Avulsa Allievi Under 17 Regionale.pdf"
+    },
+    {
+      "competition_id": "lombardia_2025_26_calcio_a_11_7_classifica_avulsa_under16_elite_pdf_programma_gare",
+      "region": "Lombardia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "7 CLASSIFICA AVULSA UNDER16 ELITE.PDF",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65c08ec_7 Classifica avulsa Under16 Elite.pdf"
+    },
+    {
+      "competition_id": "lombardia_2025_26_calcio_a_11_8_classifica_avulsa_allievi_under_16_regionali_pdf_programma_gare",
+      "region": "Lombardia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "8 CLASSIFICA AVULSA ALLIEVI UNDER 16 REGIONALI.PDF",
+      "group_name": "Programma gare",
+      "age_group": "under_16",
+      "gender": "male",
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65c083d_8 Classifica avulsa Allievi Under 16 regionali.pdf"
+    },
+    {
+      "competition_id": "lombardia_2025_26_calcio_a_11_9_classifica_avulsa_under_15_regionale_pdf_programma_gare",
+      "region": "Lombardia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "9 CLASSIFICA AVULSA UNDER 15 REGIONALE.PDF",
+      "group_name": "Programma gare",
+      "age_group": "under_15",
+      "gender": "male",
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65c8736_9 Classifica avulsa Under 15 regionale.pdf"
+    },
+    {
+      "competition_id": "lombardia_2025_26_calcio_a_11_u17fem_fasenazionale_pdf_programma_gare",
+      "region": "Lombardia",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "U17FEM_FASENAZIONALE.PDF",
+      "group_name": "Programma gare",
+      "age_group": "under_17",
+      "gender": "male",
+      "source_url": "https://www.crlombardia.it/storage/uploads/files/32899/69f36d65e21bd_U17Fem_FaseNazionale.pdf"
+    }
+  ],
+  "teams": [],
+  "matches": []
+}

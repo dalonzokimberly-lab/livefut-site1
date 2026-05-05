@@ -1,0 +1,124 @@
+{
+  "meta": {
+    "region": "Bolzano",
+    "season": "2025/26",
+    "generated_at": "2026-05-05T19:24:44Z",
+    "source_policy": "official_lnd_figc_only_no_tuttocampo",
+    "dataset_variant": "online_slim",
+    "match_cutoff_date": "2026-05-05"
+  },
+  "sources": [
+    {
+      "source_url": "https://www.figcbz.it/wp-content/uploads/2025/12/Coppa-Italia-Eccellenza-Italienpokal-Oberliga.pdf",
+      "local_path": "data\\raw\\bolzano\\2025-26\\aa37679f_Coppa-Italia-Eccellenza-Italienpokal-Oberliga.pdf",
+      "sha256": "8f479a66f9c762fca9a0a02aedd456534d74f513e78ee53a42e488d2163725c4",
+      "competition_id": "bolzano_2025_26_calcio_a_11_eccellenza_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcbz.it/wp-content/uploads/2026/04/Coppa-Provincia-Volksbank-Alto-Adige-Sudtiroler-Volksbank-Landespokal-1.pdf",
+      "local_path": "data\\raw\\bolzano\\2025-26\\fdfeeb99_Coppa-Provincia-Volksbank-Alto-Adige-Sudtiroler-Volksbank-Landespokal-1.pdf",
+      "sha256": "08e13d760771b839d81ef245c06f9f458bc70e1fdc871d52faf308a3f5cf4498",
+      "competition_id": "bolzano_2025_26_calcio_a_11_coppa_provincia_volksbank_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcbz.it/wp-content/uploads/2026/04/Coppa-Provincia-Forst-Cup-Landespokal-Forst-Cup-2.pdf",
+      "local_path": "data\\raw\\bolzano\\2025-26\\0693a0cc_Coppa-Provincia-Forst-Cup-Landespokal-Forst-Cup-2.pdf",
+      "sha256": "bf65ee55c62f3f3df090eabcba7e3394f05983e67e72b3b4fc8adb4a3dac1151",
+      "competition_id": "bolzano_2025_26_calcio_a_11_coppa_provincia_forst_cup_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcbz.it/wp-content/uploads/2026/01/Coppa-Italia-Calcio-a-5-Italienpokal-Kleinfeld.pdf",
+      "local_path": "data\\raw\\bolzano\\2025-26\\ecc9cb2f_Coppa-Italia-Calcio-a-5-Italienpokal-Kleinfeld.pdf",
+      "sha256": "a871b8ba37f4403eead0a24e8434afa02923c0f7b5615f5803a8d003fc51d01d",
+      "competition_id": "bolzano_2025_26_calcio_a_5_calcio_a_5_serie_c1_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcbz.it/wp-content/uploads/2025/04/Coppa-Provincia-Calcio-a-Cinque-Landespokal-Kleinfeld.pdf",
+      "local_path": "data\\raw\\bolzano\\2025-26\\1f39c5f7_Coppa-Provincia-Calcio-a-Cinque-Landespokal-Kleinfeld.pdf",
+      "sha256": "3016e0c653d860f9614f9117ed51e1782c8f58ffe6b27293e3d263ac54947f23",
+      "competition_id": "bolzano_2025_26_calcio_a_5_calcio_a_5_serie_c2_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcbz.it/wp-content/uploads/2026/04/Coppa-Italia-Femminile-Italienpokal-Damen.pdf",
+      "local_path": "data\\raw\\bolzano\\2025-26\\80cf1c75_Coppa-Italia-Femminile-Italienpokal-Damen.pdf",
+      "sha256": "d8bd44f550998be9ca293c3f8489905493778df79c38dd4d0caf25500031e61e",
+      "competition_id": "bolzano_2025_26_calcio_a_11_femminile_girone_unico"
+    }
+  ],
+  "competitions": [
+    {
+      "competition_id": "bolzano_2025_26_calcio_a_11_coppa_provincia_forst_cup_girone_unico",
+      "region": "Bolzano",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "coppa",
+      "category": "COPPA PROVINCIA FORST CUP",
+      "group_name": "Girone unico",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.figcbz.it/wp-content/uploads/2026/04/Coppa-Provincia-Forst-Cup-Landespokal-Forst-Cup-2.pdf"
+    },
+    {
+      "competition_id": "bolzano_2025_26_calcio_a_11_coppa_provincia_volksbank_girone_unico",
+      "region": "Bolzano",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "coppa",
+      "category": "COPPA PROVINCIA VOLKSBANK",
+      "group_name": "Girone unico",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.figcbz.it/wp-content/uploads/2026/04/Coppa-Provincia-Volksbank-Alto-Adige-Sudtiroler-Volksbank-Landespokal-1.pdf"
+    },
+    {
+      "competition_id": "bolzano_2025_26_calcio_a_11_eccellenza_girone_unico",
+      "region": "Bolzano",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "ECCELLENZA",
+      "group_name": "Girone unico",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.figcbz.it/wp-content/uploads/2025/12/Coppa-Italia-Eccellenza-Italienpokal-Oberliga.pdf"
+    },
+    {
+      "competition_id": "bolzano_2025_26_calcio_a_11_femminile_girone_unico",
+      "region": "Bolzano",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "FEMMINILE",
+      "group_name": "Girone unico",
+      "age_group": "adult",
+      "gender": "female",
+      "source_url": "https://www.figcbz.it/wp-content/uploads/2026/04/Coppa-Italia-Femminile-Italienpokal-Damen.pdf"
+    },
+    {
+      "competition_id": "bolzano_2025_26_calcio_a_5_calcio_a_5_serie_c1_girone_unico",
+      "region": "Bolzano",
+      "season": "2025/26",
+      "sport": "calcio_a_5",
+      "competition_type": "campionato",
+      "category": "CALCIO A 5 SERIE C1",
+      "group_name": "Girone unico",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.figcbz.it/wp-content/uploads/2026/01/Coppa-Italia-Calcio-a-5-Italienpokal-Kleinfeld.pdf"
+    },
+    {
+      "competition_id": "bolzano_2025_26_calcio_a_5_calcio_a_5_serie_c2_girone_unico",
+      "region": "Bolzano",
+      "season": "2025/26",
+      "sport": "calcio_a_5",
+      "competition_type": "campionato",
+      "category": "CALCIO A 5 SERIE C2",
+      "group_name": "Girone unico",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.figcbz.it/wp-content/uploads/2025/04/Coppa-Provincia-Calcio-a-Cinque-Landespokal-Kleinfeld.pdf"
+    }
+  ],
+  "teams": [],
+  "matches": []
+}

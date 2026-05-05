@@ -1,0 +1,256 @@
+{
+  "meta": {
+    "region": "Basilicata",
+    "season": "2025/26",
+    "generated_at": "2026-05-05T19:24:04Z",
+    "source_policy": "official_lnd_figc_only_no_tuttocampo",
+    "dataset_variant": "online_slim",
+    "match_cutoff_date": "2026-05-05"
+  },
+  "sources": [
+    {
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2025/11/UNDER-19_2526.pdf",
+      "local_path": "data\\raw\\basilicata\\2025-26\\079394b7_UNDER-19_2526.pdf",
+      "sha256": "e55702689a288742b073a339dbb559ba938bb3f7d0125464b82df1af945f4561",
+      "competition_id": "basilicata_2025_26_calcio_a_11_under_19_girone_unico"
+    },
+    {
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2025/11/UNDER-17-C5_2526-1.pdf",
+      "local_path": "data\\raw\\basilicata\\2025-26\\f863a0c3_UNDER-17-C5_2526-1.pdf",
+      "sha256": "dda8d2ad65b7dcbb96ac131af2a197f975eb43abbfc6e1f2cfc8e800ba5533ef",
+      "competition_id": "basilicata_2025_26_calcio_a_11_under_17_girone_unico"
+    },
+    {
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2025/11/UNDER-15-C5_2526-1.pdf",
+      "local_path": "data\\raw\\basilicata\\2025-26\\fc7291f6_UNDER-15-C5_2526-1.pdf",
+      "sha256": "19cee00e429bdf8f56511f97e004683d0ec14502ad78d6f4ba6277b99d5a8593",
+      "competition_id": "basilicata_2025_26_calcio_a_11_under_15_girone_unico"
+    },
+    {
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2025/11/ESORDIENTI-C5-GIR-A_2526-1.pdf",
+      "local_path": "data\\raw\\basilicata\\2025-26\\7804ddb6_ESORDIENTI-C5-GIR-A_2526-1.pdf",
+      "sha256": "9e7b6177725ea70dcfea0dfd2deac24c9ad3ac0458aaf62e0237fa0645ac9760",
+      "competition_id": "basilicata_2025_26_calcio_a_11_esordienti_gir_a_programma_gare"
+    },
+    {
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2025/11/ESORDIENTI-C5-GIR-B_2526-1.pdf",
+      "local_path": "data\\raw\\basilicata\\2025-26\\e8981908_ESORDIENTI-C5-GIR-B_2526-1.pdf",
+      "sha256": "6d3bbb285d8d0daf12c48b119d0ee9ea8d01d09a855ea75beaea984ad118dc3f",
+      "competition_id": "basilicata_2025_26_calcio_a_11_esordienti_gir_b_programma_gare"
+    },
+    {
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2025/11/ESORDIENTI-C5-GIR-C_2526-1.pdf",
+      "local_path": "data\\raw\\basilicata\\2025-26\\bf873a4a_ESORDIENTI-C5-GIR-C_2526-1.pdf",
+      "sha256": "43ea1fbf2cf80b40cfe943f0eb878af6ccd3266932ef7bfc6d101eca968fb098",
+      "competition_id": "basilicata_2025_26_calcio_a_11_esordienti_gir_c_programma_gare"
+    },
+    {
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2026/04/APP-Gare-Risultati-Gare.pdf",
+      "local_path": "data\\raw\\basilicata\\2025-26\\61c7a2ad_APP-Gare-Risultati-Gare.pdf",
+      "sha256": "be732da0b9620ff5aad5ce830f264d8b20af7422eef0da81fb8c8b0e4d8d8689",
+      "competition_id": "basilicata_2025_26_calcio_a_11_app_gare_risultati_gare_programma_gare"
+    },
+    {
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2026/04/APP-Gare-Risultati-Gare.pdf",
+      "local_path": "data\\raw\\basilicata\\2025-26\\61c7a2ad_APP-Gare-Risultati-Gare.pdf",
+      "sha256": "be732da0b9620ff5aad5ce830f264d8b20af7422eef0da81fb8c8b0e4d8d8689",
+      "competition_id": "basilicata_2025_26_calcio_a_11_download_programma_gare"
+    },
+    {
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2026/03/Torneo-elite-under-13-basilicata-2025-26.pdf",
+      "local_path": "data\\raw\\basilicata\\2025-26\\8e1ee610_Torneo-elite-under-13-basilicata-2025-26.pdf",
+      "sha256": "1a7a29eabe91af70e7b3e8eec0c77c7d40a7706ed92b9d563011ece85bfa1ad2",
+      "competition_id": "basilicata_2025_26_calcio_a_11_torneo_elite_under_13_basilicata_2025_26_girone_unico"
+    },
+    {
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2026/03/Torneo-elite-under-13-basilicata-2025-26.pdf",
+      "local_path": "data\\raw\\basilicata\\2025-26\\8e1ee610_Torneo-elite-under-13-basilicata-2025-26.pdf",
+      "sha256": "1a7a29eabe91af70e7b3e8eec0c77c7d40a7706ed92b9d563011ece85bfa1ad2",
+      "competition_id": "basilicata_2025_26_calcio_a_11_download_programma_gare"
+    },
+    {
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2026/03/Torneo-U13-futsal-Elite-Comunicazione-2026.pdf",
+      "local_path": "data\\raw\\basilicata\\2025-26\\77ff3c2a_Torneo-U13-futsal-Elite-Comunicazione-2026.pdf",
+      "sha256": "3654c277874650152af8a84e7517a17cb099496ac85a86ad0f9cdb8d0716c990",
+      "competition_id": "basilicata_2025_26_calcio_a_5_torneo_u13_futsal_elite_comunicazione_2026_programma_gare"
+    },
+    {
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2026/03/Torneo-U13-futsal-Elite-Comunicazione-2026.pdf",
+      "local_path": "data\\raw\\basilicata\\2025-26\\77ff3c2a_Torneo-U13-futsal-Elite-Comunicazione-2026.pdf",
+      "sha256": "3654c277874650152af8a84e7517a17cb099496ac85a86ad0f9cdb8d0716c990",
+      "competition_id": "basilicata_2025_26_calcio_a_11_download_programma_gare"
+    },
+    {
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2026/03/cu_n_13_sgs_u13_futsal_elite_regolamento_2025_2026.pdf",
+      "local_path": "data\\raw\\basilicata\\2025-26\\1bbb507e_cu_n_13_sgs_u13_futsal_elite_regolamento_2025_2026.pdf",
+      "sha256": "b4e99c080cf0d7bd2700ea3b94f207d2f6db11bba6628446ba75c88c3833a866",
+      "competition_id": "basilicata_2025_26_calcio_a_5_cu_n_13_sgs_u13_futsal_elite_regolamento_2025_2026_programma_gare"
+    },
+    {
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2026/03/cu_n_13_sgs_u13_futsal_elite_regolamento_2025_2026.pdf",
+      "local_path": "data\\raw\\basilicata\\2025-26\\1bbb507e_cu_n_13_sgs_u13_futsal_elite_regolamento_2025_2026.pdf",
+      "sha256": "b4e99c080cf0d7bd2700ea3b94f207d2f6db11bba6628446ba75c88c3833a866",
+      "competition_id": "basilicata_2025_26_calcio_a_11_download_programma_gare"
+    },
+    {
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2026/02/AVVISO-ITALIA-SVEZIA-FEMMINILE-MODALITA-RICHIESTA-BIGLIETTI-GRATUITI-CU-per-LE-SOCIETA.pdf",
+      "local_path": "data\\raw\\basilicata\\2025-26\\cd7c478b_AVVISO-ITALIA-SVEZIA-FEMMINILE-MODALITA-RICHIESTA-BIGLIETTI-GRATUITI-CU-per-LE-SOCIETA.pdf",
+      "sha256": "ae2376cafe0be37cf433aa63574555533c1f902bf707d7a2a0f0ea53a41b5257",
+      "competition_id": "basilicata_2025_26_calcio_a_11_avviso_italia_svezia_femminile_modalita_richiesta_biglietti_gratuiti_cu_per_le_societa_girone_unico"
+    },
+    {
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2026/02/AVVISO-ITALIA-SVEZIA-FEMMINILE-MODALITA-RICHIESTA-BIGLIETTI-GRATUITI-CU-per-LE-SOCIETA.pdf",
+      "local_path": "data\\raw\\basilicata\\2025-26\\cd7c478b_AVVISO-ITALIA-SVEZIA-FEMMINILE-MODALITA-RICHIESTA-BIGLIETTI-GRATUITI-CU-per-LE-SOCIETA.pdf",
+      "sha256": "ae2376cafe0be37cf433aa63574555533c1f902bf707d7a2a0f0ea53a41b5257",
+      "competition_id": "basilicata_2025_26_calcio_a_11_download_programma_gare"
+    }
+  ],
+  "competitions": [
+    {
+      "competition_id": "basilicata_2025_26_calcio_a_11_app_gare_risultati_gare_programma_gare",
+      "region": "Basilicata",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "APP GARE – RISULTATI GARE",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2026/04/APP-Gare-Risultati-Gare.pdf"
+    },
+    {
+      "competition_id": "basilicata_2025_26_calcio_a_11_avviso_italia_svezia_femminile_modalita_richiesta_biglietti_gratuiti_cu_per_le_societa_girone_unico",
+      "region": "Basilicata",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "AVVISO ITALIA-SVEZIA FEMMINILE – MODALITA’ RICHIESTA BIGLIETTI GRATUITI – CU PER LE SOCIETA",
+      "group_name": "Girone unico",
+      "age_group": "adult",
+      "gender": "female",
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2026/02/AVVISO-ITALIA-SVEZIA-FEMMINILE-MODALITA-RICHIESTA-BIGLIETTI-GRATUITI-CU-per-LE-SOCIETA.pdf"
+    },
+    {
+      "competition_id": "basilicata_2025_26_calcio_a_11_download_programma_gare",
+      "region": "Basilicata",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "DOWNLOAD",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2026/04/APP-Gare-Risultati-Gare.pdf"
+    },
+    {
+      "competition_id": "basilicata_2025_26_calcio_a_11_esordienti_gir_a_programma_gare",
+      "region": "Basilicata",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "ESORDIENTI – GIR. A",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2025/11/ESORDIENTI-C5-GIR-A_2526-1.pdf"
+    },
+    {
+      "competition_id": "basilicata_2025_26_calcio_a_11_esordienti_gir_b_programma_gare",
+      "region": "Basilicata",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "ESORDIENTI – GIR. B",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2025/11/ESORDIENTI-C5-GIR-B_2526-1.pdf"
+    },
+    {
+      "competition_id": "basilicata_2025_26_calcio_a_11_esordienti_gir_c_programma_gare",
+      "region": "Basilicata",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "ESORDIENTI – GIR. C",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2025/11/ESORDIENTI-C5-GIR-C_2526-1.pdf"
+    },
+    {
+      "competition_id": "basilicata_2025_26_calcio_a_11_torneo_elite_under_13_basilicata_2025_26_girone_unico",
+      "region": "Basilicata",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "TORNEO ELITE UNDER 13 BASILICATA 2025-26",
+      "group_name": "Girone unico",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2026/03/Torneo-elite-under-13-basilicata-2025-26.pdf"
+    },
+    {
+      "competition_id": "basilicata_2025_26_calcio_a_11_under_15_girone_unico",
+      "region": "Basilicata",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "UNDER 15",
+      "group_name": "Girone unico",
+      "age_group": "under_15",
+      "gender": "male",
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2025/11/UNDER-15-C5_2526-1.pdf"
+    },
+    {
+      "competition_id": "basilicata_2025_26_calcio_a_11_under_17_girone_unico",
+      "region": "Basilicata",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "UNDER 17",
+      "group_name": "Girone unico",
+      "age_group": "under_17",
+      "gender": "male",
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2025/11/UNDER-17-C5_2526-1.pdf"
+    },
+    {
+      "competition_id": "basilicata_2025_26_calcio_a_11_under_19_girone_unico",
+      "region": "Basilicata",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "UNDER 19",
+      "group_name": "Girone unico",
+      "age_group": "under_19",
+      "gender": "male",
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2025/11/UNDER-19_2526.pdf"
+    },
+    {
+      "competition_id": "basilicata_2025_26_calcio_a_5_cu_n_13_sgs_u13_futsal_elite_regolamento_2025_2026_programma_gare",
+      "region": "Basilicata",
+      "season": "2025/26",
+      "sport": "calcio_a_5",
+      "competition_type": "campionato",
+      "category": "CU_N_13_SGS_U13_FUTSAL_ELITE_REGOLAMENTO_2025_2026",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2026/03/cu_n_13_sgs_u13_futsal_elite_regolamento_2025_2026.pdf"
+    },
+    {
+      "competition_id": "basilicata_2025_26_calcio_a_5_torneo_u13_futsal_elite_comunicazione_2026_programma_gare",
+      "region": "Basilicata",
+      "season": "2025/26",
+      "sport": "calcio_a_5",
+      "competition_type": "campionato",
+      "category": "TORNEO U13 FUTSAL ELITE COMUNICAZIONE 2026",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.lndbasilicata.it/wp-content/uploads/2026/03/Torneo-U13-futsal-Elite-Comunicazione-2026.pdf"
+    }
+  ],
+  "teams": [],
+  "matches": []
+}

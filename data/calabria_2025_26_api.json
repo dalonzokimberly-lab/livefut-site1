@@ -1,0 +1,64 @@
+{
+  "meta": {
+    "region": "Calabria",
+    "season": "2025/26",
+    "generated_at": "2026-05-05T19:24:05Z",
+    "source_policy": "official_lnd_figc_only_no_tuttocampo",
+    "dataset_variant": "online_slim",
+    "match_cutoff_date": "2026-05-05"
+  },
+  "sources": [
+    {
+      "source_url": "https://calabria.lnd.it/public/28/files/comunicati/CUD-2025-2026/CRC25-26%20CU168%20TFT-%20CSAT.pdf",
+      "local_path": "",
+      "sha256": "",
+      "competition_id": "calabria_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://calabria.lnd.it/public/28/files/comunicati/CUD-2025-2026/CRC25-26%20CU167%20segreteria%20%2B%20GST.pdf",
+      "local_path": "",
+      "sha256": "",
+      "competition_id": "calabria_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://calabria.lnd.it/public/28/files/comunicati/CUD-SGS-2025-2026/SGS25-26%20CU105%201a%20fase%20Interregionale%20Under%2013%20elite.pdf",
+      "local_path": "",
+      "sha256": "",
+      "competition_id": "calabria_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://calabria.lnd.it/public/28/files/comunicati/CUD-SGS-2025-2026/SGS25-26%20CU104%20Fase%20Interregionale%20Torneo%20Under%2013%20Futsal%20Elite.pdf",
+      "local_path": "",
+      "sha256": "",
+      "competition_id": "calabria_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://calabria.lnd.it/public/28/files/comunicati/CUD-2025-2026/CRC%20CU11AMAT%20-%20SS25-26%20del%2004%20maggio%202026%20.pdf",
+      "local_path": "",
+      "sha256": "",
+      "competition_id": "calabria_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://calabria.lnd.it/public/28/files/comunicati/CUD-2025-2026/CRC%20CU10AMAT%20-%20SS25-26%20del%2015%20aprile%202026%20.pdf",
+      "local_path": "",
+      "sha256": "",
+      "competition_id": "calabria_2025_26_calcio_a_11_programma_gare_programma_gare"
+    }
+  ],
+  "competitions": [
+    {
+      "competition_id": "calabria_2025_26_calcio_a_11_programma_gare_programma_gare",
+      "region": "Calabria",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "PROGRAMMA GARE",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://calabria.lnd.it/public/28/files/comunicati/CUD-2025-2026/CRC25-26%20CU168%20TFT-%20CSAT.pdf"
+    }
+  ],
+  "teams": [],
+  "matches": []
+}

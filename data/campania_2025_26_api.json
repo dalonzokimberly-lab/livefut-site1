@@ -1,0 +1,502 @@
+{
+  "meta": {
+    "region": "Campania",
+    "season": "2025/26",
+    "generated_at": "2026-05-05T19:23:10Z",
+    "source_policy": "official_lnd_figc_only_no_tuttocampo",
+    "dataset_variant": "online_slim",
+    "match_cutoff_date": "2026-05-05"
+  },
+  "sources": [
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2026/04/CU69-C5-2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\c4f86845_CU69-C5-2025-2026.pdf",
+      "sha256": "68a3c9e9e04856e54040e7e437f61184af65de7f6bc7069c9467e55ed5dba0fc",
+      "competition_id": "campania_2025_26_calcio_a_5_cu69_c5_2025_2026_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/08/CALENDARIO_ECCELLENZA_A_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\a230e4d7_CALENDARIO_ECCELLENZA_A_2025-2026.pdf",
+      "sha256": "ab7116f3aa68c60486d06d00e6237bda8f7eaf6ee0ded380a8f40218284e44a4",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_a_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/08/CALENDARIO_ECCELLENZA_B_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\a6a871c0_CALENDARIO_ECCELLENZA_B_2025-2026.pdf",
+      "sha256": "8406e61f00714fad4455bfa34df96e994d1c55351d0df5221c5fd1a4e0479aec",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_b_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/09/CALENDARIO_PROMOZIONE_A_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\5e7c8de4_CALENDARIO_PROMOZIONE_A_2025-2026.pdf",
+      "sha256": "38a442ee30c541fea8b333f3a071ab419206436a6ecfc24d276be584924cc3c3",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_a_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/09/CALENDARIO_PROMOZIONE_B_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\d5768550_CALENDARIO_PROMOZIONE_B_2025-2026.pdf",
+      "sha256": "e02c82db2fbd871344b10d2dfd9507f721d8983d41cb6dbf77cf3f4d872ee1ce",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_b_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/09/CALENDARIO_PROMOZIONE_C_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\facf519a_CALENDARIO_PROMOZIONE_C_2025-2026.pdf",
+      "sha256": "d54b1f18d7f4abb74d90a0bcf0ca9990ca4b3b5cc16f7dbfee98061e2157fbd2",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_c_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/09/CALENDARIO_PROMOZIONE-D_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\5552f8e2_CALENDARIO_PROMOZIONE-D_2025-2026.pdf",
+      "sha256": "5ab174507b15be5448fc6c10c47a2f0d3216cbf7d56927f0cb19d3c272884171",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_d_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_PRIMA_CAT_A_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\77677395_CALENDARIO_PRIMA_CAT_A_2025-2026.pdf",
+      "sha256": "7a2a96a191770073be35490aae20330d48ad9e2e9b5f45c52003daa6a7d82d1a",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_a_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_PRIMA_CAT_B_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\be807062_CALENDARIO_PRIMA_CAT_B_2025-2026.pdf",
+      "sha256": "10c69e61dceeb3b9061556a5de049dd84f62788657faed5d124b51d925248f40",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_b_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_PRIMA_CAT_C_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\7220a32c_CALENDARIO_PRIMA_CAT_C_2025-2026.pdf",
+      "sha256": "72bd5ae8095f4ab6ecf95f766c9417ef7e05fe16d16f7fcbb8aaef5e9ef6f5ca",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_c_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_PRIMA_CAT_D_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\7d45d8db_CALENDARIO_PRIMA_CAT_D_2025-2026.pdf",
+      "sha256": "15844e780b9160ac401149780b540db0549200b398c069d2ccb2afea896bfed3",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_d_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_PRIMA_CAT_E_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\c90d4e95_CALENDARIO_PRIMA_CAT_E_2025-2026.pdf",
+      "sha256": "1e82f7ca4c908225342e9055e951404f588a81003ca4cb9faebe55ec04a80d3f",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_e_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_PRIMA_CAT_F_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\85cb97a0_CALENDARIO_PRIMA_CAT_F_2025-2026.pdf",
+      "sha256": "c1eaa950b87fe59f0e2e7fd5d3799f6c53ad818a8c797182244c1374bbe0dd20",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_f_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_PRIMA_CAT_G_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\f01d1d83_CALENDARIO_PRIMA_CAT_G_2025-2026.pdf",
+      "sha256": "a355572591e1494be0c72d95d492724fa580ec8e9db946f97c4c76054cefaeab",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_g_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_PRIMA_CAT_H_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\5b221355_CALENDARIO_PRIMA_CAT_H_2025-2026.pdf",
+      "sha256": "8e90b8ec897c51afde1d4358f295ea333f0e8b6ba43c55808d303e28d2e3db9c",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_h_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_SECONDA_CAT_A_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\1253b9ce_CALENDARIO_SECONDA_CAT_A_2025-2026.pdf",
+      "sha256": "d9c13b8a6a0405044a96340487651c4b610fec30d9d69649cad9dbd4dd82f1db",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_a_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_SECONDA_CAT_B_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\e0183bf3_CALENDARIO_SECONDA_CAT_B_2025-2026.pdf",
+      "sha256": "9f0c6d87110324611ed1dc8cec859342abe552c406168f248c89ec2bd7e9bfd0",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_b_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_SECONDA_CAT_C_2025-2026_REV_2.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\4c8fb7d6_CALENDARIO_SECONDA_CAT_C_2025-2026_REV_2.pdf",
+      "sha256": "7673b2b0a49429bea75113d59eb3fff0885f178492efdc85838d916cffede724",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_c_rev_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_SECONDA_CAT_D_2025-2026_REV_2.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\4c8e4b6b_CALENDARIO_SECONDA_CAT_D_2025-2026_REV_2.pdf",
+      "sha256": "851d78d2642864b57c8c26e941fc28156670f4780b42ca6a41f21b03a732f09b",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_d_rev_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_SECONDA_CAT_E_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\dae6db7d_CALENDARIO_SECONDA_CAT_E_2025-2026.pdf",
+      "sha256": "39ae9d8e1669590d95753fc70ff3b1d452df260d8246698d0c5beab2fa2f8e85",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_e_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_SECONDA_CAT_F_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\2318d56e_CALENDARIO_SECONDA_CAT_F_2025-2026.pdf",
+      "sha256": "4c9bfec2625fbf7e72475b975380e6c80560cf898f0bb68377c2392d8e720c60",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_f_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_SECONDA_CAT_G_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\3d232081_CALENDARIO_SECONDA_CAT_G_2025-2026.pdf",
+      "sha256": "09dbb7ad30272963bef415f2ffa9794afede69f35928a3a36e1bfb4dca14f655",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_g_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_SECONDA_CAT_H_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\8732f320_CALENDARIO_SECONDA_CAT_H_2025-2026.pdf",
+      "sha256": "334145353d993b9358aa9b153aee417f30d7eb8a871f8720d92695b9cb8f8f23",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_h_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_SECONDA_CAT_I_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\e09b0444_CALENDARIO_SECONDA_CAT_I_2025-2026.pdf",
+      "sha256": "ff2d1d4d895e32f3fcea41a455e6a234c5425d41983f4862a1add9307dd6061d",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_i_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_SECONDA_CAT_L_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\d8579207_CALENDARIO_SECONDA_CAT_L_2025-2026.pdf",
+      "sha256": "0cd3504553ba5fbc6aee91868121ac33226e16bdc6850f20947a409bfe3ec26b",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_l_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/09/Under_19_Gir_A.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\7d560d60_Under_19_Gir_A.pdf",
+      "sha256": "1132e82377e8dc2584517e62be25f687274c9df282295cdbf0573b64b9e6518c",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_a_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/09/Under_19_Gir_B.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\e05420b1_Under_19_Gir_B.pdf",
+      "sha256": "6a493063bcd9e2876d0b8f183297e7a25f06e1a26aa60fd8505a6f9ebb13df05",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_b_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/09/Under_19_Gir_C.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\31066f73_Under_19_Gir_C.pdf",
+      "sha256": "28bb3a5cb34e28ea24fa125ab39067647b2a22405944c434429869ea11cbfd64",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_c_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/09/Under_19_Gir_D.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\07e77226_Under_19_Gir_D.pdf",
+      "sha256": "e7b296281a33044d11c2d1c134ba40b8333631b4e3db09650b03e0becd46adc2",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_d_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/09/Under_19_Gir_E.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\9723e4f0_Under_19_Gir_E.pdf",
+      "sha256": "a44b7e37087022cc92684a0297e2cfd4f7df5c385be565a206ae55eef6e79df0",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_e_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/09/Under_19_Gir_F.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\219ef9c0_Under_19_Gir_F.pdf",
+      "sha256": "8f89e1b7f4feba9c54f1334e4726b551583bc31a53c67ec7bfc49ed286d7efc4",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_f_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/09/Under_19_Gir_G.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\4625a115_Under_19_Gir_G.pdf",
+      "sha256": "624b4ba93a9641c1aec6a94e361da37722d5b961f58f7f8d1138fce998f0eee1",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_g_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/09/Under_19_Gir_H.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\2236e3e8_Under_19_Gir_H.pdf",
+      "sha256": "6b1c54abb0a53f542e8aed959c41e5a09309aa96ba0cc8353fbd405a4565ee94",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_h_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/Under_19_Gir_I.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\92df5d13_Under_19_Gir_I.pdf",
+      "sha256": "5257afc0cde9ab4849a3df3112530da4ddaf385d711585d38e535833469ad2d9",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_i_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/UNDER_18_A.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\7b98b80b_UNDER_18_A.pdf",
+      "sha256": "f8addd7cf6d2beddb49379e56412c4ab2115a8f59f91a585fd3deb06ca358bdc",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_a_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/UNDER_18_B.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\d73b95b6_UNDER_18_B.pdf",
+      "sha256": "0bb933bde49a8a1e2c1b5ea2748511a604e09a44b0875f7afaa2935e49ae5d2f",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_b_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/UNDER_18_C.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\d479d382_UNDER_18_C.pdf",
+      "sha256": "d9d2db0e9860805c2a90c0b45c43de958f1b6802ba9cef9f3a0c138df89c97ee",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_c_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/UNDER_18_D.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\00f65935_UNDER_18_D.pdf",
+      "sha256": "2a629fcc34f932245a2304d654b2731cce5a83e28956afe88852fce0cac8bf82",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_d_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/UNDER_18_E.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\df958a4a_UNDER_18_E.pdf",
+      "sha256": "05dd407f58b1a06dce274030a04b0950bca1f14516b97dd2c1f63d8f0df53b97",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_e_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/UNDER_18_F.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\a0fa29e7_UNDER_18_F.pdf",
+      "sha256": "db29cac97e66dc83c1f1ffcb17623a8200d48d1053a7b0a441c633f7ff579cec",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_f_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/09/CALENDARIO_ECCELLENZA_FEMMINILE_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\4d0ea00e_CALENDARIO_ECCELLENZA_FEMMINILE_2025-2026.pdf",
+      "sha256": "6df868e43cf5ad274986ca569da8918d7ffbb3ab84313a9b14b2241a8e136d61",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_a_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/09/CALENDARIO_CALCIO_A_5_C1_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\da6496a8_CALENDARIO_CALCIO_A_5_C1_2025-2026.pdf",
+      "sha256": "ed893dce0b0201afdff9e538c16069a99fed5f9e66debec601bb7a509519afad",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_a_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/09/CALENDARIO_CALCIO_A_5_C2_A_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\176b1eb8_CALENDARIO_CALCIO_A_5_C2_A_2025-2026.pdf",
+      "sha256": "76d53f3346ae960529f489d491763ab3afd1b34d057c964d0ac77c0ecc93bc6e",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_a_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/09/CALENDARIO_CALCIO_A_5_C2_B_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\f02262c0_CALENDARIO_CALCIO_A_5_C2_B_2025-2026.pdf",
+      "sha256": "20ba1d3785a77d243a40045baf24849fecd4489592eedd7f577b133f442cf84c",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_b_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/09/CALENDARIO_CALCIO_A_5_C2_C_2025-2026.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\f18e5e54_CALENDARIO_CALCIO_A_5_C2_C_2025-2026.pdf",
+      "sha256": "869ce3196efbe6c24a71ea8b71bc6b6c5fedd10e4bebe4ebaec002bdc5f5abd4",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_c_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/Calcio-a-5-Serie-D-Girone-A-1.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\01f391f0_Calcio-a-5-Serie-D-Girone-A-1.pdf",
+      "sha256": "4bb69d8c7bc97f6a8c346e551f840994a7eef80888b71e866a1ba30f60563d90",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_a_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/Calcio-a-5-Serie-D-Girone-B-1.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\58640fe3_Calcio-a-5-Serie-D-Girone-B-1.pdf",
+      "sha256": "77879619f3ff2956b8b7d68b8493694d9e14accfaf7da35a4690eb6a67955681",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_b_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/Calcio-a-5-Serie-D-Girone-C-1.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\fefed9ff_Calcio-a-5-Serie-D-Girone-C-1.pdf",
+      "sha256": "25d48efc5701dda094f65ccc144f22fdf9d6760a590736433e6d00840e48d14b",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_c_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/Calcio-a-5-Serie-D-Girone-D-1.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\c0659f70_Calcio-a-5-Serie-D-Girone-D-1.pdf",
+      "sha256": "6a4f1403d83807a71a01142c467332b3907e54b7f1c8443a57d3823b07601b90",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_d_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/Calcio-a-5-Serie-D-Girone-E-1.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\bc51fa97_Calcio-a-5-Serie-D-Girone-E-1.pdf",
+      "sha256": "5103cf0ef9c92f7e22eda1ca77132a8f95db670913921d03cd1ea86d0441de56",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_e_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/Calcio-a-5-Serie-D-Girone-F-1.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\86afb6d5_Calcio-a-5-Serie-D-Girone-F-1.pdf",
+      "sha256": "7127a2fc047c32a2814056330f4fe249ac1fdef8e3dfb5325a76574e58352d35",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_f_programma_gare"
+    },
+    {
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/09/CALENDARIO_C5_C_FEMMINILE_2025-2026-2.pdf",
+      "local_path": "data\\raw\\campania\\2025-26\\871a5963_CALENDARIO_C5_C_FEMMINILE_2025-2026-2.pdf",
+      "sha256": "bd0202bc254bb493be05056933f5bab127024916948909efdd75756bb9cdfc7b",
+      "competition_id": "campania_2025_26_calcio_a_11_girone_a_programma_gare"
+    },
+    {
+      "source_url": "https://pinterest.com/pin/create/button/?url=https://campania.lnd.it/convenzione-c-r-campania-pegaso-zigarelli-puntiamo-sempre-piu-sulla-formazione-dei-nostri-atleti-e-addetti-ai-lavori/&media=https://campania.lnd.it/wp-content/uploads/2022/04/pegaso.jpg&description=Convenzione+C.R.Campania-Pegaso%2C+Zigarelli%3A+%E2%80%9CPuntiamo+sempre+pi%C3%B9+sulla+formazione+dei+nostri+atleti+e+addetti+ai+lavori%E2%80%9D",
+      "local_path": "data\\raw\\campania\\2025-26\\57fa9ec5_button",
+      "sha256": "430a692f8f88515dcb40894ff025f79d5813d7b4547dab0ea3e2ee5a5597429e",
+      "competition_id": "campania_2025_26_calcio_a_11_pinterest_programma_gare"
+    }
+  ],
+  "competitions": [
+    {
+      "competition_id": "campania_2025_26_calcio_a_11_girone_a_programma_gare",
+      "region": "Campania",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "GIRONE “A”",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/08/CALENDARIO_ECCELLENZA_A_2025-2026.pdf"
+    },
+    {
+      "competition_id": "campania_2025_26_calcio_a_11_girone_b_programma_gare",
+      "region": "Campania",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "GIRONE “B”",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/08/CALENDARIO_ECCELLENZA_B_2025-2026.pdf"
+    },
+    {
+      "competition_id": "campania_2025_26_calcio_a_11_girone_c_programma_gare",
+      "region": "Campania",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "GIRONE “C”",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/09/CALENDARIO_PROMOZIONE_C_2025-2026.pdf"
+    },
+    {
+      "competition_id": "campania_2025_26_calcio_a_11_girone_c_rev_programma_gare",
+      "region": "Campania",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "GIRONE “C” REV.",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_SECONDA_CAT_C_2025-2026_REV_2.pdf"
+    },
+    {
+      "competition_id": "campania_2025_26_calcio_a_11_girone_d_programma_gare",
+      "region": "Campania",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "GIRONE “D”",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/09/CALENDARIO_PROMOZIONE-D_2025-2026.pdf"
+    },
+    {
+      "competition_id": "campania_2025_26_calcio_a_11_girone_d_rev_programma_gare",
+      "region": "Campania",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "GIRONE “D” REV.",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_SECONDA_CAT_D_2025-2026_REV_2.pdf"
+    },
+    {
+      "competition_id": "campania_2025_26_calcio_a_11_girone_e_programma_gare",
+      "region": "Campania",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "GIRONE “E”",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_PRIMA_CAT_E_2025-2026.pdf"
+    },
+    {
+      "competition_id": "campania_2025_26_calcio_a_11_girone_f_programma_gare",
+      "region": "Campania",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "GIRONE “F”",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_PRIMA_CAT_F_2025-2026.pdf"
+    },
+    {
+      "competition_id": "campania_2025_26_calcio_a_11_girone_g_programma_gare",
+      "region": "Campania",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "GIRONE “G”",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_PRIMA_CAT_G_2025-2026.pdf"
+    },
+    {
+      "competition_id": "campania_2025_26_calcio_a_11_girone_h_programma_gare",
+      "region": "Campania",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "GIRONE “H”",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_PRIMA_CAT_H_2025-2026.pdf"
+    },
+    {
+      "competition_id": "campania_2025_26_calcio_a_11_girone_i_programma_gare",
+      "region": "Campania",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "GIRONE “I”",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_SECONDA_CAT_I_2025-2026.pdf"
+    },
+    {
+      "competition_id": "campania_2025_26_calcio_a_11_girone_l_programma_gare",
+      "region": "Campania",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "GIRONE “L”",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2025/10/CALENDARIO_SECONDA_CAT_L_2025-2026.pdf"
+    },
+    {
+      "competition_id": "campania_2025_26_calcio_a_11_pinterest_programma_gare",
+      "region": "Campania",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "PINTEREST",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://pinterest.com/pin/create/button/?url=https://campania.lnd.it/convenzione-c-r-campania-pegaso-zigarelli-puntiamo-sempre-piu-sulla-formazione-dei-nostri-atleti-e-addetti-ai-lavori/&media=https://campania.lnd.it/wp-content/uploads/2022/04/pegaso.jpg&description=Convenzione+C.R.Campania-Pegaso%2C+Zigarelli%3A+%E2%80%9CPuntiamo+sempre+pi%C3%B9+sulla+formazione+dei+nostri+atleti+e+addetti+ai+lavori%E2%80%9D"
+    },
+    {
+      "competition_id": "campania_2025_26_calcio_a_5_cu69_c5_2025_2026_pdf_girone_unico",
+      "region": "Campania",
+      "season": "2025/26",
+      "sport": "calcio_a_5",
+      "competition_type": "campionato",
+      "category": "CU69-C5-2025-2026.PDF",
+      "group_name": "Girone unico",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://campania.lnd.it/wp-content/uploads/2026/04/CU69-C5-2025-2026.pdf"
+    }
+  ],
+  "teams": [],
+  "matches": []
+}

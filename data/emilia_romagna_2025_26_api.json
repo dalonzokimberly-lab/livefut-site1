@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "region": "Emilia Romagna",
+    "season": "2025/26",
+    "generated_at": "2026-05-05T19:21:13Z",
+    "source_policy": "official_lnd_figc_only_no_tuttocampo",
+    "dataset_variant": "online_slim",
+    "match_cutoff_date": "2026-05-05"
+  },
+  "sources": [],
+  "competitions": [],
+  "teams": [],
+  "matches": []
+}

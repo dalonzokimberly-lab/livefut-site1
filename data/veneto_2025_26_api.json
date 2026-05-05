@@ -1,0 +1,649 @@
+{
+  "meta": {
+    "region": "Veneto",
+    "season": "2025/26",
+    "generated_at": "2026-05-05T19:20:57Z",
+    "source_policy": "official_lnd_figc_only_no_tuttocampo",
+    "dataset_variant": "online_slim",
+    "match_cutoff_date": "2026-05-05"
+  },
+  "sources": [
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6627%2fCom_96.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\205f64b0_Com_96.pdf",
+      "sha256": "f2bc674380db4fa289427331dc6d1eeaa9002f642fbd61b90ac8dd1064df231f",
+      "competition_id": "veneto_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=download&file=%2ffiles%2f2178%2f0%2fFile%2f6627%2fCom_96.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\5fcd87ad_Com_96.pdf",
+      "sha256": "f2bc674380db4fa289427331dc6d1eeaa9002f642fbd61b90ac8dd1064df231f",
+      "competition_id": "veneto_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6627%2fCom_95.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\9f925afa_Com_95.pdf",
+      "sha256": "3a3fc00cb580963df6296d4d8f86847dc43c0ddcdf47919f45fa88332d2a7c93",
+      "competition_id": "veneto_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=download&file=%2ffiles%2f2178%2f0%2fFile%2f6627%2fCom_95.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\859970d2_Com_95.pdf",
+      "sha256": "3a3fc00cb580963df6296d4d8f86847dc43c0ddcdf47919f45fa88332d2a7c93",
+      "competition_id": "veneto_2025_26_calcio_a_11_programma_gare_programma_gare"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6627%2fAllegCom_95-Fase_Nazionale_Campionato-Juniores_Femminile_Regionale-Com99-DCF.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\79397472_AllegCom_95-Fase_Nazionale_Campionato-Juniores_Femminile_Regionale-Com99-DCF.pdf",
+      "sha256": "b4dc9081223007a435273250e5e94d674e26cdb1033afaeff91554a5223c1656",
+      "competition_id": "veneto_2025_26_calcio_a_11_allegcom_95_fase_nazionale_campionato_juniores_femminile_regionale_com99_dcf_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=download&file=%2ffiles%2f2178%2f0%2fFile%2f6627%2fAllegCom_95-Fase_Nazionale_Campionato-Juniores_Femminile_Regionale-Com99-DCF.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\05bcfddf_AllegCom_95-Fase_Nazionale_Campionato-Juniores_Femminile_Regionale-Com99-DCF.pdf",
+      "sha256": "b4dc9081223007a435273250e5e94d674e26cdb1033afaeff91554a5223c1656",
+      "competition_id": "veneto_2025_26_calcio_a_11_allegcom_95_fase_nazionale_campionato_juniores_femminile_regionale_com99_dcf_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6627%2fAllegCom_95-Fase_Nazionale_Coppa_Italia_Femminile_Regionale-Com98-DCF.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\ecbd9d92_AllegCom_95-Fase_Nazionale_Coppa_Italia_Femminile_Regionale-Com98-DCF.pdf",
+      "sha256": "b5c9b4b7aa393234c43eb6626e96db3d5104c69fa0aae4e165cc472463f3abd6",
+      "competition_id": "veneto_2025_26_calcio_a_11_allegcom_95_fase_nazionale_coppa_italia_femminile_regionale_com98_dcf_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=download&file=%2ffiles%2f2178%2f0%2fFile%2f6627%2fAllegCom_95-Fase_Nazionale_Coppa_Italia_Femminile_Regionale-Com98-DCF.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\0d47fa3f_AllegCom_95-Fase_Nazionale_Coppa_Italia_Femminile_Regionale-Com98-DCF.pdf",
+      "sha256": "b5c9b4b7aa393234c43eb6626e96db3d5104c69fa0aae4e165cc472463f3abd6",
+      "competition_id": "veneto_2025_26_calcio_a_11_allegcom_95_fase_nazionale_coppa_italia_femminile_regionale_com98_dcf_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fCom_80-C5.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\1439d4e9_Com_80-C5.pdf",
+      "sha256": "d0931aa23b0beb8c51a0bbac1644f363b0eb316411a1a3ad1371e5157b7021fb",
+      "competition_id": "veneto_2025_26_calcio_a_5_com_80_c5_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=download&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fCom_80-C5.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\b23f4a39_Com_80-C5.pdf",
+      "sha256": "d0931aa23b0beb8c51a0bbac1644f363b0eb316411a1a3ad1371e5157b7021fb",
+      "competition_id": "veneto_2025_26_calcio_a_5_com_80_c5_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fCom_79-C5.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\1eea10fe_Com_79-C5.pdf",
+      "sha256": "6c9b4852c868c0db3601f4a6aca309f0d841d920e23639f81b1a3ff78a406846",
+      "competition_id": "veneto_2025_26_calcio_a_5_com_79_c5_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=download&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fCom_79-C5.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\6f9c5265_Com_79-C5.pdf",
+      "sha256": "6c9b4852c868c0db3601f4a6aca309f0d841d920e23639f81b1a3ff78a406846",
+      "competition_id": "veneto_2025_26_calcio_a_5_com_79_c5_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fAllegCom_78-C5-Com_1_Torneo_delle_Regioni-2026_Calcio_a_5_-_Programma_gare.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\85c54cb8_AllegCom_78-C5-Com_1_Torneo_delle_Regioni-2026_Calcio_a_5_-_Programma_gare.pdf",
+      "sha256": "8fe3fc075fba263dc86caa42d68a51fcfbd10346f2cae24f9e140ee9c882b4c5",
+      "competition_id": "veneto_2025_26_calcio_a_5_allegcom_78_c5_com_1_torneo_delle_regioni_2026_calcio_a_5_programma_gare_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=download&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fAllegCom_78-C5-Com_1_Torneo_delle_Regioni-2026_Calcio_a_5_-_Programma_gare.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\36aa14c3_AllegCom_78-C5-Com_1_Torneo_delle_Regioni-2026_Calcio_a_5_-_Programma_gare.pdf",
+      "sha256": "8fe3fc075fba263dc86caa42d68a51fcfbd10346f2cae24f9e140ee9c882b4c5",
+      "competition_id": "veneto_2025_26_calcio_a_5_allegcom_78_c5_com_1_torneo_delle_regioni_2026_calcio_a_5_programma_gare_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fAllegCom_76-C5-Calendario-Coppa-Veneto-Under-21-Stagione-25-26.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\c8947a45_AllegCom_76-C5-Calendario-Coppa-Veneto-Under-21-Stagione-25-26.pdf",
+      "sha256": "e9a2d6b357781a1afe0290c72e28138b90298aefad47245bafca7906d177dec6",
+      "competition_id": "veneto_2025_26_calcio_a_5_allegcom_76_c5_calendario_coppa_veneto_under_21_stagione_25_26_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=download&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fAllegCom_76-C5-Calendario-Coppa-Veneto-Under-21-Stagione-25-26.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\39255501_AllegCom_76-C5-Calendario-Coppa-Veneto-Under-21-Stagione-25-26.pdf",
+      "sha256": "e9a2d6b357781a1afe0290c72e28138b90298aefad47245bafca7906d177dec6",
+      "competition_id": "veneto_2025_26_calcio_a_5_allegcom_76_c5_calendario_coppa_veneto_under_21_stagione_25_26_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fAllegCom_75-C5-Calendario-Coppa-Veneto-Under-15-Stagione-25-26.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\912b1d93_AllegCom_75-C5-Calendario-Coppa-Veneto-Under-15-Stagione-25-26.pdf",
+      "sha256": "cc39d0b71051f3027b61565c0ec39d8d2cec8a1eb8ee468245ce4d896b83413f",
+      "competition_id": "veneto_2025_26_calcio_a_5_allegcom_75_c5_calendario_coppa_veneto_under_15_stagione_25_26_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=download&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fAllegCom_75-C5-Calendario-Coppa-Veneto-Under-15-Stagione-25-26.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\a1facd3a_AllegCom_75-C5-Calendario-Coppa-Veneto-Under-15-Stagione-25-26.pdf",
+      "sha256": "cc39d0b71051f3027b61565c0ec39d8d2cec8a1eb8ee468245ce4d896b83413f",
+      "competition_id": "veneto_2025_26_calcio_a_5_allegcom_75_c5_calendario_coppa_veneto_under_15_stagione_25_26_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fAllegCom_75-C5-Calendario-Coppa-Veneto-Under-17-Stagione-25-26.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\3dba99c5_AllegCom_75-C5-Calendario-Coppa-Veneto-Under-17-Stagione-25-26.pdf",
+      "sha256": "d94c4fdbdcf033870ee4ed0410d3d682a2f41e546406cfb501c12f933643cb28",
+      "competition_id": "veneto_2025_26_calcio_a_5_allegcom_75_c5_calendario_coppa_veneto_under_17_stagione_25_26_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=download&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fAllegCom_75-C5-Calendario-Coppa-Veneto-Under-17-Stagione-25-26.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\01790c9e_AllegCom_75-C5-Calendario-Coppa-Veneto-Under-17-Stagione-25-26.pdf",
+      "sha256": "d94c4fdbdcf033870ee4ed0410d3d682a2f41e546406cfb501c12f933643cb28",
+      "competition_id": "veneto_2025_26_calcio_a_5_allegcom_75_c5_calendario_coppa_veneto_under_17_stagione_25_26_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fAllegCom_74-C5-Calendario-Coppa-Veneto-Under-19-GIRONE-A-Calendario-25-26.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\9e47f40b_AllegCom_74-C5-Calendario-Coppa-Veneto-Under-19-GIRONE-A-Calendario-25-26.pdf",
+      "sha256": "e5f81c187faf1e3291aab0f4ab6c19ecfdc7f3968820f70f280126c84ca9f9f9",
+      "competition_id": "veneto_2025_26_calcio_a_5_allegcom_74_c5_calendario_coppa_veneto_under_19_girone_a_calendario_25_26_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=download&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fAllegCom_74-C5-Calendario-Coppa-Veneto-Under-19-GIRONE-A-Calendario-25-26.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\4057f682_AllegCom_74-C5-Calendario-Coppa-Veneto-Under-19-GIRONE-A-Calendario-25-26.pdf",
+      "sha256": "e5f81c187faf1e3291aab0f4ab6c19ecfdc7f3968820f70f280126c84ca9f9f9",
+      "competition_id": "veneto_2025_26_calcio_a_5_allegcom_74_c5_calendario_coppa_veneto_under_19_girone_a_calendario_25_26_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fAllegCom_74-C5-Calendario-Coppa-Veneto-Under-19-GIRONE-B-Calendario-25-26.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\86c9bfdb_AllegCom_74-C5-Calendario-Coppa-Veneto-Under-19-GIRONE-B-Calendario-25-26.pdf",
+      "sha256": "a8c2d01df8aa5c431149d1be5941aa02de556d2faee8e82adc8fc0f6e30827be",
+      "competition_id": "veneto_2025_26_calcio_a_5_allegcom_74_c5_calendario_coppa_veneto_under_19_girone_b_calendario_25_26_pdf_girone_unico"
+    },
+    {
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=download&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fAllegCom_74-C5-Calendario-Coppa-Veneto-Under-19-GIRONE-B-Calendario-25-26.pdf",
+      "local_path": "data\\raw\\veneto\\2025-26\\fb11dfee_AllegCom_74-C5-Calendario-Coppa-Veneto-Under-19-GIRONE-B-Calendario-25-26.pdf",
+      "sha256": "a8c2d01df8aa5c431149d1be5941aa02de556d2faee8e82adc8fc0f6e30827be",
+      "competition_id": "veneto_2025_26_calcio_a_5_allegcom_74_c5_calendario_coppa_veneto_under_19_girone_b_calendario_25_26_pdf_girone_unico"
+    }
+  ],
+  "competitions": [
+    {
+      "competition_id": "veneto_2025_26_calcio_a_11_allegcom_95_fase_nazionale_campionato_juniores_femminile_regionale_com99_dcf_pdf_girone_unico",
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "ALLEGCOM_95-FASE_NAZIONALE_CAMPIONATO-JUNIORES_FEMMINILE_REGIONALE-COM99-DCF.PDF",
+      "group_name": "Girone unico",
+      "age_group": "under_19",
+      "gender": "female",
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6627%2fAllegCom_95-Fase_Nazionale_Campionato-Juniores_Femminile_Regionale-Com99-DCF.pdf"
+    },
+    {
+      "competition_id": "veneto_2025_26_calcio_a_11_allegcom_95_fase_nazionale_coppa_italia_femminile_regionale_com98_dcf_pdf_girone_unico",
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "coppa",
+      "category": "ALLEGCOM_95-FASE_NAZIONALE_COPPA_ITALIA_FEMMINILE_REGIONALE-COM98-DCF.PDF",
+      "group_name": "Girone unico",
+      "age_group": "adult",
+      "gender": "female",
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6627%2fAllegCom_95-Fase_Nazionale_Coppa_Italia_Femminile_Regionale-Com98-DCF.pdf"
+    },
+    {
+      "competition_id": "veneto_2025_26_calcio_a_11_eccellenza_femminile_girone_sa",
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "ECCELLENZA FEMMINILE",
+      "group_name": "Girone SA",
+      "age_group": "adult",
+      "gender": "female",
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6627%2fCom_95.pdf"
+    },
+    {
+      "competition_id": "veneto_2025_26_calcio_a_11_programma_gare_programma_gare",
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "PROGRAMMA GARE",
+      "group_name": "Programma gare",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6627%2fCom_96.pdf"
+    },
+    {
+      "competition_id": "veneto_2025_26_calcio_a_11_under_15_femminile_fase_2_reg_girone_g",
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_type": "campionato",
+      "category": "UNDER 15 FEMMINILE FASE 2 REG.",
+      "group_name": "Girone G",
+      "age_group": "under_15",
+      "gender": "female",
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6627%2fCom_95.pdf"
+    },
+    {
+      "competition_id": "veneto_2025_26_calcio_a_5_allegcom_74_c5_calendario_coppa_veneto_under_19_girone_a_calendario_25_26_pdf_girone_unico",
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_5",
+      "competition_type": "coppa",
+      "category": "ALLEGCOM_74-C5-CALENDARIO-COPPA-VENETO-UNDER-19-GIRONE-A-CALENDARIO-25-26.PDF",
+      "group_name": "Girone unico",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fAllegCom_74-C5-Calendario-Coppa-Veneto-Under-19-GIRONE-A-Calendario-25-26.pdf"
+    },
+    {
+      "competition_id": "veneto_2025_26_calcio_a_5_allegcom_74_c5_calendario_coppa_veneto_under_19_girone_b_calendario_25_26_pdf_girone_unico",
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_5",
+      "competition_type": "coppa",
+      "category": "ALLEGCOM_74-C5-CALENDARIO-COPPA-VENETO-UNDER-19-GIRONE-B-CALENDARIO-25-26.PDF",
+      "group_name": "Girone unico",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fAllegCom_74-C5-Calendario-Coppa-Veneto-Under-19-GIRONE-B-Calendario-25-26.pdf"
+    },
+    {
+      "competition_id": "veneto_2025_26_calcio_a_5_allegcom_75_c5_calendario_coppa_veneto_under_15_stagione_25_26_pdf_girone_unico",
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_5",
+      "competition_type": "coppa",
+      "category": "ALLEGCOM_75-C5-CALENDARIO-COPPA-VENETO-UNDER-15-STAGIONE-25-26.PDF",
+      "group_name": "Girone unico",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fAllegCom_75-C5-Calendario-Coppa-Veneto-Under-15-Stagione-25-26.pdf"
+    },
+    {
+      "competition_id": "veneto_2025_26_calcio_a_5_allegcom_75_c5_calendario_coppa_veneto_under_17_stagione_25_26_pdf_girone_unico",
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_5",
+      "competition_type": "coppa",
+      "category": "ALLEGCOM_75-C5-CALENDARIO-COPPA-VENETO-UNDER-17-STAGIONE-25-26.PDF",
+      "group_name": "Girone unico",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fAllegCom_75-C5-Calendario-Coppa-Veneto-Under-17-Stagione-25-26.pdf"
+    },
+    {
+      "competition_id": "veneto_2025_26_calcio_a_5_allegcom_76_c5_calendario_coppa_veneto_under_21_stagione_25_26_pdf_girone_unico",
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_5",
+      "competition_type": "coppa",
+      "category": "ALLEGCOM_76-C5-CALENDARIO-COPPA-VENETO-UNDER-21-STAGIONE-25-26.PDF",
+      "group_name": "Girone unico",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fAllegCom_76-C5-Calendario-Coppa-Veneto-Under-21-Stagione-25-26.pdf"
+    },
+    {
+      "competition_id": "veneto_2025_26_calcio_a_5_allegcom_78_c5_com_1_torneo_delle_regioni_2026_calcio_a_5_programma_gare_pdf_girone_unico",
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_5",
+      "competition_type": "campionato",
+      "category": "ALLEGCOM_78-C5-COM_1_TORNEO_DELLE_REGIONI-2026_CALCIO_A_5_-_PROGRAMMA_GARE.PDF",
+      "group_name": "Girone unico",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fAllegCom_78-C5-Com_1_Torneo_delle_Regioni-2026_Calcio_a_5_-_Programma_gare.pdf"
+    },
+    {
+      "competition_id": "veneto_2025_26_calcio_a_5_com_79_c5_pdf_girone_unico",
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_5",
+      "competition_type": "campionato",
+      "category": "COM_79-C5.PDF",
+      "group_name": "Girone unico",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fCom_79-C5.pdf"
+    },
+    {
+      "competition_id": "veneto_2025_26_calcio_a_5_com_80_c5_pdf_girone_unico",
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_5",
+      "competition_type": "campionato",
+      "category": "COM_80-C5.PDF",
+      "group_name": "Girone unico",
+      "age_group": "adult",
+      "gender": "male",
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fCom_80-C5.pdf"
+    },
+    {
+      "competition_id": "veneto_2025_26_calcio_a_5_under_15_calcio_a_5_maschile_girone_4",
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_5",
+      "competition_type": "campionato",
+      "category": "UNDER 15 CALCIO A 5 MASCHILE",
+      "group_name": "Girone 4",
+      "age_group": "under_15",
+      "gender": "male",
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fCom_80-C5.pdf"
+    },
+    {
+      "competition_id": "veneto_2025_26_calcio_a_5_veneto_under_17_c5_masch_girone_b",
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_5",
+      "competition_type": "campionato",
+      "category": "VENETO UNDER 17 C5 MASCH",
+      "group_name": "Girone B",
+      "age_group": "under_17",
+      "gender": "male",
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fCom_80-C5.pdf"
+    },
+    {
+      "competition_id": "veneto_2025_26_calcio_a_5_veneto_under_17_c5_masch_girone_unico",
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_5",
+      "competition_type": "campionato",
+      "category": "VENETO UNDER 17 C5 MASCH",
+      "group_name": "Girone unico",
+      "age_group": "under_17",
+      "gender": "male",
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fCom_79-C5.pdf"
+    }
+  ],
+  "teams": [
+    {
+      "team_id": "veneto_concordia_sq_b",
+      "name": "CONCORDIA SQ.B",
+      "region": "Veneto"
+    },
+    {
+      "team_id": "veneto_futsal_giorgione",
+      "name": "FUTSAL GIORGIONE",
+      "region": "Veneto"
+    },
+    {
+      "team_id": "veneto_futsal_marco_polo_arl",
+      "name": "FUTSAL MARCO POLO ARL",
+      "region": "Veneto"
+    },
+    {
+      "team_id": "veneto_gordige_calcio_ragazze",
+      "name": "GORDIGE CALCIO RAGAZZE",
+      "region": "Veneto"
+    },
+    {
+      "team_id": "veneto_marca_futsal_montebelluna",
+      "name": "MARCA FUTSAL MONTEBELLUNA",
+      "region": "Veneto"
+    },
+    {
+      "team_id": "veneto_mirano_c5",
+      "name": "MIRANO C5",
+      "region": "Veneto"
+    },
+    {
+      "team_id": "veneto_petrarca_calcio_a_cinsq_c",
+      "name": "PETRARCA CALCIO A CINSQ.C",
+      "region": "Veneto"
+    },
+    {
+      "team_id": "veneto_rovigo_women_treviso",
+      "name": "ROVIGO WOMEN TREVISO",
+      "region": "Veneto"
+    },
+    {
+      "team_id": "veneto_ssdrl_montagnana",
+      "name": "SSDRL MONTAGNANA",
+      "region": "Veneto"
+    },
+    {
+      "team_id": "veneto_thiene_1908",
+      "name": "THIENE 1908",
+      "region": "Veneto"
+    },
+    {
+      "team_id": "veneto_venezia_calcio_1985",
+      "name": "VENEZIA CALCIO 1985",
+      "region": "Veneto"
+    },
+    {
+      "team_id": "veneto_venezia_football_academy",
+      "name": "VENEZIA FOOTBALL ACADEMY",
+      "region": "Veneto"
+    },
+    {
+      "team_id": "veneto_villorba_treviso_f_c",
+      "name": "VILLORBA TREVISO F.C.",
+      "region": "Veneto"
+    },
+    {
+      "team_id": "veneto_women_calcio_padova",
+      "name": "WOMEN CALCIO PADOVA",
+      "region": "Veneto"
+    },
+    {
+      "team_id": "veneto_women_ssd_arlsq_b",
+      "name": "WOMEN SSD ARLSQ.B",
+      "region": "Veneto"
+    }
+  ],
+  "matches": [
+    {
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_id": "veneto_2025_26_calcio_a_11_eccellenza_femminile_girone_sa",
+      "competition_type": "campionato",
+      "category": "ECCELLENZA FEMMINILE",
+      "group_name": "Girone SA",
+      "age_group": "adult",
+      "gender": "female",
+      "round_number": 17,
+      "leg": "gara",
+      "match_date": "2026-05-09",
+      "official_fixture_text": "GORDIGE CALCIO RAGAZZE CONCORDIA SQ.B",
+      "home_team": "GORDIGE CALCIO RAGAZZE",
+      "away_team": "CONCORDIA SQ.B",
+      "split_confidence": 13,
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6627%2fCom_95.pdf",
+      "home_team_id": "veneto_gordige_calcio_ragazze",
+      "away_team_id": "veneto_concordia_sq_b",
+      "match_id": "veneto_2025_26_calcio_a_11_eccellenza_femminile_girone_sa_17_gara_2026_05_09_gordige_calcio_ragazze_concordia_sq_b"
+    },
+    {
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_5",
+      "competition_id": "veneto_2025_26_calcio_a_5_under_15_calcio_a_5_maschile_girone_4",
+      "competition_type": "campionato",
+      "category": "UNDER 15 CALCIO A 5 MASCHILE",
+      "group_name": "Girone 4",
+      "age_group": "under_15",
+      "gender": "male",
+      "round_number": 18,
+      "leg": "gara",
+      "match_date": "2026-05-09",
+      "official_fixture_text": "FUTSAL GIORGIONE THIENE 1908",
+      "home_team": "FUTSAL GIORGIONE",
+      "away_team": "THIENE 1908",
+      "split_confidence": 12,
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fCom_80-C5.pdf",
+      "home_team_id": "veneto_futsal_giorgione",
+      "away_team_id": "veneto_thiene_1908",
+      "match_id": "veneto_2025_26_calcio_a_5_under_15_calcio_a_5_maschile_girone_4_18_gara_2026_05_09_futsal_giorgione_thiene_1908"
+    },
+    {
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_id": "veneto_2025_26_calcio_a_11_eccellenza_femminile_girone_sa",
+      "competition_type": "campionato",
+      "category": "ECCELLENZA FEMMINILE",
+      "group_name": "Girone SA",
+      "age_group": "adult",
+      "gender": "female",
+      "round_number": 10,
+      "leg": "gara",
+      "match_date": "2026-05-10",
+      "official_fixture_text": "WOMEN CALCIO PADOVA SSDRL MONTAGNANA",
+      "home_team": "WOMEN CALCIO PADOVA",
+      "away_team": "SSDRL MONTAGNANA",
+      "split_confidence": 12,
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6627%2fCom_95.pdf",
+      "home_team_id": "veneto_women_calcio_padova",
+      "away_team_id": "veneto_ssdrl_montagnana",
+      "match_id": "veneto_2025_26_calcio_a_11_eccellenza_femminile_girone_sa_10_gara_2026_05_10_women_calcio_padova_ssdrl_montagnana"
+    },
+    {
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_id": "veneto_2025_26_calcio_a_11_under_15_femminile_fase_2_reg_girone_g",
+      "competition_type": "campionato",
+      "category": "UNDER 15 FEMMINILE FASE 2 REG.",
+      "group_name": "Girone G",
+      "age_group": "under_15",
+      "gender": "female",
+      "round_number": 18,
+      "leg": "gara",
+      "match_date": "2026-05-10",
+      "official_fixture_text": "VENEZIA FOOTBALL ACADEMY VENEZIA CALCIO 1985",
+      "home_team": "VENEZIA FOOTBALL ACADEMY",
+      "away_team": "VENEZIA CALCIO 1985",
+      "split_confidence": 12,
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6627%2fCom_95.pdf",
+      "home_team_id": "veneto_venezia_football_academy",
+      "away_team_id": "veneto_venezia_calcio_1985",
+      "match_id": "veneto_2025_26_calcio_a_11_under_15_femminile_fase_2_reg_girone_g_18_gara_2026_05_10_venezia_football_academy_venezia_calcio_1985"
+    },
+    {
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_5",
+      "competition_id": "veneto_2025_26_calcio_a_5_veneto_under_17_c5_masch_girone_b",
+      "competition_type": "campionato",
+      "category": "VENETO UNDER 17 C5 MASCH",
+      "group_name": "Girone B",
+      "age_group": "under_17",
+      "gender": "male",
+      "round_number": 15,
+      "leg": "gara",
+      "match_date": "2026-05-10",
+      "official_fixture_text": "PETRARCA CALCIO A CINSQ.C FUTSAL MARCO POLO ARL",
+      "home_team": "PETRARCA CALCIO A CINSQ.C",
+      "away_team": "FUTSAL MARCO POLO ARL",
+      "split_confidence": 12,
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fCom_80-C5.pdf",
+      "home_team_id": "veneto_petrarca_calcio_a_cinsq_c",
+      "away_team_id": "veneto_futsal_marco_polo_arl",
+      "match_id": "veneto_2025_26_calcio_a_5_veneto_under_17_c5_masch_girone_b_15_gara_2026_05_10_petrarca_calcio_a_cinsq_c_futsal_marco_polo_arl"
+    },
+    {
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_5",
+      "competition_id": "veneto_2025_26_calcio_a_5_veneto_under_17_c5_masch_girone_b",
+      "competition_type": "campionato",
+      "category": "VENETO UNDER 17 C5 MASCH",
+      "group_name": "Girone B",
+      "age_group": "under_17",
+      "gender": "male",
+      "round_number": 11,
+      "leg": "gara",
+      "match_date": "2026-05-10",
+      "official_fixture_text": "MARCA FUTSAL MONTEBELLUNA MIRANO C5",
+      "home_team": "MARCA FUTSAL MONTEBELLUNA",
+      "away_team": "MIRANO C5",
+      "split_confidence": 12,
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fCom_80-C5.pdf",
+      "home_team_id": "veneto_marca_futsal_montebelluna",
+      "away_team_id": "veneto_mirano_c5",
+      "match_id": "veneto_2025_26_calcio_a_5_veneto_under_17_c5_masch_girone_b_11_gara_2026_05_10_marca_futsal_montebelluna_mirano_c5"
+    },
+    {
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_5",
+      "competition_id": "veneto_2025_26_calcio_a_5_veneto_under_17_c5_masch_girone_unico",
+      "competition_type": "campionato",
+      "category": "VENETO UNDER 17 C5 MASCH",
+      "group_name": "Girone unico",
+      "age_group": "under_17",
+      "gender": "male",
+      "round_number": 15,
+      "leg": "gara",
+      "match_date": "2026-05-10",
+      "official_fixture_text": "PETRARCA CALCIO A CINSQ.C FUTSAL MARCO POLO ARL",
+      "home_team": "PETRARCA CALCIO A CINSQ.C",
+      "away_team": "FUTSAL MARCO POLO ARL",
+      "split_confidence": 12,
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6630%2fCom_79-C5.pdf",
+      "home_team_id": "veneto_petrarca_calcio_a_cinsq_c",
+      "away_team_id": "veneto_futsal_marco_polo_arl",
+      "match_id": "veneto_2025_26_calcio_a_5_veneto_under_17_c5_masch_girone_unico_15_gara_2026_05_10_petrarca_calcio_a_cinsq_c_futsal_marco_polo_arl"
+    },
+    {
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_id": "veneto_2025_26_calcio_a_11_eccellenza_femminile_girone_sa",
+      "competition_type": "campionato",
+      "category": "ECCELLENZA FEMMINILE",
+      "group_name": "Girone SA",
+      "age_group": "adult",
+      "gender": "female",
+      "round_number": 10,
+      "leg": "gara",
+      "match_date": "2026-05-17",
+      "official_fixture_text": "ROVIGO WOMEN TREVISO WOMEN SSD ARLSQ.B",
+      "home_team": "ROVIGO WOMEN TREVISO",
+      "away_team": "WOMEN SSD ARLSQ.B",
+      "split_confidence": 12,
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6627%2fCom_95.pdf",
+      "home_team_id": "veneto_rovigo_women_treviso",
+      "away_team_id": "veneto_women_ssd_arlsq_b",
+      "match_id": "veneto_2025_26_calcio_a_11_eccellenza_femminile_girone_sa_10_gara_2026_05_17_rovigo_women_treviso_women_ssd_arlsq_b"
+    },
+    {
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_id": "veneto_2025_26_calcio_a_11_eccellenza_femminile_girone_sa",
+      "competition_type": "campionato",
+      "category": "ECCELLENZA FEMMINILE",
+      "group_name": "Girone SA",
+      "age_group": "adult",
+      "gender": "female",
+      "round_number": 15,
+      "leg": "gara",
+      "match_date": "2026-05-31",
+      "official_fixture_text": "VILLORBA TREVISO F.C. GORDIGE CALCIO RAGAZZE",
+      "home_team": "VILLORBA TREVISO F.C.",
+      "away_team": "GORDIGE CALCIO RAGAZZE",
+      "split_confidence": 13,
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6627%2fCom_95.pdf",
+      "home_team_id": "veneto_villorba_treviso_f_c",
+      "away_team_id": "veneto_gordige_calcio_ragazze",
+      "match_id": "veneto_2025_26_calcio_a_11_eccellenza_femminile_girone_sa_15_gara_2026_05_31_villorba_treviso_f_c_gordige_calcio_ragazze"
+    },
+    {
+      "region": "Veneto",
+      "season": "2025/26",
+      "sport": "calcio_a_11",
+      "competition_id": "veneto_2025_26_calcio_a_11_under_15_femminile_fase_2_reg_girone_g",
+      "competition_type": "campionato",
+      "category": "UNDER 15 FEMMINILE FASE 2 REG.",
+      "group_name": "Girone G",
+      "age_group": "under_15",
+      "gender": "female",
+      "round_number": 15,
+      "leg": "gara",
+      "match_date": "2026-06-02",
+      "official_fixture_text": "U.P. COMUNALE TAVAGNACCO. GORDIGE CALCIO RAGAZZE",
+      "home_team": null,
+      "away_team": null,
+      "split_confidence": 0,
+      "source_url": "https://www.figcvenetocalcio.it/download.ashx?act=vis&file=%2ffiles%2f2178%2f0%2fFile%2f6627%2fCom_95.pdf",
+      "home_team_id": null,
+      "away_team_id": null,
+      "match_id": "veneto_2025_26_calcio_a_11_under_15_femminile_fase_2_reg_girone_g_15_gara_2026_06_02_none_none"
+    }
+  ]
+}
