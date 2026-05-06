@@ -141,6 +141,40 @@ alter table public.support_requests
   add column if not exists requester_email text,
   add column if not exists match_title text;
 
+update public.matches
+set
+  field = case
+    when coalesce(field, '') = '' or field = 'Campo non specificato'
+      then 'Campo non specificato - ' || region
+    else field
+  end,
+  region = 'Non specificata'
+where region is not null
+  and region <> 'Non specificata'
+  and region not in (
+    'Abruzzo',
+    'Basilicata',
+    'Calabria',
+    'Campania',
+    'Emilia-Romagna',
+    'Friuli Venezia Giulia',
+    'Lazio',
+    'Liguria',
+    'Lombardia',
+    'Marche',
+    'Molise',
+    'Piemonte Valle d''Aosta',
+    'Puglia',
+    'Sardegna',
+    'Sicilia',
+    'Toscana',
+    'Trentino-Alto Adige',
+    'Umbria',
+    'Veneto',
+    'Bolzano',
+    'Trento'
+  );
+
 create table if not exists public.admin_email_outbox (
   id uuid primary key default gen_random_uuid(),
   request_table text not null,

@@ -976,7 +976,7 @@
       }
 
       document.getElementById('accreditationNotes').value = '';
-      showDashboardMessage('Richiesta accredito inviata. Rimane in attesa finche il super user LiveFut non la approva.');
+      showDashboardMessage('Richiesta accredito inviata. Rimane in attesa finché il super user LiveFut non la approva.');
     }
 
     async function goLiveNow() {
@@ -998,9 +998,9 @@
             away_team: 'Avversario',
             score: '0-0',
             minute: 0,
-            region: currentProfile?.city || 'Non specificata',
+            region: 'Non specificata',
             category: 'Diretta LiveFut',
-            field: 'Campo non specificato',
+            field: currentProfile?.city ? `Campo non specificato - ${currentProfile.city}` : 'Campo non specificato',
             status: 'soon',
             discipline: 'Calcio'
           }

@@ -407,9 +407,9 @@
         <p>Le sezioni mostrano i dati salvati su Supabase e permettono di gestire le richieste principali.</p>
         <div class="tabs">
           <button class="tab is-active" data-panel="accreditationsPanel">Accrediti</button>
-          <button class="tab" data-panel="accreditationArchivePanel">Archivio autorizzazioni</button>
           <button class="tab" data-panel="contactsPanel">Contatti</button>
           <button class="tab" data-panel="supportPanel">Supporto</button>
+          <button class="tab" data-panel="requestsArchivePanel">Archivio richieste</button>
           <button class="tab" data-panel="matchesPanel">Dirette</button>
           <button class="tab" data-panel="eventsPanel">Telecronaca</button>
           <button class="tab" data-panel="systemPanel">Sistema</button>
@@ -426,21 +426,31 @@
       </article>
     </section>
 
-    <section class="section panel" id="accreditationArchivePanel">
-      <article class="card">
-        <h2>Archivio autorizzazioni</h2>
-        <p>Richieste approvate o rifiutate. Puoi revocare una decisione e riportare la richiesta in attesa.</p>
-        <div class="table-wrap"><table><thead><tr><th>Squadra</th><th>Ruolo</th><th>Esito</th><th>Utente</th><th>Motivazione</th><th>Revisione</th><th>Azioni</th></tr></thead><tbody id="accreditationArchiveTable"></tbody></table></div>
-        <div class="empty-state" id="accreditationArchiveEmpty">Nessuna autorizzazione archiviata.</div>
-      </article>
-    </section>
-
     <section class="section panel" id="contactsPanel">
       <article class="card">
         <h2>Richieste contatto</h2>
         <p>Monitora i messaggi arrivati dal sito e segna quelli già gestiti.</p>
         <div class="table-wrap"><table><thead><tr><th>Nome</th><th>Email</th><th>Oggetto</th><th>Messaggio</th><th>Stato</th><th>Data</th><th>Azioni</th></tr></thead><tbody id="contactsTable"></tbody></table></div>
         <div class="empty-state" id="contactsEmpty">Nessuna richiesta contatto trovata.</div>
+      </article>
+    </section>
+
+    <section class="section panel" id="requestsArchivePanel">
+      <article class="card">
+        <h2>Archivio richieste</h2>
+        <p>Accrediti, contatti e supporto già gestiti. Puoi riaprire una richiesta quando serve.</p>
+
+        <h3 style="margin-top:18px;">Autorizzazioni</h3>
+        <div class="table-wrap"><table><thead><tr><th>Squadra</th><th>Ruolo</th><th>Esito</th><th>Utente</th><th>Motivazione</th><th>Revisione</th><th>Azioni</th></tr></thead><tbody id="accreditationArchiveTable"></tbody></table></div>
+        <div class="empty-state" id="accreditationArchiveEmpty">Nessuna autorizzazione archiviata.</div>
+
+        <h3 style="margin-top:22px;">Contatti</h3>
+        <div class="table-wrap"><table><thead><tr><th>Nome</th><th>Email</th><th>Oggetto</th><th>Messaggio</th><th>Stato</th><th>Data</th><th>Azioni</th></tr></thead><tbody id="contactsArchiveTable"></tbody></table></div>
+        <div class="empty-state" id="contactsArchiveEmpty">Nessun contatto archiviato.</div>
+
+        <h3 style="margin-top:22px;">Supporto</h3>
+        <div class="table-wrap"><table><thead><tr><th>Partita</th><th>Motivo</th><th>Stato</th><th>Utente</th><th>Data</th><th>Azioni</th></tr></thead><tbody id="supportArchiveTable"></tbody></table></div>
+        <div class="empty-state" id="supportArchiveEmpty">Nessuna richiesta supporto archiviata.</div>
       </article>
     </section>
 
@@ -684,6 +694,20 @@
       `);
     }
 
+    function renderContactsArchive(rows) {
+      renderRows('contactsArchiveTable', 'contactsArchiveEmpty', rows, row => `
+        <tr>
+          <td>${escapeHtml(row.name)}</td>
+          <td>${escapeHtml(row.email)}</td>
+          <td>${escapeHtml(row.subject)}</td>
+          <td>${escapeHtml(row.message)}</td>
+          <td>${badge(row.status)}</td>
+          <td>${formatDate(row.created_at)}</td>
+          <td><button class="btn btn-warning btn-small" data-action="reopen-contact" data-id="${escapeHtml(row.id)}">Riapri</button></td>
+        </tr>
+      `);
+    }
+
     function renderSupport(rows) {
       renderRows('supportTable', 'supportEmpty', rows, row => `
         <tr>
@@ -693,6 +717,19 @@
           <td><strong>${escapeHtml(profileName(row.profile, row.requester_name || 'Utente non trovato'))}</strong><br><span>${escapeHtml(profileEmail(row.profile, row.requester_email))}</span></td>
           <td>${formatDate(row.created_at)}</td>
           <td><button class="btn btn-secondary btn-small" data-action="resolve-support" data-id="${escapeHtml(row.id)}">Risolta</button></td>
+        </tr>
+      `);
+    }
+
+    function renderSupportArchive(rows) {
+      renderRows('supportArchiveTable', 'supportArchiveEmpty', rows, row => `
+        <tr>
+          <td><strong>${escapeHtml(matchName(row.match, row.match_title || 'Partita non trovata'))}</strong><br><span>${escapeHtml(row.match?.field || row.official_match_id || '')}</span></td>
+          <td>${escapeHtml(row.reason)}</td>
+          <td>${badge(row.status)}</td>
+          <td><strong>${escapeHtml(profileName(row.profile, row.requester_name || 'Utente non trovato'))}</strong><br><span>${escapeHtml(profileEmail(row.profile, row.requester_email))}</span></td>
+          <td>${formatDate(row.handled_at || row.created_at)}</td>
+          <td><button class="btn btn-warning btn-small" data-action="reopen-support" data-id="${escapeHtml(row.id)}">Riapri</button></td>
         </tr>
       `);
     }
@@ -837,8 +874,10 @@
 
       renderAccreditations(enrichedAccreditations.filter(row => row.status === 'pending'));
       renderAccreditationArchive(enrichedAccreditations.filter(row => row.status !== 'pending'));
-      renderContacts(contacts);
-      renderSupport(enrichedSupport);
+      renderContacts(contacts.filter(row => row.status !== 'archived'));
+      renderContactsArchive(contacts.filter(row => row.status === 'archived'));
+      renderSupport(enrichedSupport.filter(row => !['resolved', 'archived'].includes(row.status)));
+      renderSupportArchive(enrichedSupport.filter(row => ['resolved', 'archived'].includes(row.status)));
       renderMatches(matches);
       renderEvents(enrichedEvents);
 
@@ -912,9 +951,17 @@
           await updateRecord('contact_requests', id, { status:'archived' });
           showMessage('Richiesta contatto archiviata.');
         }
+        if (action === 'reopen-contact') {
+          await updateRecord('contact_requests', id, { status:'new' });
+          showMessage('Richiesta contatto riaperta.');
+        }
         if (action === 'resolve-support') {
           await updateRecord('support_requests', id, { status:'resolved', handled_by:currentUser.id, handled_at:new Date().toISOString() });
           showMessage('Richiesta supporto segnata come risolta.');
+        }
+        if (action === 'reopen-support') {
+          await updateRecord('support_requests', id, { status:'new', handled_by:null, handled_at:null, response_notes:null });
+          showMessage('Richiesta supporto riaperta.');
         }
       } catch (error) {
         showMessage(`Operazione non riuscita: ${error.message}`, 'error');
