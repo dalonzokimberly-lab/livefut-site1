@@ -311,8 +311,7 @@
       <div class="card">
         <h1>Crea una partita</h1>
         <p>
-          Inserisci una partita su LiveFut TV e rendila disponibile nella sezione Live.
-          La diretta puo essere avviata dalla scheda partita.
+          Crea l'evento e apri subito lo studio diretta con l'attesa scelta.
         </p>
 
         <form id="matchForm">
@@ -364,22 +363,13 @@
               <input id="field" type="text" placeholder="Es. Comunale Montesilvano">
             </div>
 
-            <div class="field">
-              <label for="score">Risultato iniziale</label>
-              <input id="score" type="text" value="0-0">
-            </div>
-
-            <div class="field">
-              <label for="minute">Minuto</label>
-              <input id="minute" type="number" min="0" value="0">
-            </div>
-
             <div class="field full">
-              <label for="status">Stato partita</label>
-              <select id="status" required>
-                <option value="soon">In arrivo</option>
-                <option value="live">Live</option>
-                <option value="finished">Conclusa</option>
+              <label for="broadcast_wait">Tra quanto tempo vuoi andare in diretta?</label>
+              <select id="broadcast_wait" required>
+                <option value="0">Nessuna attesa, vai subito in diretta</option>
+                <option value="5">Tra 5 minuti</option>
+                <option value="10">Tra 10 minuti</option>
+                <option value="15">Tra 15 minuti</option>
               </select>
             </div>
           </div>
@@ -451,24 +441,34 @@
         category: document.getElementById('category').value,
         region: document.getElementById('region').value,
         field: document.getElementById('field').value.trim(),
-        score: document.getElementById('score').value.trim() || '0-0',
-        minute: Number(document.getElementById('minute').value || 0),
-        status: document.getElementById('status').value
+        score: '0-0',
+        minute: 0,
+        status: 'soon',
+        broadcaster_id: session.user.id
       };
 
-      const { error } = await supabaseClient
+      const waitMinutes = Number(document.getElementById('broadcast_wait').value || 0);
+
+      const { data, error } = await supabaseClient
         .from('matches')
-        .insert([payload]);
+        .insert([payload])
+        .select('id')
+        .single();
 
       if (error) {
         showStatus('Errore durante la creazione della partita: ' + error.message, 'error');
         return;
       }
 
-      showStatus('Partita creata con successo. Ora comparirà nella pagina Live.', 'ok');
+      showStatus('Partita creata con successo. Apertura dello studio diretta...', 'ok');
 
       setTimeout(() => {
-        window.location.href = 'live.html';
+        const studioParams = new URLSearchParams({
+          id: data.id,
+          wait: String(waitMinutes),
+          autostart: waitMinutes === 0 ? '1' : '0'
+        });
+        window.location.href = `studio.html?${studioParams.toString()}`;
       }, 900);
     });
 
