@@ -318,12 +318,14 @@
           <div class="form-grid">
             <div class="field">
               <label for="home_team">Squadra casa</label>
-              <input id="home_team" type="text" placeholder="Es. Virtus Marina" required>
+              <input id="home_team" type="text" list="homeTeamsList" placeholder="Es. Virtus Marina" required>
+              <datalist id="homeTeamsList"></datalist>
             </div>
 
             <div class="field">
               <label for="away_team">Squadra ospite</label>
-              <input id="away_team" type="text" placeholder="Es. San Marco" required>
+              <input id="away_team" type="text" list="awayTeamsList" placeholder="Es. San Marco" required>
+              <datalist id="awayTeamsList"></datalist>
             </div>
 
             <div class="field">
@@ -331,30 +333,21 @@
               <select id="discipline" required>
                 <option value="">Seleziona</option>
                 <option value="Calcio a 11">Calcio a 11</option>
-                <option value="Calcetto">Calcetto</option>
+                <option value="Calcio a 5">Calcio a 5</option>
               </select>
             </div>
 
             <div class="field">
               <label for="category">Categoria</label>
               <select id="category" required>
-                <option value="">Seleziona</option>
-                <option value="Terza Categoria">Terza Categoria</option>
-                <option value="Seconda Categoria">Seconda Categoria</option>
-                <option value="C1">C1</option>
-                <option value="C2">C2</option>
-                <option value="Torneo">Torneo</option>
+                <option value="">Caricamento categorie...</option>
               </select>
             </div>
 
             <div class="field">
               <label for="region">Regione</label>
               <select id="region" required>
-                <option value="">Seleziona</option>
-                <option value="Abruzzo">Abruzzo</option>
-                <option value="Lazio">Lazio</option>
-                <option value="Marche">Marche</option>
-                <option value="Lombardia">Lombardia</option>
+                <option value="">Caricamento regioni...</option>
               </select>
             </div>
 
@@ -406,14 +399,254 @@
   <script>
     const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
+    const OFFICIAL_DATA_URL = 'data/italia_2025_26_api.json';
 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const form = document.getElementById('matchForm');
     const statusBox = document.getElementById('statusBox');
+    const regionSelect = document.getElementById('region');
+    const categorySelect = document.getElementById('category');
+    const disciplineSelect = document.getElementById('discipline');
+    const homeTeamsList = document.getElementById('homeTeamsList');
+    const awayTeamsList = document.getElementById('awayTeamsList');
+
+    const fallbackRegions = [
+      'Abruzzo',
+      'Piemonte VDA',
+      'Veneto',
+      'Lombardia',
+      'Liguria',
+      'Friuli Venezia Giulia',
+      'Emilia Romagna',
+      'Toscana',
+      'Umbria',
+      'Marche',
+      'Lazio',
+      'Molise',
+      'Campania',
+      'Puglia',
+      'Basilicata',
+      'Calabria',
+      'Sicilia',
+      'Sardegna',
+      'Trento',
+      'Bolzano'
+    ];
+
+    const fallbackCategories = [
+      'Eccellenza',
+      'Promozione',
+      'Prima Categoria',
+      'Seconda Categoria',
+      'Terza Categoria',
+      'Serie C1 Calcio a 5',
+      'Serie C2 Calcio a 5',
+      'Under 19',
+      'Under 17',
+      'Under 15',
+      'Femminile',
+      'Coppa'
+    ];
+
+    let officialCompetitions = [];
+    let officialTeams = [];
 
     function showStatus(message, type = 'ok') {
       statusBox.textContent = message;
       statusBox.className = `status show ${type}`;
+    }
+
+    function formatDiscipline(value) {
+      if (value === 'calcio_a_11') return 'Calcio a 11';
+      if (value === 'calcio_a_5') return 'Calcio a 5';
+      return value || 'Disciplina non specificata';
+    }
+
+    function uniqueSorted(values) {
+      return [...new Set(values.filter(Boolean))]
+        .sort((a, b) => String(a).localeCompare(String(b), 'it'));
+    }
+
+    function populateSelect(select, values, placeholder) {
+      select.innerHTML = '';
+
+      const emptyOption = document.createElement('option');
+      emptyOption.value = '';
+      emptyOption.textContent = placeholder;
+      select.appendChild(emptyOption);
+
+      values.forEach(value => {
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = value;
+        select.appendChild(option);
+      });
+    }
+
+    function isValidCategory(value) {
+      const text = String(value || '').trim();
+      const upper = text.toUpperCase();
+
+      if (!text || text.length > 58) return false;
+      if (upper.includes('.PDF')) return false;
+      if (upper.includes('CLASSIFICA')) return false;
+      if (upper.includes('COMUNICATO')) return false;
+      if (upper.includes('COMUNICAZIONE')) return false;
+      if (upper.includes('CONVOCAZIONE')) return false;
+      if (upper.includes('RAPPRESENTATIVA')) return false;
+      if (upper.includes('PROGRAMMA')) return false;
+      if (upper.includes('PROGRAMMI')) return false;
+      if (upper.includes('RECUPERI')) return false;
+      if (upper.includes('RISULTATI')) return false;
+      if (upper.startsWith('COMUFF')) return false;
+      if (upper.startsWith('COM_')) return false;
+      if (upper.startsWith('C.U.')) return false;
+      if (upper.startsWith('CU_')) return false;
+      if (upper.startsWith('ALLEGCOM')) return false;
+      if (upper.startsWith('AVVISO')) return false;
+      if (upper.startsWith('APP GARE')) return false;
+      if (upper.startsWith('CALENDARI')) return false;
+      if (upper.startsWith('CALENDARIO')) return false;
+
+      return /ECCELLENZA|PROMOZIONE|PRIMA|SECONDA|TERZA|JUNIORES|UNDER|ALLIEVI|GIOVANISSIMI|SERIE|COPPA|FEMMINILE|AMATORI|ELITE|REGIONALE|U[0-9]{2}|CALCIO A 5|C1|C2/.test(upper);
+    }
+
+    function buildOfficialTeams(payload) {
+      const competitionsById = new Map((payload.competitions || []).map(item => [item.competition_id, item]));
+      const teamsById = new Map();
+
+      (payload.teams || []).forEach(team => {
+        if (!team.team_id || !team.name) return;
+        teamsById.set(team.team_id, {
+          team_id: team.team_id,
+          name: team.name,
+          region: team.region || '',
+          sports: new Set(),
+          categories: new Set()
+        });
+      });
+
+      (payload.matches || []).forEach(match => {
+        const competition = competitionsById.get(match.competition_id) || {};
+
+        [
+          { id: match.home_team_id, name: match.home_team },
+          { id: match.away_team_id, name: match.away_team }
+        ].forEach(team => {
+          if (!team.id || !team.name) return;
+
+          if (!teamsById.has(team.id)) {
+            teamsById.set(team.id, {
+              team_id: team.id,
+              name: team.name,
+              region: match.region || competition.region || '',
+              sports: new Set(),
+              categories: new Set()
+            });
+          }
+
+          const storedTeam = teamsById.get(team.id);
+          if (!storedTeam.region && (match.region || competition.region)) {
+            storedTeam.region = match.region || competition.region;
+          }
+          if (match.sport || competition.sport) storedTeam.sports.add(match.sport || competition.sport);
+          if (isValidCategory(match.category || competition.category)) {
+            storedTeam.categories.add(match.category || competition.category);
+          }
+        });
+      });
+
+      return Array.from(teamsById.values())
+        .map(team => ({
+          ...team,
+          sports: Array.from(team.sports),
+          categories: Array.from(team.categories)
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name, 'it'));
+    }
+
+    function refreshCategories() {
+      const selectedRegion = regionSelect.value;
+      const selectedDiscipline = disciplineSelect.value;
+      const currentCategory = categorySelect.value;
+
+      const categories = uniqueSorted([
+        ...fallbackCategories,
+        ...officialCompetitions
+          .filter(competition => !selectedRegion || competition.region === selectedRegion)
+          .filter(competition => !selectedDiscipline || formatDiscipline(competition.sport) === selectedDiscipline)
+          .map(competition => competition.category)
+          .filter(isValidCategory)
+      ]);
+
+      populateSelect(categorySelect, categories.length ? categories : fallbackCategories, 'Seleziona');
+
+      if (currentCategory && categories.includes(currentCategory)) {
+        categorySelect.value = currentCategory;
+      }
+    }
+
+    function refreshTeamSuggestions() {
+      const selectedRegion = regionSelect.value;
+      const selectedDiscipline = disciplineSelect.value;
+      const selectedCategory = categorySelect.value;
+
+      const filteredTeams = officialTeams
+        .filter(team => !selectedRegion || team.region === selectedRegion)
+        .filter(team => !selectedDiscipline || team.sports.some(sport => formatDiscipline(sport) === selectedDiscipline))
+        .filter(team => !selectedCategory || team.categories.includes(selectedCategory))
+        .slice(0, 500);
+
+      homeTeamsList.innerHTML = '';
+      awayTeamsList.innerHTML = '';
+
+      filteredTeams.forEach(team => {
+        const labelParts = [
+          team.region,
+          team.sports.map(formatDiscipline).join(', '),
+          team.categories.slice(0, 2).join(' / ')
+        ].filter(Boolean);
+
+        [homeTeamsList, awayTeamsList].forEach(list => {
+          const option = document.createElement('option');
+          option.value = team.name;
+          option.label = labelParts.join(' - ');
+          list.appendChild(option);
+        });
+      });
+    }
+
+    async function loadOfficialOptions() {
+      try {
+        const response = await fetch(OFFICIAL_DATA_URL, { cache: 'no-store' });
+        if (!response.ok) throw new Error('Dataset ufficiale non disponibile.');
+
+        const payload = await response.json();
+        officialCompetitions = payload.competitions || [];
+        officialTeams = buildOfficialTeams(payload);
+
+        const regions = uniqueSorted([
+          ...(payload.meta?.regions || []),
+          ...officialCompetitions.map(competition => competition.region),
+          ...officialTeams.map(team => team.region)
+        ]);
+
+        const disciplines = uniqueSorted(
+          officialCompetitions
+            .map(competition => formatDiscipline(competition.sport))
+            .filter(Boolean)
+        );
+
+        populateSelect(regionSelect, regions.length ? regions : fallbackRegions, 'Seleziona');
+        populateSelect(disciplineSelect, disciplines.length ? disciplines : ['Calcio a 11', 'Calcio a 5'], 'Seleziona');
+        refreshCategories();
+        refreshTeamSuggestions();
+      } catch (error) {
+        populateSelect(regionSelect, fallbackRegions, 'Seleziona');
+        populateSelect(categorySelect, fallbackCategories, 'Seleziona');
+        populateSelect(disciplineSelect, ['Calcio a 11', 'Calcio a 5'], 'Seleziona');
+        showStatus('Dataset ufficiale non raggiungibile. Puoi comunque creare la partita con le opzioni base.', 'error');
+      }
     }
 
     async function checkSession() {
@@ -421,7 +654,10 @@
 
       if (!session) {
         window.location.href = 'login.html';
+        return false;
       }
+
+      return true;
     }
 
     form.addEventListener('submit', async (event) => {
@@ -472,7 +708,25 @@
       }, 900);
     });
 
-    checkSession();
+    regionSelect.addEventListener('change', () => {
+      refreshCategories();
+      refreshTeamSuggestions();
+    });
+
+    disciplineSelect.addEventListener('change', () => {
+      refreshCategories();
+      refreshTeamSuggestions();
+    });
+
+    categorySelect.addEventListener('change', refreshTeamSuggestions);
+
+    async function initPage() {
+      const isAuthenticated = await checkSession();
+      if (!isAuthenticated) return;
+      await loadOfficialOptions();
+    }
+
+    initPage();
   </script>
 
   <script src="https://cdn.iubenda.com/iubenda.js"></script>
