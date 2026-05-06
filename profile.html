@@ -583,8 +583,7 @@
         birth_date: document.getElementById('birth_date').value || null,
         city: document.getElementById('city').value.trim(),
         favorite_team: document.getElementById('favorite_team').value.trim(),
-        bio: document.getElementById('bio').value.trim(),
-        role: currentProfile?.role || 'user'
+        bio: document.getElementById('bio').value.trim()
       };
 
       const { data, error } = await supabaseClient
