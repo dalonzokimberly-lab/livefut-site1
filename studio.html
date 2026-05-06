@@ -137,6 +137,15 @@
     .controls,.console-grid,.info-list,.event-list { display:grid; gap:12px; margin-top:16px; }
     .console-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
     .console-panel { background:rgba(49,209,88,.05); border:1px solid var(--border); border-radius:18px; padding:16px; min-width:0; }
+    .destination-grid { display:grid; gap:10px; }
+    .destination-card { border:1px solid var(--border); border-radius:16px; padding:12px; background:rgba(0,0,0,.18); display:grid; gap:10px; }
+    .destination-top { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .destination-name { display:grid; gap:3px; min-width:0; }
+    .destination-name strong { color:var(--text); line-height:1.2; overflow-wrap:anywhere; }
+    .destination-name span { color:var(--muted); font-size:.82rem; line-height:1.4; overflow-wrap:anywhere; }
+    .destination-status { color:var(--green); font-size:.78rem; font-weight:900; text-transform:uppercase; letter-spacing:.08em; }
+    .destination-status.pending { color:var(--orange); }
+    .destination-status.off { color:var(--muted); }
     .btn.is-active { border-color:rgba(255,183,3,.58); box-shadow:0 0 0 4px rgba(255,122,24,.12); }
     .console-panel h3 { font-size:1rem; margin-bottom:12px; }
     .panel-toggle { width:100%; border:0; background:transparent; color:var(--green); padding:0 0 12px; margin:0; font:inherit; font-size:1rem; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:12px; text-align:left; }
@@ -472,6 +481,51 @@
             <label class="toggle-row"><span>Sponsor automatici</span><input id="sponsorAutoToggle" type="checkbox" checked></label>
           </div>
           <div class="console-panel">
+            <h3>Destinazioni diretta</h3>
+            <div class="destination-grid">
+              <div class="destination-card" data-destination="livefut">
+                <div class="destination-top">
+                  <div class="destination-name">
+                    <strong>LiveFut</strong>
+                    <span>Canale principale</span>
+                  </div>
+                  <input id="destinationLivefut" type="checkbox" checked disabled>
+                </div>
+                <span class="destination-status">Sempre attivo</span>
+              </div>
+              <div class="destination-card" data-destination="youtube">
+                <div class="destination-top">
+                  <div class="destination-name">
+                    <strong>YouTube</strong>
+                    <span id="youtubeAccountLabel">Account non collegato</span>
+                  </div>
+                  <input id="destinationYoutube" type="checkbox" data-destination-toggle="youtube" disabled>
+                </div>
+                <button class="btn btn-secondary btn-small" type="button" data-social-connect="youtube">Richiedi collegamento</button>
+              </div>
+              <div class="destination-card" data-destination="facebook">
+                <div class="destination-top">
+                  <div class="destination-name">
+                    <strong>Facebook</strong>
+                    <span id="facebookAccountLabel">Account non collegato</span>
+                  </div>
+                  <input id="destinationFacebook" type="checkbox" data-destination-toggle="facebook" disabled>
+                </div>
+                <button class="btn btn-secondary btn-small" type="button" data-social-connect="facebook">Richiedi collegamento</button>
+              </div>
+              <div class="destination-card" data-destination="twitch">
+                <div class="destination-top">
+                  <div class="destination-name">
+                    <strong>Twitch</strong>
+                    <span id="twitchAccountLabel">Account non collegato</span>
+                  </div>
+                  <input id="destinationTwitch" type="checkbox" data-destination-toggle="twitch" disabled>
+                </div>
+                <button class="btn btn-secondary btn-small" type="button" data-social-connect="twitch">Richiedi collegamento</button>
+              </div>
+            </div>
+          </div>
+          <div class="console-panel">
             <h3>Sponsor overlay</h3>
             <div class="field-grid">
               <div><label for="sponsorInput1">Sponsor 1</label><input id="sponsorInput1" type="file" accept="image/*"></div>
@@ -593,6 +647,16 @@
     const sceneCountdown = document.getElementById('sceneCountdown');
     const eventTeamSelect = document.getElementById('eventTeamSelect');
     const commentaryList = document.getElementById('commentaryList');
+    const destinationToggles = {
+      youtube: document.getElementById('destinationYoutube'),
+      facebook: document.getElementById('destinationFacebook'),
+      twitch: document.getElementById('destinationTwitch')
+    };
+    const destinationAccountLabels = {
+      youtube: document.getElementById('youtubeAccountLabel'),
+      facebook: document.getElementById('facebookAccountLabel'),
+      twitch: document.getElementById('twitchAccountLabel')
+    };
 
     let mediaStream = null;
     let currentMatch = null;
@@ -615,6 +679,8 @@
     let currentLockId = null;
     let currentVideoFormat = 'landscape';
     let initialStudioSetupDone = false;
+    let socialAccounts = new Map();
+    let broadcastDestinations = new Map([['livefut', true]]);
 
     function isUuid(value) {
       return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value || '');
@@ -947,6 +1013,175 @@
       updateOverlay();
     }
 
+    function providerLabel(provider) {
+      if (provider === 'youtube') return 'YouTube';
+      if (provider === 'facebook') return 'Facebook';
+      if (provider === 'twitch') return 'Twitch';
+      return 'LiveFut';
+    }
+
+    function renderDestinationControls() {
+      Object.entries(destinationToggles).forEach(([provider, toggle]) => {
+        const account = socialAccounts.get(provider);
+        const connected = account?.status === 'connected';
+        const pending = account?.status === 'pending';
+        const enabled = Boolean(broadcastDestinations.get(provider));
+        const label = destinationAccountLabels[provider];
+        const button = document.querySelector(`[data-social-connect="${provider}"]`);
+
+        toggle.disabled = !connected;
+        toggle.checked = connected && enabled;
+        label.textContent = connected
+          ? (account.account_label || account.display_name || 'Account collegato')
+          : pending
+            ? 'Collegamento richiesto'
+            : 'Account non collegato';
+
+        if (button) {
+          button.textContent = connected ? 'Collegato' : pending ? 'Richiesta inviata' : 'Richiedi collegamento';
+          button.disabled = connected || pending;
+        }
+
+        const statusNode = document.querySelector(`[data-destination="${provider}"] .destination-status`);
+        if (statusNode) statusNode.remove();
+
+        const status = document.createElement('span');
+        status.className = connected
+          ? 'destination-status'
+          : pending
+            ? 'destination-status pending'
+            : 'destination-status off';
+        status.textContent = connected ? 'Disponibile' : pending ? 'In attesa' : 'Non collegato';
+        document.querySelector(`[data-destination="${provider}"]`)?.appendChild(status);
+      });
+    }
+
+    async function loadSocialAccounts() {
+      if (!currentUser) return;
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('broadcaster_social_accounts')
+          .select('provider, display_name, account_label, status')
+          .eq('broadcaster_id', currentUser.id);
+
+        if (error) throw error;
+        socialAccounts = new Map((data || []).map(account => [account.provider, account]));
+      } catch (error) {
+        console.warn('Account social non disponibili:', error.message);
+        socialAccounts = new Map();
+      }
+
+      renderDestinationControls();
+    }
+
+    async function loadBroadcastDestinations() {
+      if (!currentUser || !currentMatch || !isUuid(currentMatch.id)) {
+        renderDestinationControls();
+        return;
+      }
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('broadcast_destinations')
+          .select('provider, enabled')
+          .eq('broadcaster_id', currentUser.id)
+          .eq('match_id', currentMatch.id);
+
+        if (error) throw error;
+
+        broadcastDestinations = new Map([['livefut', true]]);
+        (data || []).forEach(destination => {
+          broadcastDestinations.set(destination.provider, Boolean(destination.enabled));
+        });
+      } catch (error) {
+        console.warn('Destinazioni diretta non disponibili:', error.message);
+        broadcastDestinations = new Map([['livefut', true]]);
+      }
+
+      renderDestinationControls();
+    }
+
+    async function saveBroadcastDestinations(status = 'inactive') {
+      if (!currentUser || !currentMatch || !isUuid(currentMatch.id)) return;
+
+      const providers = ['livefut', 'youtube', 'facebook', 'twitch'];
+      for (const provider of providers) {
+        const enabled = provider === 'livefut'
+          ? true
+          : Boolean(destinationToggles[provider]?.checked);
+        const destinationStatus = enabled
+          ? status
+          : status === 'finished'
+            ? 'finished'
+            : 'inactive';
+
+        const payload = {
+          match_id: currentMatch.id,
+          official_match_id: currentMatch.match_id || null,
+          broadcaster_id: currentUser.id,
+          provider,
+          enabled,
+          status: destinationStatus,
+          updated_at: new Date().toISOString()
+        };
+
+        const { data: existing } = await supabaseClient
+          .from('broadcast_destinations')
+          .select('id')
+          .eq('match_id', currentMatch.id)
+          .eq('provider', provider)
+          .maybeSingle();
+
+        if (existing?.id) {
+          await supabaseClient
+            .from('broadcast_destinations')
+            .update(payload)
+            .eq('id', existing.id);
+        } else {
+          await supabaseClient
+            .from('broadcast_destinations')
+            .insert(payload);
+        }
+      }
+    }
+
+    async function requestSocialConnection(provider) {
+      if (!currentUser) return;
+
+      const payload = {
+        broadcaster_id: currentUser.id,
+        provider,
+        status: 'pending',
+        account_label: providerLabel(provider),
+        updated_at: new Date().toISOString()
+      };
+
+      const { data: existing, error: readError } = await supabaseClient
+        .from('broadcaster_social_accounts')
+        .select('id')
+        .eq('broadcaster_id', currentUser.id)
+        .eq('provider', provider)
+        .maybeSingle();
+
+      if (readError) {
+        showMessage(`Collegamento ${providerLabel(provider)} non disponibile: ${readError.message}`, 'error');
+        return;
+      }
+
+      const { error } = existing?.id
+        ? await supabaseClient.from('broadcaster_social_accounts').update(payload).eq('id', existing.id)
+        : await supabaseClient.from('broadcaster_social_accounts').insert(payload);
+
+      if (error) {
+        showMessage(`Collegamento ${providerLabel(provider)} non disponibile: ${error.message}`, 'error');
+        return;
+      }
+
+      showMessage(`Richiesta collegamento ${providerLabel(provider)} registrata.`);
+      await loadSocialAccounts();
+    }
+
     function applyInitialStudioSetup() {
       if (initialStudioSetupDone) return;
       initialStudioSetupDone = true;
@@ -1013,6 +1248,7 @@
         previewWrap.classList.add('active');
         const updatedMatch = await updateMatchStatus('live');
         if (updatedMatch) {
+          await saveBroadcastDestinations('active');
           stopBtn.disabled = false;
           showMessage('Diretta avviata. La partita è collegata a Supabase e sarà visibile nella pagina live.');
           startSponsorCycle();
@@ -1040,6 +1276,7 @@
       previewWrap.classList.remove('active');
       await saveMatchData();
       const updatedMatch = await updateMatchStatus('finished');
+      await saveBroadcastDestinations('finished');
       await releaseBroadcastLock();
       if (updatedMatch) {
         startBtn.disabled = false;
@@ -1461,6 +1698,8 @@
           if (error) throw error;
           if (!data) throw new Error('Partita non trovata.');
           renderMatch(data);
+          await loadSocialAccounts();
+          await loadBroadcastDestinations();
           applyInitialStudioSetup();
           return;
         }
@@ -1468,6 +1707,8 @@
           const officialMatch = await loadOfficialMatch(officialMatchId);
           const match = await ensureSupabaseMatchForOfficial(officialMatch);
           renderMatch(match);
+          await loadSocialAccounts();
+          await loadBroadcastDestinations();
           applyInitialStudioSetup();
           return;
         }
@@ -1475,6 +1716,8 @@
           const officialMatch = await loadOfficialMatch(supabaseMatchId);
           const match = await ensureSupabaseMatchForOfficial(officialMatch);
           renderMatch(match);
+          await loadSocialAccounts();
+          await loadBroadcastDestinations();
           applyInitialStudioSetup();
           return;
         }
@@ -1486,6 +1729,14 @@
 
     startBtn.addEventListener('click', startBroadcast);
     stopBtn.addEventListener('click', stopBroadcast);
+    Object.entries(destinationToggles).forEach(([provider, toggle]) => {
+      toggle.addEventListener('change', () => {
+        broadcastDestinations.set(provider, toggle.checked);
+      });
+    });
+    document.querySelectorAll('[data-social-connect]').forEach(button => {
+      button.addEventListener('click', () => requestSocialConnection(button.dataset.socialConnect));
+    });
     document.getElementById('timerStartBtn').addEventListener('click', startTimer);
     document.getElementById('timerPauseBtn').addEventListener('click', pauseTimer);
     document.getElementById('timerResetBtn').addEventListener('click', resetTimer);

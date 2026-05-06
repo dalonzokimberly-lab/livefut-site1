@@ -319,6 +319,56 @@
       display: block;
     }
 
+    .social-login {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .social-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .social-title::before,
+    .social-title::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: var(--border);
+    }
+
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .social-btn {
+      border: 1px solid var(--border);
+      cursor: pointer;
+      border-radius: 16px;
+      padding: 13px 12px;
+      background: rgba(255,255,255,0.035);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 800;
+      transition: 0.2s ease;
+    }
+
+    .social-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(49,209,88,0.42);
+      background: rgba(49,209,88,0.08);
+    }
+
     .recover-link {
       width: 100%;
       border: 0;
@@ -447,6 +497,10 @@
       .info-grid {
         grid-template-columns: 1fr;
       }
+
+      .social-grid {
+        grid-template-columns: 1fr;
+      }
     }
   
     .site-logo {
@@ -519,6 +573,15 @@
       <div class="panel-title">
         <h2 id="panelHeading">Bentornato</h2>
         <p id="panelDescription">Accedi con la tua email per entrare nella piattaforma LiveFut TV.</p>
+      </div>
+
+      <div class="social-login">
+        <div class="social-title">Accesso rapido</div>
+        <div class="social-grid">
+          <button class="social-btn" type="button" data-oauth-provider="google">Google</button>
+          <button class="social-btn" type="button" data-oauth-provider="facebook">Facebook</button>
+          <button class="social-btn" type="button" data-oauth-provider="twitch">Twitch</button>
+        </div>
       </div>
 
       <form id="loginForm" class="form active">
@@ -645,6 +708,7 @@
           'match.html',
           'studio.html',
           'create-match.html',
+          'tournaments.html',
           'profile.html',
           'admin.html',
           'index.html'
@@ -740,6 +804,22 @@
 
     loginTab.addEventListener('click', () => setTab('login'));
     registerTab.addEventListener('click', () => setTab('register'));
+    document.querySelectorAll('[data-oauth-provider]').forEach(button => {
+      button.addEventListener('click', async () => {
+        clearStatus();
+        const provider = button.dataset.oauthProvider;
+        const { error } = await supabaseClient.auth.signInWithOAuth({
+          provider,
+          options: {
+            redirectTo: authRedirectUrl(redirectTarget)
+          }
+        });
+
+        if (error) {
+          showStatus(error.message, 'error');
+        }
+      });
+    });
     recoverToggle.addEventListener('click', () => {
       clearStatus();
       recoverPanel.classList.toggle('show');

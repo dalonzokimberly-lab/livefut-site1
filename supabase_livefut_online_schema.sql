@@ -110,6 +110,72 @@ create unique index if not exists broadcast_locks_one_active_per_official_match
   on public.broadcast_locks (official_match_id)
   where status = 'active' and official_match_id is not null;
 
+create table if not exists public.broadcaster_social_accounts (
+  id uuid primary key default gen_random_uuid(),
+  broadcaster_id uuid references auth.users(id) on delete cascade,
+  provider text not null,
+  display_name text,
+  account_label text,
+  status text not null default 'disconnected',
+  connected_at timestamptz,
+  updated_at timestamptz not null default now(),
+  created_at timestamptz not null default now(),
+  unique (broadcaster_id, provider)
+);
+
+alter table public.broadcaster_social_accounts
+  drop constraint if exists broadcaster_social_accounts_provider_check;
+
+alter table public.broadcaster_social_accounts
+  add constraint broadcaster_social_accounts_provider_check
+  check (provider in ('youtube', 'facebook', 'twitch'));
+
+alter table public.broadcaster_social_accounts
+  drop constraint if exists broadcaster_social_accounts_status_check;
+
+alter table public.broadcaster_social_accounts
+  add constraint broadcaster_social_accounts_status_check
+  check (status in ('connected', 'disconnected', 'pending', 'error'));
+
+create index if not exists broadcaster_social_accounts_broadcaster_idx
+  on public.broadcaster_social_accounts (broadcaster_id);
+
+create table if not exists public.broadcast_destinations (
+  id uuid primary key default gen_random_uuid(),
+  match_id uuid references public.matches(id) on delete cascade,
+  official_match_id text,
+  broadcaster_id uuid references auth.users(id) on delete cascade,
+  provider text not null,
+  enabled boolean not null default false,
+  status text not null default 'inactive',
+  error_message text,
+  started_at timestamptz,
+  ended_at timestamptz,
+  updated_at timestamptz not null default now(),
+  created_at timestamptz not null default now()
+);
+
+alter table public.broadcast_destinations
+  drop constraint if exists broadcast_destinations_provider_check;
+
+alter table public.broadcast_destinations
+  add constraint broadcast_destinations_provider_check
+  check (provider in ('livefut', 'youtube', 'facebook', 'twitch'));
+
+alter table public.broadcast_destinations
+  drop constraint if exists broadcast_destinations_status_check;
+
+alter table public.broadcast_destinations
+  add constraint broadcast_destinations_status_check
+  check (status in ('active', 'inactive', 'pending', 'error', 'finished'));
+
+create unique index if not exists broadcast_destinations_unique_match_provider
+  on public.broadcast_destinations (match_id, provider)
+  where match_id is not null;
+
+create index if not exists broadcast_destinations_broadcaster_idx
+  on public.broadcast_destinations (broadcaster_id, created_at desc);
+
 create table if not exists public.contact_requests (
   id uuid primary key default gen_random_uuid(),
   name text not null,
@@ -172,6 +238,8 @@ alter table public.accreditation_requests
 
 alter table public.match_events enable row level security;
 alter table public.broadcast_locks enable row level security;
+alter table public.broadcaster_social_accounts enable row level security;
+alter table public.broadcast_destinations enable row level security;
 alter table public.contact_requests enable row level security;
 alter table public.support_requests enable row level security;
 alter table public.accreditation_requests enable row level security;
@@ -216,6 +284,44 @@ create policy "authenticated users create broadcast locks"
 drop policy if exists "broadcaster updates own locks" on public.broadcast_locks;
 create policy "broadcaster updates own locks"
   on public.broadcast_locks for update
+  to authenticated
+  using (auth.uid() = broadcaster_id)
+  with check (auth.uid() = broadcaster_id);
+
+drop policy if exists "broadcasters read own social accounts" on public.broadcaster_social_accounts;
+create policy "broadcasters read own social accounts"
+  on public.broadcaster_social_accounts for select
+  to authenticated
+  using (auth.uid() = broadcaster_id);
+
+drop policy if exists "broadcasters create own social accounts" on public.broadcaster_social_accounts;
+create policy "broadcasters create own social accounts"
+  on public.broadcaster_social_accounts for insert
+  to authenticated
+  with check (auth.uid() = broadcaster_id);
+
+drop policy if exists "broadcasters update own social accounts" on public.broadcaster_social_accounts;
+create policy "broadcasters update own social accounts"
+  on public.broadcaster_social_accounts for update
+  to authenticated
+  using (auth.uid() = broadcaster_id)
+  with check (auth.uid() = broadcaster_id);
+
+drop policy if exists "broadcasters read own destinations" on public.broadcast_destinations;
+create policy "broadcasters read own destinations"
+  on public.broadcast_destinations for select
+  to authenticated
+  using (auth.uid() = broadcaster_id);
+
+drop policy if exists "broadcasters create own destinations" on public.broadcast_destinations;
+create policy "broadcasters create own destinations"
+  on public.broadcast_destinations for insert
+  to authenticated
+  with check (auth.uid() = broadcaster_id);
+
+drop policy if exists "broadcasters update own destinations" on public.broadcast_destinations;
+create policy "broadcasters update own destinations"
+  on public.broadcast_destinations for update
   to authenticated
   using (auth.uid() = broadcaster_id)
   with check (auth.uid() = broadcaster_id);
