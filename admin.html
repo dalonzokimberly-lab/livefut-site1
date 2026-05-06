@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
@@ -542,12 +542,16 @@
       return `<span class="badge ${escapeHtml(value)}">${escapeHtml(statusLabel(value))}</span>`;
     }
 
-    function profileName(profile, fallback = '-') {
+    function profileName(profile, fallback = 'Utente non trovato') {
       if (!profile) return fallback;
       return profile.display_name || profile.username || [profile.first_name, profile.last_name].filter(Boolean).join(' ') || profile.email || fallback;
     }
 
-    function matchName(match, fallback = '-') {
+    function profileEmail(profile, fallback = '') {
+      return profile?.email || fallback || '';
+    }
+
+    function matchName(match, fallback = 'Partita non trovata') {
       if (!match) return fallback;
       const home = match.home_team || 'Casa';
       const away = match.away_team || 'Ospite';
@@ -594,16 +598,36 @@
       return new Map((data || []).map(profile => [profile.id, profile]));
     }
 
-    async function loadMatchesMap(ids) {
+    async function loadMatchesMap(ids, officialIds = []) {
+      const map = new Map();
       const cleanIds = [...new Set(ids.filter(Boolean))];
-      if (!cleanIds.length) return new Map();
+      const cleanOfficialIds = [...new Set(officialIds.filter(Boolean))];
 
-      const { data, error } = await supabaseClient
-        .from('matches')
-        .select('id,match_id,home_team,away_team,category,match_date,field')
-        .in('id', cleanIds);
-      if (error) throw error;
-      return new Map((data || []).map(match => [match.id, match]));
+      if (cleanIds.length) {
+        const { data, error } = await supabaseClient
+          .from('matches')
+          .select('id,match_id,home_team,away_team,category,match_date,field')
+          .in('id', cleanIds);
+        if (error) throw error;
+        (data || []).forEach(match => {
+          map.set(match.id, match);
+          if (match.match_id) map.set(match.match_id, match);
+        });
+      }
+
+      if (cleanOfficialIds.length) {
+        const { data, error } = await supabaseClient
+          .from('matches')
+          .select('id,match_id,home_team,away_team,category,match_date,field')
+          .in('match_id', cleanOfficialIds);
+        if (error) throw error;
+        (data || []).forEach(match => {
+          map.set(match.id, match);
+          if (match.match_id) map.set(match.match_id, match);
+        });
+      }
+
+      return map;
     }
 
     function renderRows(tbodyId, emptyId, rows, template) {
@@ -619,7 +643,7 @@
           <td><strong>${escapeHtml(row.team_name)}</strong><br><span>${escapeHtml(row.team_id)}</span></td>
           <td>${escapeHtml(statusLabel(row.role))}</td>
           <td>${badge(row.status)}</td>
-          <td><strong>${escapeHtml(profileName(row.profile, row.user_id || '-'))}</strong><br><span>${escapeHtml(row.profile?.email || '')}</span></td>
+          <td><strong>${escapeHtml(profileName(row.profile, row.requester_name || 'Utente non trovato'))}</strong><br><span>${escapeHtml(profileEmail(row.profile, row.requester_email))}</span></td>
           <td>${escapeHtml(row.notes || '-')}</td>
           <td>${formatDate(row.created_at)}</td>
           <td>
@@ -638,7 +662,7 @@
           <td><strong>${escapeHtml(row.team_name)}</strong><br><span>${escapeHtml(row.team_id)}</span></td>
           <td>${escapeHtml(statusLabel(row.role))}</td>
           <td>${badge(row.status)}</td>
-          <td><strong>${escapeHtml(profileName(row.profile, row.user_id || '-'))}</strong><br><span>${escapeHtml(row.profile?.email || '')}</span></td>
+          <td><strong>${escapeHtml(profileName(row.profile, row.requester_name || 'Utente non trovato'))}</strong><br><span>${escapeHtml(profileEmail(row.profile, row.requester_email))}</span></td>
           <td>${escapeHtml(row.review_notes || row.notes || '-')}</td>
           <td>${formatDate(row.reviewed_at || row.created_at)}</td>
           <td><button class="btn btn-warning btn-small" data-action="reopen-accreditation" data-id="${escapeHtml(row.id)}">Revoca</button></td>
@@ -663,10 +687,10 @@
     function renderSupport(rows) {
       renderRows('supportTable', 'supportEmpty', rows, row => `
         <tr>
-          <td><strong>${escapeHtml(matchName(row.match, row.official_match_id || '-'))}</strong><br><span>${escapeHtml(row.match?.field || '')}</span></td>
+          <td><strong>${escapeHtml(matchName(row.match, row.match_title || 'Partita non trovata'))}</strong><br><span>${escapeHtml(row.match?.field || row.official_match_id || '')}</span></td>
           <td>${escapeHtml(row.reason)}</td>
           <td>${badge(row.status)}</td>
-          <td><strong>${escapeHtml(profileName(row.profile, row.requester_id || '-'))}</strong><br><span>${escapeHtml(row.profile?.email || '')}</span></td>
+          <td><strong>${escapeHtml(profileName(row.profile, row.requester_name || 'Utente non trovato'))}</strong><br><span>${escapeHtml(profileEmail(row.profile, row.requester_email))}</span></td>
           <td>${formatDate(row.created_at)}</td>
           <td><button class="btn btn-secondary btn-small" data-action="resolve-support" data-id="${escapeHtml(row.id)}">Risolta</button></td>
         </tr>
@@ -691,7 +715,7 @@
       renderRows('eventsTable', 'eventsEmpty', rows, row => `
         <tr>
           <td><strong>${escapeHtml(row.title)}</strong><br><span>${escapeHtml(row.event_type)}</span></td>
-          <td><strong>${escapeHtml(matchName(row.match, row.team_name || row.official_match_id || '-'))}</strong><br><span>${escapeHtml(profileName(row.profile, ''))}</span></td>
+          <td><strong>${escapeHtml(matchName(row.match, row.match_title || row.team_name || 'Partita non trovata'))}</strong><br><span>${escapeHtml(profileName(row.profile, row.created_by_name || ''))}</span></td>
           <td>${escapeHtml(row.minute ?? '-')}</td>
           <td>${escapeHtml(row.score || '-')}</td>
           <td>${escapeHtml(row.body)}</td>
@@ -791,6 +815,9 @@
       const matchMap = await loadMatchesMap([
         ...support.map(row => row.match_id),
         ...events.map(row => row.match_id)
+      ], [
+        ...support.map(row => row.official_match_id),
+        ...events.map(row => row.official_match_id)
       ]);
 
       const enrichedAccreditations = accreditations.map(row => ({
@@ -800,12 +827,12 @@
       const enrichedSupport = support.map(row => ({
         ...row,
         profile: profileMap.get(row.requester_id),
-        match: matchMap.get(row.match_id)
+        match: matchMap.get(row.match_id) || matchMap.get(row.official_match_id)
       }));
       const enrichedEvents = events.map(row => ({
         ...row,
         profile: profileMap.get(row.created_by),
-        match: matchMap.get(row.match_id)
+        match: matchMap.get(row.match_id) || matchMap.get(row.official_match_id)
       }));
 
       renderAccreditations(enrichedAccreditations.filter(row => row.status === 'pending'));
@@ -934,3 +961,4 @@
   <script src="https://cdn.iubenda.com/iubenda.js"></script>
 </body>
 </html>
+
