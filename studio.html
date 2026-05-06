@@ -537,6 +537,8 @@
     const params = new URLSearchParams(window.location.search);
     const supabaseMatchId = params.get('id');
     const officialMatchId = params.get('match_id');
+    const initialWaitMinutes = Math.max(0, Number(params.get('wait') || 0));
+    const shouldAutostart = params.get('autostart') === '1';
 
     const overlayThemes = {
       metalBlue:{ primary:'#7cc8ff', accent:'#d7ecff', background:'rgba(9, 22, 38, 0.9)', text:'#ffffff', radius:'12px', font:'Space Grotesk', className:'theme-metal' },
@@ -612,6 +614,7 @@
     let currentProfile = null;
     let currentLockId = null;
     let currentVideoFormat = 'landscape';
+    let initialStudioSetupDone = false;
 
     function isUuid(value) {
       return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value || '');
@@ -942,6 +945,27 @@
       `;
       updateStatusUi(match.status);
       updateOverlay();
+    }
+
+    function applyInitialStudioSetup() {
+      if (initialStudioSetupDone) return;
+      initialStudioSetupDone = true;
+
+      scoreboardToggle.checked = true;
+      overlayToggle.checked = true;
+      updateOverlay();
+
+      if (initialWaitMinutes > 0) {
+        const waitingInput = document.getElementById('waitingMinutesInput');
+        if (waitingInput) waitingInput.value = String(initialWaitMinutes);
+        showScene('waiting');
+        showMessage(`Studio pronto. Attesa impostata: ${initialWaitMinutes} minuti.`);
+        return;
+      }
+
+      if (shouldAutostart) {
+        startBroadcast();
+      }
     }
 
     async function updateMatchStatus(status) {
@@ -1437,16 +1461,21 @@
           if (error) throw error;
           if (!data) throw new Error('Partita non trovata.');
           renderMatch(data);
+          applyInitialStudioSetup();
           return;
         }
         if (officialMatchId) {
           const officialMatch = await loadOfficialMatch(officialMatchId);
-          renderMatch(await ensureSupabaseMatchForOfficial(officialMatch));
+          const match = await ensureSupabaseMatchForOfficial(officialMatch);
+          renderMatch(match);
+          applyInitialStudioSetup();
           return;
         }
         if (supabaseMatchId && !isUuid(supabaseMatchId)) {
           const officialMatch = await loadOfficialMatch(supabaseMatchId);
-          renderMatch(await ensureSupabaseMatchForOfficial(officialMatch));
+          const match = await ensureSupabaseMatchForOfficial(officialMatch);
+          renderMatch(match);
+          applyInitialStudioSetup();
           return;
         }
         showError('ID partita mancante. Apri lo studio dalla scheda partita.');

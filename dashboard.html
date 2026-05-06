@@ -540,9 +540,8 @@
           </p>
 
           <div class="hero-buttons">
-            <button class="btn btn-primary" id="goLiveBtn">Vai in diretta</button>
-            <a class="btn btn-secondary" href="create-match.html">Crea partita</a>
-            <a class="btn btn-secondary" href="live.html">Lista partite</a>
+            <a class="btn btn-primary" href="create-match.html">Crea partita</a>
+            <a class="btn btn-secondary" href="live.html">Trasmetti una partita esistente</a>
           </div>
 
           <div class="status-message" id="dashboardMessage"></div>
@@ -584,7 +583,7 @@
         <article class="card">
           <h3>Streaming</h3>
           <span class="metric-value">Live</span>
-          <span>Accesso rapido allo studio diretta.</span>
+          <span>Scegli una partita da trasmettere.</span>
         </article>
 
         <article class="card">
@@ -602,10 +601,8 @@
           <p>Da qui accedi rapidamente alle funzioni principali della piattaforma.</p>
 
           <div class="quick-actions">
-            <button class="quick-action" id="quickGoLiveBtn">Vai in diretta</button>
             <button class="quick-action" onclick="window.location.href='create-match.html'">Crea partita</button>
-            <button class="quick-action" onclick="window.location.href='live.html'">Lista partite</button>
-            <button class="quick-action" onclick="window.location.href='profile.html'">Profilo</button>
+            <button class="quick-action" onclick="window.location.href='live.html'">Trasmetti una partita esistente</button>
           </div>
         </article>
 
@@ -979,52 +976,11 @@
       showDashboardMessage('Richiesta accredito inviata. Rimane in attesa finché il super user LiveFut non la approva.');
     }
 
-    async function goLiveNow() {
-      const goLiveBtn = document.getElementById('goLiveBtn');
-      const quickGoLiveBtn = document.getElementById('quickGoLiveBtn');
-
-      goLiveBtn.disabled = true;
-      quickGoLiveBtn.disabled = true;
-
-      showDashboardMessage('Preparazione studio diretta...');
-
-      const teamName = currentProfile?.favorite_team || 'LiveFut Team';
-
-      const { data, error } = await supabaseClient
-        .from('matches')
-        .insert([
-          {
-            home_team: teamName,
-            away_team: 'Avversario',
-            score: '0-0',
-            minute: 0,
-            region: 'Non specificata',
-            category: 'Diretta LiveFut',
-            field: currentProfile?.city ? `Campo non specificato - ${currentProfile.city}` : 'Campo non specificato',
-            status: 'soon',
-            discipline: 'Calcio'
-          }
-        ])
-        .select()
-        .single();
-
-      if (error) {
-        goLiveBtn.disabled = false;
-        quickGoLiveBtn.disabled = false;
-        showDashboardMessage(`Errore durante la creazione della diretta: ${error.message}`, 'error');
-        return;
-      }
-
-      window.location.href = `studio.html?id=${encodeURIComponent(data.id)}`;
-    }
-
     document.getElementById('logoutBtn').addEventListener('click', async () => {
       await supabaseClient.auth.signOut();
       window.location.href = 'login.html';
     });
 
-    document.getElementById('goLiveBtn').addEventListener('click', goLiveNow);
-    document.getElementById('quickGoLiveBtn').addEventListener('click', goLiveNow);
     document.getElementById('sendAccreditationBtn')?.addEventListener('click', sendAccreditationRequest);
     document.getElementById('accreditationRegion')?.addEventListener('change', renderAccreditationTeams);
     document.getElementById('accreditationSport')?.addEventListener('change', renderAccreditationTeams);
