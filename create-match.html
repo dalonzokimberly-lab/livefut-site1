@@ -339,7 +339,7 @@
 
             <div class="field">
               <label for="category">Categoria</label>
-              <select id="category" required>
+              <select id="category">
                 <option value="">Caricamento categorie...</option>
               </select>
             </div>
@@ -353,7 +353,13 @@
 
             <div class="field">
               <label for="field">Campo</label>
-              <input id="field" type="text" placeholder="Es. Comunale Montesilvano">
+              <input id="field" type="text" placeholder="Es. Comunale Montesilvano" required>
+            </div>
+
+            <div class="field full">
+              <label for="private_tournament">Torneo privato</label>
+              <input id="private_tournament" type="text" list="privateTournamentsList" placeholder="Nome torneo, se presente">
+              <datalist id="privateTournamentsList"></datalist>
             </div>
 
             <div class="field full">
@@ -409,6 +415,8 @@
     const disciplineSelect = document.getElementById('discipline');
     const homeTeamsList = document.getElementById('homeTeamsList');
     const awayTeamsList = document.getElementById('awayTeamsList');
+    const privateTournamentInput = document.getElementById('private_tournament');
+    const privateTournamentsList = document.getElementById('privateTournamentsList');
 
     const fallbackRegions = [
       'Abruzzo',
@@ -450,6 +458,8 @@
 
     let officialCompetitions = [];
     let officialTeams = [];
+    let privateTournaments = [];
+    let currentUser = null;
 
     function showStatus(message, type = 'ok') {
       statusBox.textContent = message;
@@ -465,6 +475,31 @@
     function uniqueSorted(values) {
       return [...new Set(values.filter(Boolean))]
         .sort((a, b) => String(a).localeCompare(String(b), 'it'));
+    }
+
+    function slugify(value) {
+      return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '_')
+        .replace(/^_+|_+$/g, '')
+        .slice(0, 80);
+    }
+
+    function privateTournamentId(region, name) {
+      const ownerKey = slugify(currentUser?.id || 'utente');
+      return `privato_${ownerKey}_${slugify(region || 'italia')}_${slugify(name)}`;
+    }
+
+    function findPrivateTournament(region, name) {
+      const normalizedName = String(name || '').trim().toLowerCase();
+      const normalizedRegion = String(region || '').trim().toLowerCase();
+
+      return privateTournaments.find(tournament => {
+        return String(tournament.group_name || '').trim().toLowerCase() === normalizedName
+          && String(tournament.region || '').trim().toLowerCase() === normalizedRegion;
+      });
     }
 
     function populateSelect(select, values, placeholder) {
@@ -579,7 +614,7 @@
           .filter(isValidCategory)
       ]);
 
-      populateSelect(categorySelect, categories.length ? categories : fallbackCategories, 'Seleziona');
+      populateSelect(categorySelect, categories.length ? categories : fallbackCategories, 'Seleziona categoria, se utile');
 
       if (currentCategory && categories.includes(currentCategory)) {
         categorySelect.value = currentCategory;
@@ -643,10 +678,49 @@
         refreshTeamSuggestions();
       } catch (error) {
         populateSelect(regionSelect, fallbackRegions, 'Seleziona');
-        populateSelect(categorySelect, fallbackCategories, 'Seleziona');
+        populateSelect(categorySelect, fallbackCategories, 'Seleziona categoria, se utile');
         populateSelect(disciplineSelect, ['Calcio a 11', 'Calcio a 5'], 'Seleziona');
         showStatus('Dataset ufficiale non raggiungibile. Puoi comunque creare la partita con le opzioni base.', 'error');
       }
+    }
+
+    async function loadPrivateTournaments() {
+      const { data, error } = await supabaseClient
+        .from('matches')
+        .select('competition_id, competition_type, group_name, region, broadcaster_id')
+        .not('competition_id', 'is', null)
+        .eq('broadcaster_id', currentUser.id)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        privateTournaments = [];
+        return;
+      }
+
+      const byId = new Map();
+
+      (data || []).forEach(row => {
+        if (!row.competition_id || !row.group_name) return;
+        if (row.competition_type !== 'torneo_privato') return;
+        if (!byId.has(row.competition_id)) {
+          byId.set(row.competition_id, {
+            competition_id: row.competition_id,
+            group_name: row.group_name,
+            region: row.region || ''
+          });
+        }
+      });
+
+      privateTournaments = Array.from(byId.values())
+        .sort((a, b) => a.group_name.localeCompare(b.group_name, 'it'));
+
+      privateTournamentsList.innerHTML = '';
+      privateTournaments.forEach(tournament => {
+        const option = document.createElement('option');
+        option.value = tournament.group_name;
+        option.label = tournament.region || 'Torneo privato';
+        privateTournamentsList.appendChild(option);
+      });
     }
 
     async function checkSession() {
@@ -657,6 +731,7 @@
         return false;
       }
 
+      currentUser = session.user;
       return true;
     }
 
@@ -670,17 +745,29 @@
         return;
       }
 
+      const region = document.getElementById('region').value;
+      const category = document.getElementById('category').value;
+      const tournamentName = privateTournamentInput.value.trim();
+      const tournament = tournamentName ? findPrivateTournament(region, tournamentName) : null;
+      const competitionId = tournamentName
+        ? (tournament?.competition_id || privateTournamentId(region, tournamentName))
+        : null;
+
       const payload = {
         home_team: document.getElementById('home_team').value.trim(),
         away_team: document.getElementById('away_team').value.trim(),
         discipline: document.getElementById('discipline').value,
-        category: document.getElementById('category').value,
-        region: document.getElementById('region').value,
+        category: category || null,
+        region,
         field: document.getElementById('field').value.trim(),
         score: '0-0',
         minute: 0,
         status: 'soon',
-        broadcaster_id: session.user.id
+        broadcaster_id: session.user.id,
+        competition_id: competitionId,
+        competition_type: tournamentName ? 'torneo_privato' : 'partita_privata',
+        group_name: tournamentName || null,
+        source: 'supabase'
       };
 
       const waitMinutes = Number(document.getElementById('broadcast_wait').value || 0);
@@ -723,7 +810,10 @@
     async function initPage() {
       const isAuthenticated = await checkSession();
       if (!isAuthenticated) return;
-      await loadOfficialOptions();
+      await Promise.all([
+        loadOfficialOptions(),
+        loadPrivateTournaments()
+      ]);
     }
 
     initPage();

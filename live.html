@@ -825,9 +825,17 @@
       return safe(value);
     }
 
+    function sportFromDiscipline(value) {
+      const normalized = String(value || '').toLowerCase();
+      if (normalized.includes('5') || normalized.includes('calcetto')) return 'calcio_a_5';
+      return 'calcio_a_11';
+    }
+
     function formatCompetitionType(value) {
       if (value === 'campionato') return 'Campionato';
       if (value === 'coppa') return 'Coppa';
+      if (value === 'torneo_privato') return 'Torneo privato';
+      if (value === 'partita_privata') return 'Partita privata';
       return safe(value);
     }
 
@@ -955,12 +963,15 @@
     }
 
     function normalizeSupabaseMatch(match) {
+      const sport = match.sport || sportFromDiscipline(match.discipline);
+
       return {
         ...match,
         id: match.id || match.match_id,
         match_id: match.match_id || match.id,
         region: match.region || 'Abruzzo',
-        discipline: match.discipline || formatDiscipline(match.sport),
+        discipline: match.discipline || formatDiscipline(sport),
+        sport,
         category: match.category,
         group_name: match.group_name,
         competition_type: match.competition_type,
@@ -973,6 +984,33 @@
         field: match.field || formatDate(match.match_date),
         source: 'supabase'
       };
+    }
+
+    function buildPrivateCompetitions(liveRows) {
+      const byId = new Map();
+
+      liveRows.forEach(row => {
+        if (!row.competition_id) return;
+        if (row.competition_type !== 'torneo_privato' && row.competition_type !== 'partita_privata') return;
+        if (byId.has(row.competition_id)) return;
+
+        const sport = row.sport || sportFromDiscipline(row.discipline);
+        byId.set(row.competition_id, {
+          competition_id: row.competition_id,
+          region: row.region || 'Non specificata',
+          season: 'Privato',
+          sport,
+          competition_type: row.competition_type || 'torneo_privato',
+          category: row.group_name || row.category || 'Torneo privato',
+          group_name: row.category || 'Partite',
+          age_group: '',
+          gender: '',
+          source: 'supabase'
+        });
+      });
+
+      return Array.from(byId.values())
+        .sort((a, b) => String(a.category).localeCompare(String(b.category), 'it'));
     }
 
     function mergeMatches(officialMatches, liveRows) {
@@ -1247,7 +1285,10 @@
         ]);
 
         officialPayload = payload;
-        allCompetitions = payload.competitions || [];
+        allCompetitions = [
+          ...(payload.competitions || []),
+          ...buildPrivateCompetitions(liveRows)
+        ];
         allMatches = mergeMatches((payload.matches || []).map(officialMatchToCard), liveRows);
 
         emptyState.innerHTML = 'Nessuna partita disponibile con i filtri selezionati.';
