@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
@@ -962,6 +962,8 @@
 
       const { error } = await supabaseClient.from('accreditation_requests').insert({
         user_id: currentUser.id,
+        requester_name: currentProfile?.display_name || currentProfile?.username || currentUser.email || 'Utente LiveFut',
+        requester_email: currentUser.email || null,
         team_id: team.team_id,
         team_name: team.name,
         role,
@@ -1034,3 +1036,4 @@
   <script src="https://cdn.iubenda.com/iubenda.js"></script>
 </body>
 </html>
+

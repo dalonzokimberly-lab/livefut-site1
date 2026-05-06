@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LiveFut TV</title>
   <script src="https://app.termly.io/resource-blocker/ecfeb307-3d9a-4e26-a7de-4dab9c2345f9?autoBlock=on"></script>
-  <meta name="description" content="LiveFut TV è la piattaforma di live streaming per il calcio locale: dirette, overlay professionali e multistream su YouTube, Facebook e Twitch." />
+  <meta name="description" content="LiveFut TV è la piattaforma di live streaming per il calcio locale: dirette, overlay professionali e multistream." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -301,6 +301,16 @@
 
     .section { padding: 34px 0; }
 
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+
+    .reveal.from-left { transform: translateX(-42px); }
+    .reveal.from-right { transform: translateX(42px); }
+    .reveal.is-visible { opacity: 1; transform: translate(0, 0); }
+
     .section-head {
       display: flex;
       justify-content: space-between;
@@ -567,7 +577,7 @@
       <nav class="nav">
         <a href="live.html">Live</a>
         <a href="#funzioni">Funzioni</a>
-        <a href="#perchi">Per chi e</a>
+        <a href="#perchi">Per chi è</a>
         <a href="#come">Come funziona</a>
         <a href="#contatti">Contatti</a>
       </nav>
@@ -591,10 +601,7 @@
           </div>
 
           <h1>Il live del calcio locale.</h1>
-          <p>
-            LiveFut TV è la piattaforma pensata per trasmettere partite di calcio a 11 e calcetto con overlay professionali,
-            regia mobile e distribuzione multicanale.
-          </p>
+          <p>Dirette dal campo, grafiche da broadcast e regia mobile. Tutto in un unico flusso.</p>
 
           <div class="hero-ctas">
             <a class="btn btn-primary" href="live.html">Guarda le live</a>
@@ -605,15 +612,15 @@
           <div class="hero-stats">
             <div class="stat">
               <strong>1 upload</strong>
-              <span>Un solo flusso dal telefono, distribuito su più piattaforme.</span>
+              <span>Un flusso, più canali.</span>
             </div>
             <div class="stat">
               <strong>Overlay pronti</strong>
-              <span>Scoreboard, timer, sponsor e grafiche partita già impostate.</span>
+              <span>Score, timer e sponsor.</span>
             </div>
             <div class="stat">
               <strong>11 & 5</strong>
-              <span>Supporto pensato per calcio a 11 e calcetto fin dalla prima versione.</span>
+              <span>Calcio a 11 e calcetto.</span>
             </div>
           </div>
         </div>
@@ -671,8 +678,8 @@
       <div class="container">
         <div class="section-head">
           <div>
-            <h2>Una piattaforma costruita per le partite vere</h2>
-            <p>Non un software generico di streaming, ma uno strumento pensato per chi trasmette calcio dilettantistico, tornei locali e campionati di zona.</p>
+            <h2>Costruita per il campo</h2>
+            <p>Tutto quello che serve per trasformare una partita locale in una diretta credibile.</p>
           </div>
         </div>
 
@@ -680,25 +687,25 @@
           <article class="feature-card">
             <div class="feature-icon">LIVE</div>
             <h3>Dirette dal campo</h3>
-            <p>Vai live da smartphone in modo semplice, con interfaccia rapida e workflow adatto alle partite.</p>
+            <p>Apri lo studio e vai in onda.</p>
           </article>
 
           <article class="feature-card">
             <div class="feature-icon">GFX</div>
             <h3>Overlay già pronti</h3>
-            <p>Score, timer, squadre, sponsor e grafiche prepartita integrati per una resa più professionale.</p>
+            <p>Grafiche pulite per risultato, tempo e sponsor.</p>
           </article>
 
           <article class="feature-card">
             <div class="feature-icon">CAST</div>
             <h3>Multistream intelligente</h3>
-            <p>Un solo flusso operativo per distribuire la partita sui canali collegati.</p>
+            <p>Una regia, più destinazioni.</p>
           </article>
 
           <article class="feature-card">
             <div class="feature-icon">DATA</div>
             <h3>Campionati e risultati</h3>
-            <p>Integrazione pensata per mostrare risultati, classifiche e competizioni in un contesto unico.</p>
+            <p>Partite, stato e risultati sempre ordinati.</p>
           </article>
         </div>
       </div>
@@ -708,30 +715,30 @@
       <div class="container">
         <div class="section-head">
           <div>
-            <h2>Per chi è pensato LiveFut TV</h2>
-            <p>La piattaforma nasce per valorizzare chi gioca, organizza, racconta e segue il calcio locale.</p>
+            <h2>Per chi è LiveFut</h2>
+            <p>Squadre, tornei, pagine sportive e media locali.</p>
           </div>
         </div>
 
         <div class="audience-grid">
           <article class="audience-card">
             <h3>Squadre dilettantistiche</h3>
-            <p>Per dare visibilità alle partite, creare una presenza digitale e coinvolgere tifosi, famiglie e sponsor.</p>
+            <p>Più visibilità per partite, tifosi e sponsor.</p>
           </article>
 
           <article class="audience-card">
             <h3>Tornei e organizzatori</h3>
-            <p>Per centralizzare dirette, programmazione partite, contenuti live e comunicazione dell'evento.</p>
+            <p>Dirette e comunicazione in un unico punto.</p>
           </article>
 
           <article class="audience-card">
             <h3>Pagine sportive locali</h3>
-            <p>Per trasmettere in modo più ordinato, aumentare la qualità percepita e pubblicare su più canali insieme.</p>
+            <p>Qualità più alta, meno improvvisazione.</p>
           </article>
 
           <article class="audience-card">
             <h3>Leghe e media territoriali</h3>
-            <p>Per costruire una piattaforma editoriale capace di unire risultati, calendario e contenuti video.</p>
+            <p>Calendari, risultati e contenuti video insieme.</p>
           </article>
         </div>
       </div>
@@ -742,7 +749,7 @@
         <div class="section-head">
           <div>
             <h2>Come funziona</h2>
-            <p>Il flusso è stato pensato per ridurre al minimo i passaggi tecnici e lasciare spazio alla partita.</p>
+            <p>Pochi passaggi, regia pronta.</p>
           </div>
         </div>
 
@@ -750,25 +757,25 @@
           <article class="step">
             <div class="step-number">01</div>
             <h3>Crea l'evento</h3>
-            <p>Imposti squadre, categoria, competizione e piattaforme di destinazione da un pannello semplice.</p>
+            <p>Scegli partita, squadre e contesto.</p>
           </article>
 
           <article class="step">
             <div class="step-number">02</div>
             <h3>Scegli l'overlay</h3>
-            <p>Applichi la grafica della partita con score, timer, sponsor e schermate dedicate ai momenti chiave.</p>
+            <p>Applichi scoreboard, timer e scene.</p>
           </article>
 
           <article class="step">
             <div class="step-number">03</div>
             <h3>Vai live dal campo</h3>
-            <p>Trasmetti da smartphone e invii il flusso una sola volta, senza dover gestire tre dirette separate.</p>
+            <p>Trasmetti da smartphone in orizzontale.</p>
           </article>
 
           <article class="step">
             <div class="step-number">04</div>
             <h3>Distribuisci ovunque</h3>
-            <p>La diretta viene distribuita sui canali collegati mantenendo una gestione ordinata.</p>
+            <p>Porti la partita dove serve.</p>
           </article>
         </div>
       </div>
@@ -779,7 +786,7 @@
         <div class="cta-box">
           <div>
             <h2>Dove ogni partita conta.</h2>
-            <p>LiveFut TV nasce per rendere memorabile il calcio locale: più visibilità per le squadre, più qualità nelle dirette, più valore per chi organizza e racconta ogni giornata.</p>
+            <p>Più visibilità alle squadre. Più qualità alle dirette. Più valore al calcio locale.</p>
           </div>
 
           <div class="hero-ctas">
@@ -845,6 +852,27 @@
       const target = matchUrl(match);
       if (currentSession) return target;
       return `login.html?redirect=${encodeURIComponent(target)}`;
+    }
+
+    function setupRevealAnimations() {
+      const animatedItems = [
+        ...document.querySelectorAll('.section-head, .feature-card, .audience-card, .step, .cta-box, .live-card')
+      ];
+
+      animatedItems.forEach((item, index) => {
+        item.classList.add('reveal', index % 2 ? 'from-right' : 'from-left');
+      });
+
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.18 });
+
+      animatedItems.forEach(item => observer.observe(item));
     }
 
     async function updateAuthUi() {
@@ -929,9 +957,11 @@
     }
 
     document.getElementById('contactForm')?.addEventListener('submit', submitContact);
+    setupRevealAnimations();
     updateAuthUi();
     loadHomeLiveMatches();
   </script>
   <script src="https://cdn.iubenda.com/iubenda.js"></script>
 </body>
 </html>
+

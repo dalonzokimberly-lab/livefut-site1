@@ -129,10 +129,17 @@ create policy "admin updates matches"
   using (public.is_livefut_admin())
   with check (public.is_livefut_admin());
 
+alter table public.accreditation_requests
+  add column if not exists requester_name text,
+  add column if not exists requester_email text;
+
 alter table public.support_requests
   add column if not exists handled_by uuid references auth.users(id),
   add column if not exists handled_at timestamptz,
-  add column if not exists response_notes text;
+  add column if not exists response_notes text,
+  add column if not exists requester_name text,
+  add column if not exists requester_email text,
+  add column if not exists match_title text;
 
 create table if not exists public.admin_email_outbox (
   id uuid primary key default gen_random_uuid(),

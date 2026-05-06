@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
@@ -1328,6 +1328,9 @@
         match_id: isUuid(currentMatch.id) ? currentMatch.id : null,
         official_match_id: currentMatch.match_id || null,
         requester_id: currentUser.id,
+        requester_name: currentProfile?.display_name || currentProfile?.username || currentUser.email || 'Utente LiveFut',
+        requester_email: currentUser.email || null,
+        match_title: `${currentMatch.home_team || 'Casa'} vs ${currentMatch.away_team || 'Ospite'}`,
         reason
       });
 
@@ -1505,3 +1508,4 @@
   <script src="https://cdn.iubenda.com/iubenda.js"></script>
 </body>
 </html>
+
