@@ -1259,6 +1259,7 @@
       const { data, error } = await supabaseClient
         .from('matches')
         .select('*')
+        .neq('status', 'archived')
         .order('created_at', { ascending: false });
 
       if (error) {

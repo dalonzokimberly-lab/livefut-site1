@@ -408,6 +408,7 @@
     const OFFICIAL_DATA_URL = 'data/italia_2025_26_api.json';
 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const pageParams = new URLSearchParams(window.location.search);
     const form = document.getElementById('matchForm');
     const statusBox = document.getElementById('statusBox');
     const regionSelect = document.getElementById('region');
@@ -460,6 +461,9 @@
     let officialTeams = [];
     let privateTournaments = [];
     let currentUser = null;
+    let preselectedTournamentId = pageParams.get('competition_id') || '';
+    let preselectedTournamentName = pageParams.get('tournament_name') || '';
+    let preselectedTournamentRegion = pageParams.get('region') || '';
 
     function showStatus(message, type = 'ok') {
       statusBox.textContent = message;
@@ -500,6 +504,18 @@
         return String(tournament.group_name || '').trim().toLowerCase() === normalizedName
           && String(tournament.region || '').trim().toLowerCase() === normalizedRegion;
       });
+    }
+
+    function applyTournamentPrefill() {
+      if (preselectedTournamentRegion && [...regionSelect.options].some(option => option.value === preselectedTournamentRegion)) {
+        regionSelect.value = preselectedTournamentRegion;
+        refreshCategories();
+        refreshTeamSuggestions();
+      }
+
+      if (preselectedTournamentName) {
+        privateTournamentInput.value = preselectedTournamentName;
+      }
     }
 
     function populateSelect(select, values, placeholder) {
@@ -749,8 +765,11 @@
       const category = document.getElementById('category').value;
       const tournamentName = privateTournamentInput.value.trim();
       const tournament = tournamentName ? findPrivateTournament(region, tournamentName) : null;
+      const usePreselectedTournament = preselectedTournamentId
+        && tournamentName === preselectedTournamentName
+        && region === preselectedTournamentRegion;
       const competitionId = tournamentName
-        ? (tournament?.competition_id || privateTournamentId(region, tournamentName))
+        ? (usePreselectedTournament ? preselectedTournamentId : tournament?.competition_id || privateTournamentId(region, tournamentName))
         : null;
 
       const payload = {
@@ -814,6 +833,7 @@
         loadOfficialOptions(),
         loadPrivateTournaments()
       ]);
+      applyTournamentPrefill();
     }
 
     initPage();

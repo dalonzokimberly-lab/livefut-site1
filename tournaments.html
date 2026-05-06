@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LiveFut TV - I miei tornei</title>
+
+  <script src="https://app.termly.io/resource-blocker/ecfeb307-3d9a-4e26-a7de-4dab9c2345f9?autoBlock=on"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --green:#31d158;
+      --border:rgba(49,209,88,0.18);
+      --shadow:0 20px 60px rgba(0,0,0,0.55);
+      --muted:#cfd6cf;
+      --danger:#ff6b6b;
+    }
+
+    * { box-sizing:border-box; }
+
+    body {
+      margin:0;
+      min-height:100vh;
+      font-family:"Space Grotesk", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(49,209,88,0.12), transparent 24%),
+        radial-gradient(circle at top right, rgba(49,209,88,0.08), transparent 22%),
+        linear-gradient(180deg, #020202 0%, #080808 100%);
+      color:#fff;
+    }
+
+    a { color:inherit; text-decoration:none; }
+
+    .container {
+      width:min(1180px, calc(100% - 32px));
+      margin:0 auto;
+    }
+
+    .topbar {
+      position:sticky;
+      top:0;
+      z-index:30;
+      backdrop-filter:blur(14px);
+      background:rgba(0,0,0,0.84);
+      border-bottom:1px solid var(--border);
+    }
+
+    .topbar-inner {
+      min-height:78px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      flex-wrap:wrap;
+    }
+
+    .brand {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-weight:800;
+      min-width:0;
+      overflow:hidden;
+    }
+
+    .site-logo {
+      height:42px;
+      width:auto;
+      max-height:42px;
+      display:block;
+      object-fit:contain;
+      flex-shrink:0;
+    }
+
+    .brand-text strong {
+      display:block;
+      font-size:1.12rem;
+      line-height:1.1;
+    }
+
+    .brand-text span {
+      display:block;
+      margin-top:4px;
+      color:var(--muted);
+      font-size:.72rem;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+    }
+
+    .top-actions,
+    .actions {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .top-actions { justify-content:flex-end; }
+
+    .btn {
+      border:0;
+      cursor:pointer;
+      border-radius:999px;
+      padding:12px 18px;
+      font-weight:800;
+      font-family:inherit;
+      font-size:.94rem;
+      transition:.2s ease;
+      white-space:nowrap;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .btn:hover { transform:translateY(-1px); }
+
+    .btn-primary {
+      background:linear-gradient(135deg,#19a83f,#31d158);
+      color:#000;
+      box-shadow:0 12px 28px rgba(49,209,88,.28);
+    }
+
+    .btn-secondary {
+      background:rgba(49,209,88,.06);
+      color:#fff;
+      border:1px solid var(--border);
+    }
+
+    .btn-danger {
+      background:rgba(255,107,107,.1);
+      color:#fff;
+      border:1px solid rgba(255,107,107,.28);
+    }
+
+    .hero { padding:34px 0 18px; }
+
+    .hero-card,
+    .card {
+      background:linear-gradient(180deg, rgba(49,209,88,.03), rgba(255,255,255,.01));
+      border:1px solid var(--border);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      padding:28px;
+    }
+
+    h1 {
+      margin:0 0 12px;
+      color:var(--green);
+      font-size:clamp(2rem,4vw,3.2rem);
+      line-height:1.02;
+      letter-spacing:-.04em;
+    }
+
+    h2,
+    h3 {
+      margin:0;
+      color:var(--green);
+      letter-spacing:-.02em;
+    }
+
+    p {
+      margin:0;
+      color:#fff;
+      line-height:1.7;
+    }
+
+    .hero-card {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:18px;
+      align-items:center;
+    }
+
+    .stats {
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:14px;
+      margin:18px 0;
+    }
+
+    .stat {
+      border:1px solid var(--border);
+      border-radius:20px;
+      background:rgba(49,209,88,.05);
+      padding:18px;
+    }
+
+    .stat strong {
+      display:block;
+      color:var(--green);
+      font-size:1.6rem;
+      line-height:1;
+      margin-bottom:6px;
+    }
+
+    .grid {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+      padding:12px 0 38px;
+    }
+
+    .tournament-card {
+      display:grid;
+      gap:18px;
+    }
+
+    .tournament-head {
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      align-items:flex-start;
+    }
+
+    .tournament-head div {
+      min-width:0;
+    }
+
+    .tournament-head h3 {
+      overflow-wrap:anywhere;
+    }
+
+    .badge {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(49,209,88,.08);
+      color:#fff;
+      font-size:.8rem;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .badge.archived {
+      border-color:rgba(255,255,255,.18);
+      background:rgba(255,255,255,.08);
+      color:#d8d8d8;
+    }
+
+    .meta-row,
+    .match-list {
+      display:grid;
+      gap:10px;
+    }
+
+    .meta-row {
+      grid-template-columns:repeat(3,minmax(0,1fr));
+    }
+
+    .meta-item,
+    .match-item {
+      border:1px solid var(--border);
+      border-radius:16px;
+      background:rgba(255,255,255,.025);
+      padding:14px;
+      min-width:0;
+    }
+
+    .meta-item strong,
+    .match-item strong {
+      display:block;
+      color:var(--green);
+      margin-bottom:5px;
+      overflow-wrap:anywhere;
+    }
+
+    .match-item {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+
+    .match-item div {
+      min-width:0;
+    }
+
+    .match-item span,
+    .meta-item span {
+      color:#fff;
+      line-height:1.5;
+      overflow-wrap:anywhere;
+    }
+
+    .status-message {
+      margin-top:16px;
+      padding:14px 16px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:rgba(49,209,88,.06);
+      color:#fff;
+      line-height:1.6;
+      display:none;
+    }
+
+    .status-message.show { display:block; }
+
+    .status-message.error {
+      border-color:rgba(255,107,107,.28);
+      background:rgba(255,107,107,.1);
+      color:#ffd4d4;
+    }
+
+    .empty {
+      grid-column:1 / -1;
+      text-align:center;
+      padding:34px;
+    }
+
+    footer a {
+      color:var(--green);
+      text-decoration:underline;
+    }
+
+    @media (max-width:900px) {
+      .hero-card,
+      .grid,
+      .stats,
+      .meta-row {
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width:760px) {
+      .topbar-inner {
+        min-height:56px;
+        gap:10px;
+        flex-wrap:nowrap;
+      }
+
+      .site-logo { height:30px; max-height:30px; }
+      .brand { gap:8px; flex:1 1 auto; }
+      .brand-text strong { font-size:.95rem; }
+      .brand-text span { display:none; }
+
+      .top-actions {
+        flex:0 0 auto;
+        gap:8px;
+        flex-wrap:nowrap;
+        overflow-x:auto;
+        max-width:58vw;
+        padding-bottom:2px;
+      }
+
+      .top-actions .btn {
+        width:auto;
+        min-height:38px;
+        padding:9px 12px;
+        font-size:.78rem;
+        flex:0 0 auto;
+      }
+
+      .hero { padding:18px 0 12px; }
+      .hero-card,.card { border-radius:20px; padding:18px; }
+      h1 { font-size:1.65rem; letter-spacing:0; }
+      .actions .btn { width:100%; }
+      .match-item { align-items:flex-start; flex-direction:column; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="dashboard.html" class="brand">
+        <img src="livefut-logo.png" alt="LiveFut TV logo" class="site-logo" />
+        <div class="brand-text">
+          <strong>LiveFut</strong>
+          <span>Football United Team</span>
+        </div>
+      </a>
+
+      <div class="top-actions">
+        <a class="btn btn-secondary" href="dashboard.html">Dashboard</a>
+        <a class="btn btn-secondary" href="create-match.html">Crea partita</a>
+        <a class="btn btn-secondary" href="live.html">Live</a>
+        <button class="btn btn-danger" id="logoutBtn">Esci</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-card">
+        <div>
+          <h1>I miei tornei</h1>
+          <p>Gestisci i tornei privati collegati al tuo account e aggiungi nuove partite allo stesso evento.</p>
+          <div class="status-message" id="pageMessage"></div>
+        </div>
+        <a class="btn btn-primary" href="create-match.html">Nuovo torneo o partita</a>
+      </div>
+    </section>
+
+    <section class="stats">
+      <article class="stat">
+        <strong id="totalTournaments">0</strong>
+        <span>Tornei privati</span>
+      </article>
+      <article class="stat">
+        <strong id="activeTournaments">0</strong>
+        <span>Tornei attivi</span>
+      </article>
+      <article class="stat">
+        <strong id="totalMatches">0</strong>
+        <span>Partite create</span>
+      </article>
+    </section>
+
+    <section class="grid" id="tournamentsGrid">
+      <article class="card empty">Caricamento tornei...</article>
+    </section>
+  </main>
+
+  <footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
+    (c) 2026 LiveFut TV - Football United Team. Tutti i diritti riservati.<br><br>
+    <a href="https://www.iubenda.com/privacy-policy/71949704" class="iubenda-white iubenda-noiframe iubenda-embed">Privacy Policy</a> |
+    <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy" class="iubenda-white iubenda-noiframe iubenda-embed">Cookie Policy</a> |
+    <a href="terms.html">Termini e Condizioni</a>
+  </footer>
+
+  <script>
+    const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
+
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const grid = document.getElementById('tournamentsGrid');
+    const pageMessage = document.getElementById('pageMessage');
+
+    let currentUser = null;
+    let tournamentRows = [];
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function safe(value, fallback = '-') {
+      return value === null || value === undefined || value === '' ? fallback : value;
+    }
+
+    function showMessage(message, type = 'ok') {
+      pageMessage.textContent = message;
+      pageMessage.className = type === 'error'
+        ? 'status-message show error'
+        : 'status-message show';
+    }
+
+    function statusLabel(status) {
+      if (status === 'live') return 'Live';
+      if (status === 'soon') return 'In arrivo';
+      if (status === 'finished') return 'Conclusa';
+      if (status === 'archived') return 'Archiviata';
+      return safe(status, 'In arrivo');
+    }
+
+    function formatDiscipline(value) {
+      if (value === 'calcio_a_11') return 'Calcio a 11';
+      if (value === 'calcio_a_5') return 'Calcio a 5';
+      return safe(value, 'Disciplina');
+    }
+
+    function tournamentStatus(matches) {
+      return matches.every(match => match.status === 'archived') ? 'archived' : 'active';
+    }
+
+    function groupTournaments(rows) {
+      const byId = new Map();
+
+      rows.forEach(row => {
+        if (!row.competition_id || !row.group_name) return;
+        if (row.competition_type !== 'torneo_privato') return;
+
+        if (!byId.has(row.competition_id)) {
+          byId.set(row.competition_id, {
+            competition_id: row.competition_id,
+            name: row.group_name,
+            region: row.region || 'Non specificata',
+            discipline: row.discipline || 'Calcio',
+            category: row.category || '',
+            matches: []
+          });
+        }
+
+        byId.get(row.competition_id).matches.push(row);
+      });
+
+      return Array.from(byId.values())
+        .sort((a, b) => a.name.localeCompare(b.name, 'it'));
+    }
+
+    function createMatchUrl(match, mode = 'view') {
+      const params = new URLSearchParams({
+        id: match.id || '',
+        match_id: match.match_id || '',
+        competition_id: match.competition_id || '',
+        mode
+      });
+      return `match.html?${params.toString()}`;
+    }
+
+    function createTournamentMatchUrl(tournament) {
+      const params = new URLSearchParams({
+        competition_id: tournament.competition_id,
+        tournament_name: tournament.name,
+        region: tournament.region
+      });
+      return `create-match.html?${params.toString()}`;
+    }
+
+    function renderStats(tournaments) {
+      document.getElementById('totalTournaments').textContent = tournaments.length;
+      document.getElementById('activeTournaments').textContent = tournaments.filter(item => tournamentStatus(item.matches) !== 'archived').length;
+      document.getElementById('totalMatches').textContent = tournaments.reduce((total, item) => total + item.matches.length, 0);
+    }
+
+    function renderTournaments() {
+      const tournaments = groupTournaments(tournamentRows);
+      renderStats(tournaments);
+
+      if (!tournaments.length) {
+        grid.innerHTML = `
+          <article class="card empty">
+            <h2>Nessun torneo privato</h2>
+            <p>Crea una partita e compila il campo Torneo privato per iniziare a gestire un evento custom.</p>
+          </article>
+        `;
+        return;
+      }
+
+      grid.innerHTML = '';
+
+      tournaments.forEach(tournament => {
+        const archived = tournamentStatus(tournament.matches) === 'archived';
+        const activeMatches = tournament.matches.filter(match => match.status !== 'archived').length;
+        const matchesMarkup = tournament.matches
+          .slice()
+          .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')))
+          .map(match => `
+            <div class="match-item">
+              <div>
+                <strong>${escapeHtml(safe(match.home_team, 'Squadra Casa'))} vs ${escapeHtml(safe(match.away_team, 'Squadra Ospite'))}</strong>
+                <span>${escapeHtml(statusLabel(match.status))}${match.category ? ' - ' + escapeHtml(match.category) : ''}</span>
+              </div>
+              <div class="actions">
+                <a class="btn btn-secondary" href="${createMatchUrl(match, 'view')}">Scheda</a>
+                ${match.status !== 'archived' ? `<a class="btn btn-primary" href="${createMatchUrl(match, 'broadcast')}">Studio</a>` : ''}
+              </div>
+            </div>
+          `)
+          .join('');
+
+        const card = document.createElement('article');
+        card.className = 'card tournament-card';
+        card.innerHTML = `
+          <div class="tournament-head">
+            <div>
+              <h3>${escapeHtml(tournament.name)}</h3>
+              <p>${escapeHtml(tournament.region)} - ${escapeHtml(formatDiscipline(tournament.discipline))}</p>
+            </div>
+            <span class="badge ${archived ? 'archived' : ''}">${archived ? 'Archiviato' : 'Attivo'}</span>
+          </div>
+
+          <div class="meta-row">
+            <div class="meta-item">
+              <strong>Partite</strong>
+              <span>${tournament.matches.length}</span>
+            </div>
+            <div class="meta-item">
+              <strong>Visibili</strong>
+              <span>${activeMatches}</span>
+            </div>
+            <div class="meta-item">
+              <strong>Categoria</strong>
+              <span>${escapeHtml(safe(tournament.category, 'Libera'))}</span>
+            </div>
+          </div>
+
+          <div class="actions">
+            <a class="btn btn-primary" href="${createTournamentMatchUrl(tournament)}">Aggiungi partita</a>
+            ${archived
+              ? `<button class="btn btn-secondary" type="button" data-action="restore" data-id="${escapeHtml(tournament.competition_id)}">Ripristina</button>`
+              : `<button class="btn btn-danger" type="button" data-action="archive" data-id="${escapeHtml(tournament.competition_id)}">Archivia torneo</button>`}
+          </div>
+
+          <div class="match-list">
+            ${matchesMarkup}
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    async function loadTournaments() {
+      const { data, error } = await supabaseClient
+        .from('matches')
+        .select('*')
+        .eq('broadcaster_id', currentUser.id)
+        .eq('competition_type', 'torneo_privato')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        grid.innerHTML = '<article class="card empty">Errore nel caricamento dei tornei.</article>';
+        showMessage(`Errore Supabase: ${error.message}`, 'error');
+        return;
+      }
+
+      tournamentRows = data || [];
+      renderTournaments();
+    }
+
+    async function updateTournamentStatus(competitionId, status) {
+      const { error } = await supabaseClient
+        .from('matches')
+        .update({ status })
+        .eq('broadcaster_id', currentUser.id)
+        .eq('competition_id', competitionId);
+
+      if (error) {
+        showMessage(`Errore durante l'aggiornamento del torneo: ${error.message}`, 'error');
+        return;
+      }
+
+      showMessage(status === 'archived' ? 'Torneo archiviato.' : 'Torneo ripristinato.');
+      await loadTournaments();
+    }
+
+    async function requireUser() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+
+      if (!session) {
+        window.location.href = 'login.html?redirect=tournaments.html';
+        return false;
+      }
+
+      currentUser = session.user;
+      return true;
+    }
+
+    grid.addEventListener('click', event => {
+      const button = event.target.closest('button[data-action]');
+      if (!button) return;
+
+      const action = button.dataset.action;
+      const competitionId = button.dataset.id;
+
+      if (action === 'archive') {
+        updateTournamentStatus(competitionId, 'archived');
+      }
+
+      if (action === 'restore') {
+        updateTournamentStatus(competitionId, 'soon');
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await supabaseClient.auth.signOut();
+      window.location.href = 'login.html';
+    });
+
+    async function initPage() {
+      const isAuthenticated = await requireUser();
+      if (!isAuthenticated) return;
+      await loadTournaments();
+    }
+
+    initPage();
+  </script>
+
+  <script src="https://cdn.iubenda.com/iubenda.js"></script>
+</body>
+</html>
