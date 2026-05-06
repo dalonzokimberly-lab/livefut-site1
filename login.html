@@ -271,7 +271,7 @@
 
     .tabs {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 10px;
       padding: 8px;
       border-radius: 20px;
@@ -482,6 +482,7 @@
       <div class="tabs">
         <button class="tab-btn active" data-tab="login">Accedi</button>
         <button class="tab-btn" data-tab="register">Registrati</button>
+        <button class="tab-btn" data-tab="reset">Recupera</button>
       </div>
 
       <div class="panel-title">
@@ -499,6 +500,22 @@
           <input id="loginPassword" type="password" placeholder="La tua password" required />
         </div>
         <button type="submit" class="submit">Accedi</button>
+      </form>
+
+      <form id="resetForm" class="form">
+        <div class="field">
+          <label for="resetEmail">Email</label>
+          <input id="resetEmail" type="email" placeholder="nome@email.com" />
+        </div>
+        <button type="submit" class="submit">Invia email di recupero</button>
+      </form>
+
+      <form id="newPasswordForm" class="form">
+        <div class="field">
+          <label for="newPassword">Nuova password</label>
+          <input id="newPassword" type="password" placeholder="Inserisci una nuova password" />
+        </div>
+        <button type="submit" class="submit">Aggiorna password</button>
       </form>
 
       <form id="registerForm" class="form">
@@ -561,13 +578,21 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const APP_BASE_URL = window.location.hostname === 'localhost'
+      ? 'https://livefut-site1.vercel.app'
+      : window.location.origin;
     const loginParams = new URLSearchParams(window.location.search);
     const redirectTarget = sanitizeRedirectTarget(loginParams.get('redirect'));
+    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    const authType = loginParams.get('type') || hashParams.get('type');
 
     const loginTab = document.querySelector('[data-tab="login"]');
     const registerTab = document.querySelector('[data-tab="register"]');
+    const resetTab = document.querySelector('[data-tab="reset"]');
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
+    const resetForm = document.getElementById('resetForm');
+    const newPasswordForm = document.getElementById('newPasswordForm');
     const panelHeading = document.getElementById('panelHeading');
     const panelDescription = document.getElementById('panelDescription');
     const statusBox = document.getElementById('statusBox');
@@ -585,6 +610,7 @@
           'studio.html',
           'create-match.html',
           'profile.html',
+          'admin.html',
           'index.html'
         ]);
         const page = target.pathname.split('/').pop();
@@ -597,6 +623,43 @@
       } catch (error) {
         return 'dashboard.html';
       }
+    }
+
+    function authRedirectUrl(target = redirectTarget) {
+      return `${APP_BASE_URL}/login.html?redirect=${encodeURIComponent(target)}`;
+    }
+
+    async function ensureProfile(user) {
+      if (!user) return;
+
+      const displayName = user.user_metadata?.display_name || user.email?.split('@')[0] || 'Utente LiveFut';
+      const { data: existing } = await supabaseClient
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (existing) {
+        await supabaseClient
+          .from('profiles')
+          .update({
+            email: user.email,
+            display_name: displayName,
+            privacy_accepted: Boolean(user.user_metadata?.privacy_accepted)
+          })
+          .eq('id', user.id);
+        return;
+      }
+
+      await supabaseClient
+        .from('profiles')
+        .insert({
+          id: user.id,
+          email: user.email,
+          display_name: displayName,
+          role: 'user',
+          privacy_accepted: Boolean(user.user_metadata?.privacy_accepted)
+        });
     }
 
     function showStatus(message, type = 'ok') {
@@ -614,22 +677,49 @@
       if (tab === 'login') {
         loginTab.classList.add('active');
         registerTab.classList.remove('active');
+        resetTab.classList.remove('active');
         loginForm.classList.add('active');
         registerForm.classList.remove('active');
+        resetForm.classList.remove('active');
+        newPasswordForm.classList.remove('active');
         panelHeading.textContent = 'Bentornato';
         panelDescription.textContent = 'Accedi con la tua email per entrare nella piattaforma LiveFut TV.';
-      } else {
+      } else if (tab === 'register') {
         registerTab.classList.add('active');
         loginTab.classList.remove('active');
+        resetTab.classList.remove('active');
         registerForm.classList.add('active');
         loginForm.classList.remove('active');
+        resetForm.classList.remove('active');
+        newPasswordForm.classList.remove('active');
         panelHeading.textContent = 'Crea il tuo account';
         panelDescription.textContent = 'Registrati per entrare nella piattaforma LiveFut TV.';
+      } else if (tab === 'new-password') {
+        loginTab.classList.remove('active');
+        registerTab.classList.remove('active');
+        resetTab.classList.add('active');
+        loginForm.classList.remove('active');
+        registerForm.classList.remove('active');
+        resetForm.classList.remove('active');
+        newPasswordForm.classList.add('active');
+        panelHeading.textContent = 'Imposta nuova password';
+        panelDescription.textContent = 'Inserisci una nuova password per completare il recupero dell’account.';
+      } else {
+        resetTab.classList.add('active');
+        loginTab.classList.remove('active');
+        registerTab.classList.remove('active');
+        resetForm.classList.add('active');
+        loginForm.classList.remove('active');
+        registerForm.classList.remove('active');
+        newPasswordForm.classList.remove('active');
+        panelHeading.textContent = 'Recupera password';
+        panelDescription.textContent = 'Riceverai un’email sicura per impostare una nuova password.';
       }
     }
 
     loginTab.addEventListener('click', () => setTab('login'));
     registerTab.addEventListener('click', () => setTab('register'));
+    resetTab.addEventListener('click', () => setTab('reset'));
 
     loginForm.addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -638,13 +728,14 @@
       const email = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value.trim();
 
-      const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
       if (error) {
         showStatus(error.message, 'error');
         return;
       }
 
+      await ensureProfile(data.user);
       window.location.href = redirectTarget;
     });
 
@@ -666,6 +757,7 @@
         email,
         password,
         options: {
+          emailRedirectTo: authRedirectUrl(redirectTarget),
           data: {
             display_name: displayName,
             privacy_accepted: true
@@ -678,7 +770,7 @@
         return;
       }
 
-      if (data.user) {
+      if (data.session && data.user) {
         const { error: profileError } = await supabaseClient
           .from('profiles')
           .insert([
@@ -697,11 +789,66 @@
         }
       }
 
-      window.location.href = redirectTarget;
+      if (data.session) {
+        window.location.href = redirectTarget;
+        return;
+      }
+
+      showStatus('Account creato. Controlla la tua email e conferma la registrazione per entrare in LiveFut TV.');
+      setTab('login');
     });
 
-    supabaseClient.auth.getSession().then(({ data }) => {
+    resetForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearStatus();
+
+      const email = document.getElementById('resetEmail').value.trim();
+      if (!email) {
+        showStatus('Inserisci la tua email per ricevere il link di recupero.', 'error');
+        return;
+      }
+
+      const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+        redirectTo: `${APP_BASE_URL}/login.html?type=recovery&redirect=${encodeURIComponent(redirectTarget)}`
+      });
+
+      if (error) {
+        showStatus(error.message, 'error');
+        return;
+      }
+
+      showStatus('Email di recupero inviata. Apri il link ricevuto per impostare una nuova password.');
+    });
+
+    newPasswordForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearStatus();
+
+      const password = document.getElementById('newPassword').value.trim();
+      if (password.length < 6) {
+        showStatus('La nuova password deve contenere almeno 6 caratteri.', 'error');
+        return;
+      }
+
+      const { error } = await supabaseClient.auth.updateUser({ password });
+      if (error) {
+        showStatus(error.message, 'error');
+        return;
+      }
+
+      showStatus('Password aggiornata. Ora puoi entrare in LiveFut TV.');
+      setTimeout(() => {
+        window.location.href = redirectTarget;
+      }, 900);
+    });
+
+    supabaseClient.auth.getSession().then(async ({ data }) => {
+      if (authType === 'recovery') {
+        setTab('new-password');
+        return;
+      }
       if (data.session && loginParams.get('redirect')) {
+        await ensureProfile(data.session.user);
         window.location.href = redirectTarget;
       }
     });

@@ -407,6 +407,7 @@
         <p>Le sezioni mostrano i dati salvati su Supabase e permettono di gestire le richieste principali.</p>
         <div class="tabs">
           <button class="tab is-active" data-panel="accreditationsPanel">Accrediti</button>
+          <button class="tab" data-panel="accreditationArchivePanel">Archivio autorizzazioni</button>
           <button class="tab" data-panel="contactsPanel">Contatti</button>
           <button class="tab" data-panel="supportPanel">Supporto</button>
           <button class="tab" data-panel="matchesPanel">Dirette</button>
@@ -422,6 +423,15 @@
         <p>Approva o rifiuta le richieste di associazione a squadre e ruoli operativi.</p>
         <div class="table-wrap"><table><thead><tr><th>Squadra</th><th>Ruolo</th><th>Stato</th><th>Utente</th><th>Note</th><th>Data</th><th>Azioni</th></tr></thead><tbody id="accreditationsTable"></tbody></table></div>
         <div class="empty-state" id="accreditationsEmpty">Nessuna richiesta accredito trovata.</div>
+      </article>
+    </section>
+
+    <section class="section panel" id="accreditationArchivePanel">
+      <article class="card">
+        <h2>Archivio autorizzazioni</h2>
+        <p>Richieste approvate o rifiutate. Puoi revocare una decisione e riportare la richiesta in attesa.</p>
+        <div class="table-wrap"><table><thead><tr><th>Squadra</th><th>Ruolo</th><th>Esito</th><th>Utente</th><th>Motivazione</th><th>Revisione</th><th>Azioni</th></tr></thead><tbody id="accreditationArchiveTable"></tbody></table></div>
+        <div class="empty-state" id="accreditationArchiveEmpty">Nessuna autorizzazione archiviata.</div>
       </article>
     </section>
 
@@ -532,6 +542,18 @@
       return `<span class="badge ${escapeHtml(value)}">${escapeHtml(statusLabel(value))}</span>`;
     }
 
+    function profileName(profile, fallback = '-') {
+      if (!profile) return fallback;
+      return profile.display_name || profile.username || [profile.first_name, profile.last_name].filter(Boolean).join(' ') || profile.email || fallback;
+    }
+
+    function matchName(match, fallback = '-') {
+      if (!match) return fallback;
+      const home = match.home_team || 'Casa';
+      const away = match.away_team || 'Ospite';
+      return `${home} vs ${away}`;
+    }
+
     function showMessage(message, type = 'ok') {
       const box = document.getElementById('adminMessage');
       box.textContent = message;
@@ -560,6 +582,30 @@
       return data || [];
     }
 
+    async function loadProfilesMap(ids) {
+      const cleanIds = [...new Set(ids.filter(Boolean))];
+      if (!cleanIds.length) return new Map();
+
+      const { data, error } = await supabaseClient
+        .from('profiles')
+        .select('id,email,display_name,username,first_name,last_name')
+        .in('id', cleanIds);
+      if (error) throw error;
+      return new Map((data || []).map(profile => [profile.id, profile]));
+    }
+
+    async function loadMatchesMap(ids) {
+      const cleanIds = [...new Set(ids.filter(Boolean))];
+      if (!cleanIds.length) return new Map();
+
+      const { data, error } = await supabaseClient
+        .from('matches')
+        .select('id,match_id,home_team,away_team,category,match_date,field')
+        .in('id', cleanIds);
+      if (error) throw error;
+      return new Map((data || []).map(match => [match.id, match]));
+    }
+
     function renderRows(tbodyId, emptyId, rows, template) {
       const tbody = document.getElementById(tbodyId);
       const empty = document.getElementById(emptyId);
@@ -573,7 +619,7 @@
           <td><strong>${escapeHtml(row.team_name)}</strong><br><span>${escapeHtml(row.team_id)}</span></td>
           <td>${escapeHtml(statusLabel(row.role))}</td>
           <td>${badge(row.status)}</td>
-          <td>${escapeHtml(row.user_id || '-')}</td>
+          <td><strong>${escapeHtml(profileName(row.profile, row.user_id || '-'))}</strong><br><span>${escapeHtml(row.profile?.email || '')}</span></td>
           <td>${escapeHtml(row.notes || '-')}</td>
           <td>${formatDate(row.created_at)}</td>
           <td>
@@ -582,6 +628,20 @@
               <button class="btn btn-danger btn-small" data-action="reject-accreditation" data-id="${escapeHtml(row.id)}">Rifiuta</button>
             </div>
           </td>
+        </tr>
+      `);
+    }
+
+    function renderAccreditationArchive(rows) {
+      renderRows('accreditationArchiveTable', 'accreditationArchiveEmpty', rows, row => `
+        <tr>
+          <td><strong>${escapeHtml(row.team_name)}</strong><br><span>${escapeHtml(row.team_id)}</span></td>
+          <td>${escapeHtml(statusLabel(row.role))}</td>
+          <td>${badge(row.status)}</td>
+          <td><strong>${escapeHtml(profileName(row.profile, row.user_id || '-'))}</strong><br><span>${escapeHtml(row.profile?.email || '')}</span></td>
+          <td>${escapeHtml(row.review_notes || row.notes || '-')}</td>
+          <td>${formatDate(row.reviewed_at || row.created_at)}</td>
+          <td><button class="btn btn-warning btn-small" data-action="reopen-accreditation" data-id="${escapeHtml(row.id)}">Revoca</button></td>
         </tr>
       `);
     }
@@ -603,10 +663,10 @@
     function renderSupport(rows) {
       renderRows('supportTable', 'supportEmpty', rows, row => `
         <tr>
-          <td>${escapeHtml(row.match_id || row.official_match_id || '-')}</td>
+          <td><strong>${escapeHtml(matchName(row.match, row.official_match_id || '-'))}</strong><br><span>${escapeHtml(row.match?.field || '')}</span></td>
           <td>${escapeHtml(row.reason)}</td>
           <td>${badge(row.status)}</td>
-          <td>${escapeHtml(row.requester_id || '-')}</td>
+          <td><strong>${escapeHtml(profileName(row.profile, row.requester_id || '-'))}</strong><br><span>${escapeHtml(row.profile?.email || '')}</span></td>
           <td>${formatDate(row.created_at)}</td>
           <td><button class="btn btn-secondary btn-small" data-action="resolve-support" data-id="${escapeHtml(row.id)}">Risolta</button></td>
         </tr>
@@ -631,7 +691,7 @@
       renderRows('eventsTable', 'eventsEmpty', rows, row => `
         <tr>
           <td><strong>${escapeHtml(row.title)}</strong><br><span>${escapeHtml(row.event_type)}</span></td>
-          <td>${escapeHtml(row.team_name || row.match_id || row.official_match_id || '-')}</td>
+          <td><strong>${escapeHtml(matchName(row.match, row.team_name || row.official_match_id || '-'))}</strong><br><span>${escapeHtml(profileName(row.profile, ''))}</span></td>
           <td>${escapeHtml(row.minute ?? '-')}</td>
           <td>${escapeHtml(row.score || '-')}</td>
           <td>${escapeHtml(row.body)}</td>
@@ -723,20 +783,46 @@
       setMetric('metricPendingAccreditations', pendingAccreditationsCount);
       setMetric('metricLocks', activeLocksCount);
 
-      renderAccreditations(accreditations);
+      const profileMap = await loadProfilesMap([
+        ...accreditations.map(row => row.user_id),
+        ...support.map(row => row.requester_id),
+        ...events.map(row => row.created_by)
+      ]);
+      const matchMap = await loadMatchesMap([
+        ...support.map(row => row.match_id),
+        ...events.map(row => row.match_id)
+      ]);
+
+      const enrichedAccreditations = accreditations.map(row => ({
+        ...row,
+        profile: profileMap.get(row.user_id)
+      }));
+      const enrichedSupport = support.map(row => ({
+        ...row,
+        profile: profileMap.get(row.requester_id),
+        match: matchMap.get(row.match_id)
+      }));
+      const enrichedEvents = events.map(row => ({
+        ...row,
+        profile: profileMap.get(row.created_by),
+        match: matchMap.get(row.match_id)
+      }));
+
+      renderAccreditations(enrichedAccreditations.filter(row => row.status === 'pending'));
+      renderAccreditationArchive(enrichedAccreditations.filter(row => row.status !== 'pending'));
       renderContacts(contacts);
-      renderSupport(support);
+      renderSupport(enrichedSupport);
       renderMatches(matches);
-      renderEvents(events);
+      renderEvents(enrichedEvents);
 
       cachedReport = {
         generated_at:new Date().toISOString(),
         metrics:{ usersCount, matchesCount, liveCount, soonCount, finishedCount, pendingAccreditationsCount, activeLocksCount },
-        accreditations,
+        accreditations: enrichedAccreditations,
         contacts,
-        support,
+        support: enrichedSupport,
         matches,
-        events
+        events: enrichedEvents
       };
 
       renderSystem([
@@ -767,18 +853,40 @@
       try {
         if (action === 'approve-accreditation') {
           await updateRecord('accreditation_requests', id, { status:'approved', reviewed_by:currentUser.id, reviewed_at:new Date().toISOString() });
-          showMessage('Richiesta accredito approvata.');
+          showMessage('Richiesta accredito approvata e spostata in archivio autorizzazioni.');
         }
         if (action === 'reject-accreditation') {
-          await updateRecord('accreditation_requests', id, { status:'rejected', reviewed_by:currentUser.id, reviewed_at:new Date().toISOString() });
-          showMessage('Richiesta accredito rifiutata.');
+          const reason = window.prompt('Motivazione del rifiuto da comunicare all’utente');
+          if (!reason || !reason.trim()) {
+            button.disabled = false;
+            showMessage('Inserisci una motivazione per rifiutare la richiesta.', 'error');
+            return;
+          }
+          const request = (cachedReport.accreditations || []).find(row => row.id === id);
+          await updateRecord('accreditation_requests', id, { status:'rejected', reviewed_by:currentUser.id, reviewed_at:new Date().toISOString(), review_notes:reason.trim() });
+          if (request) {
+            await supabaseClient.from('admin_email_outbox').insert({
+              request_table:'accreditation_requests',
+              request_id:id,
+              recipient_user_id:request.user_id,
+              recipient_email:request.profile?.email || null,
+              subject:'Richiesta accredito LiveFut TV',
+              body:`La tua richiesta di accredito per ${request.team_name} è stata rifiutata. Motivazione: ${reason.trim()}`,
+              created_by:currentUser.id
+            });
+          }
+          showMessage('Richiesta accredito rifiutata e spostata in archivio autorizzazioni.');
+        }
+        if (action === 'reopen-accreditation') {
+          await updateRecord('accreditation_requests', id, { status:'pending', reviewed_by:null, reviewed_at:null, review_notes:null });
+          showMessage('Decisione revocata. La richiesta è tornata in attesa.');
         }
         if (action === 'archive-contact') {
           await updateRecord('contact_requests', id, { status:'archived' });
           showMessage('Richiesta contatto archiviata.');
         }
         if (action === 'resolve-support') {
-          await updateRecord('support_requests', id, { status:'resolved' });
+          await updateRecord('support_requests', id, { status:'resolved', handled_by:currentUser.id, handled_at:new Date().toISOString() });
           showMessage('Richiesta supporto segnata come risolta.');
         }
       } catch (error) {

@@ -57,6 +57,20 @@ create policy "profiles update owner or admin"
   using (id = auth.uid() or public.is_livefut_admin())
   with check (id = auth.uid() or public.is_livefut_admin());
 
+revoke update (role) on public.profiles from authenticated;
+grant update (
+  email,
+  display_name,
+  username,
+  first_name,
+  last_name,
+  birth_date,
+  favorite_team,
+  city,
+  bio,
+  privacy_accepted
+) on public.profiles to authenticated;
+
 drop policy if exists "admin reads accreditation requests" on public.accreditation_requests;
 create policy "admin reads accreditation requests"
   on public.accreditation_requests for select
@@ -111,6 +125,46 @@ create policy "admin reads all match events"
 drop policy if exists "admin updates matches" on public.matches;
 create policy "admin updates matches"
   on public.matches for update
+  to authenticated
+  using (public.is_livefut_admin())
+  with check (public.is_livefut_admin());
+
+alter table public.support_requests
+  add column if not exists handled_by uuid references auth.users(id),
+  add column if not exists handled_at timestamptz,
+  add column if not exists response_notes text;
+
+create table if not exists public.admin_email_outbox (
+  id uuid primary key default gen_random_uuid(),
+  request_table text not null,
+  request_id uuid,
+  recipient_user_id uuid references auth.users(id),
+  recipient_email text,
+  subject text not null,
+  body text not null,
+  status text not null default 'pending',
+  created_by uuid references auth.users(id),
+  created_at timestamptz not null default now(),
+  sent_at timestamptz
+);
+
+alter table public.admin_email_outbox enable row level security;
+
+drop policy if exists "admin reads email outbox" on public.admin_email_outbox;
+create policy "admin reads email outbox"
+  on public.admin_email_outbox for select
+  to authenticated
+  using (public.is_livefut_admin());
+
+drop policy if exists "admin creates email outbox" on public.admin_email_outbox;
+create policy "admin creates email outbox"
+  on public.admin_email_outbox for insert
+  to authenticated
+  with check (public.is_livefut_admin());
+
+drop policy if exists "admin updates email outbox" on public.admin_email_outbox;
+create policy "admin updates email outbox"
+  on public.admin_email_outbox for update
   to authenticated
   using (public.is_livefut_admin())
   with check (public.is_livefut_admin());

@@ -154,11 +154,12 @@
     input[type="color"] { height:48px; padding:6px; cursor:pointer; }
     input[type="file"] { padding:11px; }
     select option { color:#000; }
-    input:focus,select:focus { border-color:rgba(49,209,88,.48); box-shadow:0 0 0 4px rgba(49,209,88,.1); }
+    input:focus,select:focus,textarea:focus { border-color:rgba(49,209,88,.48); box-shadow:0 0 0 4px rgba(49,209,88,.1); }
     .field-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
     .toggle-row { display:flex; gap:10px; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(49,209,88,.1); }
     .toggle-row:last-child { border-bottom:0; }
     .toggle-row input { width:20px; height:20px; accent-color:var(--green); }
+    textarea { width:100%; min-height:110px; border:1px solid var(--border); background:rgba(255,255,255,.03); color:var(--text); border-radius:16px; padding:13px 14px; font-family:inherit; font-size:.95rem; outline:none; resize:vertical; }
     .info-item,.commentary-item { background:rgba(49,209,88,.05); border:1px solid var(--border); border-radius:18px; padding:14px; min-width:0; }
     .info-item strong,.commentary-item strong { color:var(--green); display:block; margin-bottom:4px; }
     .info-item span,.commentary-item span { color:var(--text); overflow-wrap:anywhere; line-height:1.55; }
@@ -1339,6 +1340,10 @@
           <strong>Evento già in diretta</strong><br>
           Non puoi trasmettere questa partita perché un altro broadcaster ha già avviato la diretta.<br><br>
           Se ritieni che la diretta non rispetti gli standard LiveFut o sei responsabile dell'evento, contatta subito il supporto.
+          <div style="margin-top:16px;">
+            <label for="supportReasonInput">Descrivi il problema</label>
+            <textarea id="supportReasonInput" placeholder="Spiega perché stai richiedendo l'intervento sul blocco della diretta"></textarea>
+          </div>
           <div class="button-row" style="margin-top:16px;">
             <button class="btn btn-primary" id="supportOverrideBtn">Contatta supporto</button>
             <a class="btn btn-secondary" href="match.html?id=${encodeURIComponent(currentMatch.id)}&mode=view">Vai alla partita</a>
@@ -1347,7 +1352,12 @@
       `;
 
       document.getElementById('supportOverrideBtn')?.addEventListener('click', () => {
-        requestSupportIntervention(`Richiesta intervento su lock ${activeLock.id}`);
+        const reason = document.getElementById('supportReasonInput')?.value.trim();
+        if (!reason) {
+          showMessage('Scrivi il motivo della richiesta di supporto.', 'error');
+          return;
+        }
+        requestSupportIntervention(`${reason} - Lock diretta: ${activeLock.id}`);
       });
     }
 
