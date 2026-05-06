@@ -461,7 +461,6 @@
       if (status === 'live') return 'Live';
       if (status === 'soon') return 'In arrivo';
       if (status === 'finished') return 'Conclusa';
-      if (status === 'archived') return 'Archiviata';
       return safe(status, 'In arrivo');
     }
 
@@ -472,7 +471,7 @@
     }
 
     function tournamentStatus(matches) {
-      return matches.every(match => match.status === 'archived') ? 'archived' : 'active';
+      return matches.every(match => match.source === 'archived') ? 'archived' : 'active';
     }
 
     function groupTournaments(rows) {
@@ -543,7 +542,7 @@
 
       tournaments.forEach(tournament => {
         const archived = tournamentStatus(tournament.matches) === 'archived';
-        const activeMatches = tournament.matches.filter(match => match.status !== 'archived').length;
+        const activeMatches = tournament.matches.filter(match => match.source !== 'archived').length;
         const matchesMarkup = tournament.matches
           .slice()
           .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')))
@@ -555,7 +554,7 @@
               </div>
               <div class="actions">
                 <a class="btn btn-secondary" href="${createMatchUrl(match, 'view')}">Scheda</a>
-                ${match.status !== 'archived' ? `<a class="btn btn-primary" href="${createMatchUrl(match, 'broadcast')}">Studio</a>` : ''}
+                ${match.source !== 'archived' ? `<a class="btn btn-primary" href="${createMatchUrl(match, 'broadcast')}">Studio</a>` : ''}
               </div>
             </div>
           `)
@@ -621,10 +620,10 @@
       renderTournaments();
     }
 
-    async function updateTournamentStatus(competitionId, status) {
+    async function updateTournamentArchive(competitionId, archived) {
       const { error } = await supabaseClient
         .from('matches')
-        .update({ status })
+        .update({ source: archived ? 'archived' : 'supabase' })
         .eq('broadcaster_id', currentUser.id)
         .eq('competition_id', competitionId);
 
@@ -633,7 +632,7 @@
         return;
       }
 
-      showMessage(status === 'archived' ? 'Torneo archiviato.' : 'Torneo ripristinato.');
+      showMessage(archived ? 'Torneo archiviato.' : 'Torneo ripristinato.');
       await loadTournaments();
     }
 
@@ -657,11 +656,11 @@
       const competitionId = button.dataset.id;
 
       if (action === 'archive') {
-        updateTournamentStatus(competitionId, 'archived');
+        updateTournamentArchive(competitionId, true);
       }
 
       if (action === 'restore') {
-        updateTournamentStatus(competitionId, 'soon');
+        updateTournamentArchive(competitionId, false);
       }
     });
 

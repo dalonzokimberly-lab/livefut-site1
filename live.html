@@ -982,7 +982,7 @@
         gender_label: formatGender(match.gender),
         status: match.status || inferStatus(match.match_date),
         field: match.field || formatDate(match.match_date),
-        source: 'supabase'
+        source: match.source || 'supabase'
       };
     }
 
@@ -1259,7 +1259,6 @@
       const { data, error } = await supabaseClient
         .from('matches')
         .select('*')
-        .neq('status', 'archived')
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -1286,11 +1285,13 @@
         ]);
 
         officialPayload = payload;
+        const visibleLiveRows = liveRows.filter(row => row.source !== 'archived');
+
         allCompetitions = [
           ...(payload.competitions || []),
-          ...buildPrivateCompetitions(liveRows)
+          ...buildPrivateCompetitions(visibleLiveRows)
         ];
-        allMatches = mergeMatches((payload.matches || []).map(officialMatchToCard), liveRows);
+        allMatches = mergeMatches((payload.matches || []).map(officialMatchToCard), visibleLiveRows);
 
         emptyState.innerHTML = 'Nessuna partita disponibile con i filtri selezionati.';
 
