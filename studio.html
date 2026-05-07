@@ -593,6 +593,8 @@
     const officialMatchId = params.get('match_id');
     const initialWaitMinutes = Math.max(0, Number(params.get('wait') || 0));
     const shouldAutostart = params.get('autostart') === '1';
+    const socialConnected = params.get('social_connected');
+    const socialError = params.get('social_error');
 
     const overlayThemes = {
       metalBlue:{ primary:'#7cc8ff', accent:'#d7ecff', background:'rgba(9, 22, 38, 0.9)', text:'#ffffff', radius:'12px', font:'Space Grotesk', className:'theme-metal' },
@@ -1038,8 +1040,8 @@
             : 'Account non collegato';
 
         if (button) {
-          button.textContent = connected ? 'Collegato' : pending ? 'Richiesta inviata' : 'Richiedi collegamento';
-          button.disabled = connected || pending;
+          button.textContent = connected ? 'Collegato' : pending ? 'Riprendi collegamento' : 'Collega account';
+          button.disabled = connected;
         }
 
         const statusNode = document.querySelector(`[data-destination="${provider}"] .destination-status`);
@@ -1149,37 +1151,19 @@
     async function requestSocialConnection(provider) {
       if (!currentUser) return;
 
-      const payload = {
-        broadcaster_id: currentUser.id,
-        provider,
-        status: 'pending',
-        account_label: providerLabel(provider),
-        updated_at: new Date().toISOString()
-      };
+      const { data, error } = await supabaseClient.functions.invoke('social-oauth-start', {
+        body: {
+          provider,
+          returnUrl: window.location.href
+        }
+      });
 
-      const { data: existing, error: readError } = await supabaseClient
-        .from('broadcaster_social_accounts')
-        .select('id')
-        .eq('broadcaster_id', currentUser.id)
-        .eq('provider', provider)
-        .maybeSingle();
-
-      if (readError) {
-        showMessage(`Collegamento ${providerLabel(provider)} non disponibile: ${readError.message}`, 'error');
+      if (error || !data?.authorization_url) {
+        showMessage(`Collegamento ${providerLabel(provider)} non disponibile: ${error?.message || 'URL OAuth non ricevuto'}`, 'error');
         return;
       }
 
-      const { error } = existing?.id
-        ? await supabaseClient.from('broadcaster_social_accounts').update(payload).eq('id', existing.id)
-        : await supabaseClient.from('broadcaster_social_accounts').insert(payload);
-
-      if (error) {
-        showMessage(`Collegamento ${providerLabel(provider)} non disponibile: ${error.message}`, 'error');
-        return;
-      }
-
-      showMessage(`Richiesta collegamento ${providerLabel(provider)} registrata.`);
-      await loadSocialAccounts();
+      window.location.href = data.authorization_url;
     }
 
     function applyInitialStudioSetup() {
@@ -1700,6 +1684,8 @@
           renderMatch(data);
           await loadSocialAccounts();
           await loadBroadcastDestinations();
+          if (socialConnected) showMessage(`${providerLabel(socialConnected)} collegato correttamente.`);
+          if (socialError) showMessage(`Collegamento social non riuscito: ${socialError}`, 'error');
           applyInitialStudioSetup();
           return;
         }

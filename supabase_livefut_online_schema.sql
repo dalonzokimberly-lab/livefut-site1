@@ -176,6 +176,55 @@ create unique index if not exists broadcast_destinations_unique_match_provider
 create index if not exists broadcast_destinations_broadcaster_idx
   on public.broadcast_destinations (broadcaster_id, created_at desc);
 
+create table if not exists public.social_oauth_states (
+  id uuid primary key default gen_random_uuid(),
+  state text not null unique,
+  broadcaster_id uuid references auth.users(id) on delete cascade,
+  provider text not null,
+  return_url text,
+  expires_at timestamptz not null,
+  consumed_at timestamptz,
+  created_at timestamptz not null default now()
+);
+
+alter table public.social_oauth_states
+  drop constraint if exists social_oauth_states_provider_check;
+
+alter table public.social_oauth_states
+  add constraint social_oauth_states_provider_check
+  check (provider in ('youtube', 'facebook', 'twitch'));
+
+create index if not exists social_oauth_states_state_idx
+  on public.social_oauth_states (state);
+
+create index if not exists social_oauth_states_broadcaster_idx
+  on public.social_oauth_states (broadcaster_id, created_at desc);
+
+create table if not exists public.broadcaster_social_tokens (
+  id uuid primary key default gen_random_uuid(),
+  social_account_id uuid references public.broadcaster_social_accounts(id) on delete cascade,
+  broadcaster_id uuid references auth.users(id) on delete cascade,
+  provider text not null,
+  access_token text,
+  refresh_token text,
+  token_type text,
+  scope text,
+  expires_at timestamptz,
+  updated_at timestamptz not null default now(),
+  created_at timestamptz not null default now(),
+  unique (broadcaster_id, provider)
+);
+
+alter table public.broadcaster_social_tokens
+  drop constraint if exists broadcaster_social_tokens_provider_check;
+
+alter table public.broadcaster_social_tokens
+  add constraint broadcaster_social_tokens_provider_check
+  check (provider in ('youtube', 'facebook', 'twitch'));
+
+create index if not exists broadcaster_social_tokens_account_idx
+  on public.broadcaster_social_tokens (social_account_id);
+
 create table if not exists public.contact_requests (
   id uuid primary key default gen_random_uuid(),
   name text not null,
@@ -240,6 +289,8 @@ alter table public.match_events enable row level security;
 alter table public.broadcast_locks enable row level security;
 alter table public.broadcaster_social_accounts enable row level security;
 alter table public.broadcast_destinations enable row level security;
+alter table public.social_oauth_states enable row level security;
+alter table public.broadcaster_social_tokens enable row level security;
 alter table public.contact_requests enable row level security;
 alter table public.support_requests enable row level security;
 alter table public.accreditation_requests enable row level security;
