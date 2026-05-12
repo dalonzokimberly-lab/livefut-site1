@@ -91,8 +91,12 @@
     .video-wrap::after { content:""; position:absolute; inset:0; pointer-events:none; border:1px solid rgba(255,122,24,.08); box-shadow:inset 0 0 80px rgba(0,0,0,.36); z-index:8; }
     video { width:100%; height:100%; object-fit:cover; display:none; background:var(--black); }
     .video-wrap.active video { display:block; }
+    .broadcast-frame { width:100%; height:100%; border:0; display:none; background:#000; position:absolute; inset:0; z-index:2; }
+    .video-wrap.broadcast-active .broadcast-frame { display:block; }
+    .video-wrap.broadcast-active video { display:none; }
     .preview-placeholder { padding:24px; text-align:center; max-width:420px; position:relative; z-index:1; }
-    .video-wrap.active .preview-placeholder { display:none; }
+    .video-wrap.active .preview-placeholder,
+    .video-wrap.broadcast-active .preview-placeholder { display:none; }
     .preview-placeholder strong { display:block; color:var(--green); font-size:1.55rem; line-height:1.15; margin-bottom:10px; letter-spacing:0; }
     .live-chip { position:absolute; top:14px; right:14px; z-index:9; display:none; align-items:center; gap:8px; border-radius:999px; padding:9px 12px; background:rgba(0,0,0,.72); border:1px solid var(--orange-border); font-size:.78rem; font-weight:900; text-transform:uppercase; letter-spacing:.08em; box-shadow:0 12px 28px rgba(255,122,24,.14); }
     .video-wrap.active .live-chip { display:inline-flex; }
@@ -329,6 +333,13 @@
       <article class="studio-card">
         <div class="video-wrap" id="previewWrap">
           <video id="previewVideo" autoplay playsinline muted></video>
+          <iframe
+            class="broadcast-frame"
+            id="broadcastFrame"
+            title="Broadcast LiveFut TV"
+            allow="autoplay; encrypted-media; fullscreen; picture-in-picture; display-capture; camera; microphone"
+            allowfullscreen>
+          </iframe>
           <div class="live-chip"><span class="dot"></span>Live</div>
           <div class="match-overlay" id="matchOverlay">
             <div class="scoreboard-overlay" id="scoreboardOverlay">
@@ -606,6 +617,7 @@
 
     const pageContent = document.getElementById('pageContent');
     const previewVideo = document.getElementById('previewVideo');
+    const broadcastFrame = document.getElementById('broadcastFrame');
     const previewWrap = document.getElementById('previewWrap');
     const consoleCard = document.getElementById('consoleCard');
     const consoleDrawerToggle = document.getElementById('consoleDrawerToggle');
@@ -680,6 +692,7 @@
     let currentProfile = null;
     let currentLockId = null;
     let livepeerPeerConnection = null;
+    let activeLivepeerStream = null;
     let currentVideoFormat = 'landscape';
     let initialStudioSetupDone = false;
     let socialAccounts = new Map();
@@ -1072,6 +1085,22 @@
       }).catch(() => {});
     }
 
+    function showLivepeerBroadcastFrame(streamInfo) {
+      if (!streamInfo?.stream_key) {
+        throw new Error('Stream key Livepeer non disponibile.');
+      }
+
+      activeLivepeerStream = streamInfo;
+      broadcastFrame.src = `https://lvpr.tv/broadcast/${encodeURIComponent(streamInfo.stream_key)}`;
+      previewWrap.classList.add('active', 'broadcast-active');
+    }
+
+    function hideLivepeerBroadcastFrame() {
+      activeLivepeerStream = null;
+      broadcastFrame.removeAttribute('src');
+      previewWrap.classList.remove('broadcast-active');
+    }
+
     function setupConsoleSections() {
       const panels = [...document.querySelectorAll('.console-panel')];
       const shouldCollapse = window.matchMedia('(max-width: 700px)').matches;
@@ -1406,7 +1435,7 @@
     async function startBroadcast() {
       if (!currentMatch) return;
       startBtn.disabled = true;
-      showMessage('Richiesta accesso a camera e microfono...');
+      showMessage('Preparazione diretta LiveFut...');
       try {
         const lock = await acquireBroadcastLock();
         if (!lock) {
@@ -1414,19 +1443,13 @@
           return;
         }
 
-        mediaStream = await requestCameraStream();
-        previewVideo.srcObject = mediaStream;
-        await previewVideo.play().catch(() => {});
-        previewWrap.classList.add('active');
-        showMessage('Preparazione player LiveFut...');
         const streamInfo = await prepareLivepeerStream();
-        showMessage('Connessione video LiveFut in corso...');
-        await startLivepeerStream(streamInfo, mediaStream);
+        showLivepeerBroadcastFrame(streamInfo);
         const updatedMatch = await updateMatchStatus('live');
         if (updatedMatch) {
           await saveBroadcastDestinations('active');
           stopBtn.disabled = false;
-          showMessage('Diretta avviata su LiveFut. Il player spettatore è attivo.');
+          showMessage('Studio LiveFut pronto. Avvia camera e microfono nel riquadro video.');
           startSponsorCycle();
         } else {
           startBtn.disabled = false;
@@ -1434,6 +1457,7 @@
       } catch (error) {
         startBtn.disabled = false;
         await stopLivepeerStream();
+        hideLivepeerBroadcastFrame();
         if (mediaStream) {
           mediaStream.getTracks().forEach(track => track.stop());
           mediaStream = null;
@@ -1453,6 +1477,7 @@
       hideSponsor();
       hideScene();
       await stopLivepeerStream();
+      hideLivepeerBroadcastFrame();
       if (mediaStream) {
         mediaStream.getTracks().forEach(track => track.stop());
         mediaStream = null;
