@@ -17,6 +17,11 @@ alter table public.matches
   add column if not exists broadcaster_id uuid references auth.users(id),
   add column if not exists broadcast_started_at timestamptz,
   add column if not exists broadcast_ended_at timestamptz,
+  add column if not exists livepeer_stream_id text,
+  add column if not exists livepeer_playback_id text,
+  add column if not exists livepeer_status text default 'idle',
+  add column if not exists livepeer_started_at timestamptz,
+  add column if not exists livepeer_ended_at timestamptz,
   add column if not exists updated_at timestamptz default now();
 
 alter table public.matches

@@ -226,6 +226,19 @@
 
     .player-placeholder { max-width:620px; }
 
+    .player-frame {
+      width:calc(100% + 44px);
+      height:calc(100% + 44px);
+      margin:-22px;
+      border:0;
+      display:block;
+      background:#000;
+    }
+
+    .player-placeholder.is-hidden {
+      display:none;
+    }
+
     .player-placeholder strong {
       display:block;
       color:var(--green);
@@ -728,6 +741,40 @@
       }
     }
 
+    function renderLivePlayer(match) {
+      const playerArea = document.getElementById('playerArea');
+      if (!playerArea || mode === 'broadcast') return;
+
+      if (match.status === 'live' && match.livepeer_playback_id) {
+        const playbackId = encodeURIComponent(match.livepeer_playback_id);
+        const title = escapeHtml(`${safe(match.home_team, 'Casa')} vs ${safe(match.away_team, 'Ospite')}`);
+        playerArea.innerHTML = `
+          <iframe
+            class="player-frame"
+            title="Diretta ${title}"
+            src="https://lvpr.tv?v=${playbackId}&lowLatency=true"
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+          <div class="player-placeholder is-hidden">
+            <strong id="playerHeadline">Diretta in corso</strong>
+            <span id="playerText">La diretta è in corso su LiveFut TV.</span>
+          </div>
+        `;
+        setText('videoDescription', 'Diretta LiveFut TV in tempo reale.');
+        return;
+      }
+
+      playerArea.innerHTML = `
+        <div class="player-placeholder">
+          <strong id="playerHeadline">${match.status === 'live' ? 'Diretta in preparazione' : 'Diretta non ancora avviata'}</strong>
+          <span id="playerText">${match.status === 'live'
+            ? 'Il player LiveFut sarà disponibile qui appena il flusso video sarà attivo.'
+            : 'La diretta apparirà qui appena sarà avviata.'}</span>
+        </div>
+      `;
+    }
+
     function renderEvents(events) {
       const eventList = document.querySelector('.event-list');
       if (!eventList) return;
@@ -976,6 +1023,7 @@
       setText('eventMinute', minuteLabel(match));
 
       applyMode(match);
+      renderLivePlayer(match);
       loadBroadcastDestinations(match);
       loadMatchEvents(match);
       if (options.subscribe) {

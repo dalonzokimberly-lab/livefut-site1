@@ -679,6 +679,7 @@
     let currentUser = null;
     let currentProfile = null;
     let currentLockId = null;
+    let livepeerPeerConnection = null;
     let currentVideoFormat = 'landscape';
     let initialStudioSetupDone = false;
     let socialAccounts = new Map();
@@ -886,6 +887,107 @@
       } catch (error) {
         return navigator.mediaDevices.getUserMedia({ video:true, audio:true });
       }
+    }
+
+    function waitForIceGathering(peerConnection) {
+      if (peerConnection.iceGatheringState === 'complete') return Promise.resolve();
+
+      return new Promise(resolve => {
+        const timeout = window.setTimeout(resolve, 3000);
+        peerConnection.addEventListener('icegatheringstatechange', () => {
+          if (peerConnection.iceGatheringState === 'complete') {
+            window.clearTimeout(timeout);
+            resolve();
+          }
+        });
+      });
+    }
+
+    async function prepareLivepeerStream() {
+      if (!currentMatch || !isUuid(currentMatch.id)) {
+        throw new Error('Partita non pronta per la diretta LiveFut.');
+      }
+
+      const { data, error } = await supabaseClient.functions.invoke('livepeer-stream', {
+        body: {
+          action: 'prepare',
+          matchId: currentMatch.id
+        }
+      });
+
+      if (error || !data?.ingest_url || !data?.playback_id) {
+        throw new Error(error?.message || data?.error || 'Stream LiveFut non disponibile.');
+      }
+
+      currentMatch = {
+        ...currentMatch,
+        livepeer_stream_id: data.stream_id,
+        livepeer_playback_id: data.playback_id,
+        livepeer_status: 'ready'
+      };
+
+      return data;
+    }
+
+    async function startLivepeerStream(streamInfo, stream) {
+      const redirectResponse = await fetch(streamInfo.ingest_url, {
+        method:'HEAD',
+        redirect:'follow'
+      });
+      const ingestUrl = redirectResponse.url || streamInfo.ingest_url;
+      const ingestHost = new URL(ingestUrl).host;
+      const peerConnection = new RTCPeerConnection({
+        iceServers: [
+          { urls:`stun:${ingestHost}` },
+          { urls:`turn:${ingestHost}`, username:'livepeer', credential:'livepeer' }
+        ]
+      });
+
+      stream.getTracks().forEach(track => {
+        peerConnection.addTrack(track, stream);
+      });
+
+      const offer = await peerConnection.createOffer();
+      await peerConnection.setLocalDescription(offer);
+      await waitForIceGathering(peerConnection);
+
+      const response = await fetch(ingestUrl, {
+        method:'POST',
+        mode:'cors',
+        headers:{
+          'Content-Type':'application/sdp',
+          'Accept':'application/sdp'
+        },
+        body:peerConnection.localDescription.sdp
+      });
+
+      if (!response.ok) {
+        peerConnection.close();
+        throw new Error('Livepeer non ha accettato il flusso video.');
+      }
+
+      const answer = await response.text();
+      await peerConnection.setRemoteDescription({ type:'answer', sdp:answer });
+      livepeerPeerConnection = peerConnection;
+    }
+
+    async function stopLivepeerStream() {
+      if (livepeerPeerConnection) {
+        livepeerPeerConnection.getSenders().forEach(sender => {
+          if (sender.track) sender.track.stop();
+        });
+        livepeerPeerConnection.close();
+        livepeerPeerConnection = null;
+      }
+
+      if (!currentMatch || !isUuid(currentMatch.id)) return;
+
+      await supabaseClient.functions.invoke('livepeer-stream', {
+        body: {
+          action: 'stop',
+          matchId: currentMatch.id
+        }
+      }).catch(() => {});
     }
 
     function setupConsoleSections() {
@@ -1194,7 +1296,10 @@
         renderMatch(currentMatch);
         return currentMatch;
       }
-      const { error } = await supabaseClient.from('matches').update({ status }).eq('id', currentMatch.id);
+      const payload = { status };
+      if (status === 'live') payload.livepeer_status = 'live';
+      if (status === 'finished') payload.livepeer_status = 'ended';
+      const { error } = await supabaseClient.from('matches').update(payload).eq('id', currentMatch.id);
       if (error) {
         showMessage(`Errore durante l'aggiornamento dello stato: ${error.message}`, 'error');
         return null;
@@ -1230,19 +1335,31 @@
         mediaStream = await requestCameraStream();
         previewVideo.srcObject = mediaStream;
         previewWrap.classList.add('active');
+        showMessage('Preparazione player LiveFut...');
+        const streamInfo = await prepareLivepeerStream();
+        showMessage('Connessione video LiveFut in corso...');
+        await startLivepeerStream(streamInfo, mediaStream);
         const updatedMatch = await updateMatchStatus('live');
         if (updatedMatch) {
           await saveBroadcastDestinations('active');
           stopBtn.disabled = false;
-          showMessage('Diretta avviata su LiveFut. Le destinazioni esterne selezionate sono state salvate per il multistream.');
+          showMessage('Diretta avviata su LiveFut. Il player spettatore è attivo.');
           startSponsorCycle();
         } else {
           startBtn.disabled = false;
         }
       } catch (error) {
         startBtn.disabled = false;
-        stopBtn.disabled = !mediaStream;
-        showMessage('Impossibile accedere a camera e microfono. Controlla i permessi del browser.', 'error');
+        await stopLivepeerStream();
+        if (mediaStream) {
+          mediaStream.getTracks().forEach(track => track.stop());
+          mediaStream = null;
+        }
+        previewVideo.srcObject = null;
+        previewWrap.classList.remove('active');
+        stopBtn.disabled = true;
+        await releaseBroadcastLock();
+        showMessage(error?.message || 'Impossibile avviare la diretta. Controlla i permessi del browser.', 'error');
       }
     }
 
@@ -1252,6 +1369,7 @@
       stopSponsorCycle();
       hideSponsor();
       hideScene();
+      await stopLivepeerStream();
       if (mediaStream) {
         mediaStream.getTracks().forEach(track => track.stop());
         mediaStream = null;
