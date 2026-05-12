@@ -297,6 +297,10 @@
       overflow-wrap:anywhere;
     }
 
+    .competition-summary.private strong {
+      color:var(--green);
+    }
+
     .competition-summary span {
       color:var(--green);
       font-weight:800;
@@ -307,6 +311,12 @@
       display:grid;
       gap:10px;
       padding:14px;
+    }
+
+    .archive-note {
+      padding:14px;
+      color:var(--muted);
+      line-height:1.55;
     }
 
     .match-row {
@@ -607,7 +617,7 @@
         ...match,
         id: match.id || match.match_id,
         match_id: match.match_id || match.id,
-        region: match.region || 'Regione non specificata',
+        region: match.region || '',
         discipline: match.discipline || formatDiscipline(sport),
         sport,
         category: match.category,
@@ -665,6 +675,30 @@
       return map;
     }
 
+    function isPrivateCompetition(match) {
+      return match.competition_type === 'torneo_privato' || match.competition_type === 'partita_privata';
+    }
+
+    function resolveRegion(match, competitionMap) {
+      const competition = competitionMap.get(match.competition_id) || {};
+      return safe(match.region || competition.region, 'Italia');
+    }
+
+    function regionList(payload, matches, competitionMap) {
+      const regions = [
+        ...(payload.meta?.regions || []),
+        ...(payload.competitions || []).map(competition => competition.region),
+        ...matches.map(match => resolveRegion(match, competitionMap))
+      ];
+
+      return [...new Set(regions.filter(Boolean))]
+        .sort((a, b) => {
+          if (a === 'Italia') return 1;
+          if (b === 'Italia') return -1;
+          return a.localeCompare(b, 'it');
+        });
+    }
+
     function competitionLabel(match, competitionMap) {
       const competition = competitionMap.get(match.competition_id) || {};
       const category = safe(competition.category || match.category, 'Competizione');
@@ -673,83 +707,132 @@
       return `${sport} - ${category}${group && group !== '-' ? ' - ' + group : ''}`;
     }
 
-    function groupArchivedMatches(matches, competitionMap) {
-      const regions = new Map();
+    function groupArchivedMatches(matches, competitionMap, regions) {
+      const groupedRegions = new Map();
 
-      matches.forEach(match => {
-        const region = safe(match.region, 'Regione non specificata');
-        const competition = competitionLabel(match, competitionMap);
-
-        if (!regions.has(region)) regions.set(region, new Map());
-        const competitions = regions.get(region);
-        if (!competitions.has(competition)) competitions.set(competition, []);
-        competitions.get(competition).push(match);
+      regions.forEach(region => {
+        groupedRegions.set(region, {
+          official: new Map(),
+          private: new Map()
+        });
       });
 
-      return [...regions.entries()].sort((a, b) => a[0].localeCompare(b[0], 'it'));
+      matches.forEach(match => {
+        const region = resolveRegion(match, competitionMap);
+        const competition = competitionLabel(match, competitionMap);
+        const regionGroup = groupedRegions.get(region) || {
+          official: new Map(),
+          private: new Map()
+        };
+        const target = isPrivateCompetition(match) ? regionGroup.private : regionGroup.official;
+
+        if (!target.has(competition)) target.set(competition, []);
+        target.get(competition).push(match);
+        groupedRegions.set(region, regionGroup);
+      });
+
+      return [...groupedRegions.entries()];
     }
 
-    function renderArchive(matches, competitionMap) {
+    function renderMatchRows(list, items) {
+      items.forEach(match => {
+        const row = document.createElement('article');
+        row.className = 'match-row';
+        row.innerHTML = `
+          <div>
+            <h3>${escapeHtml(safe(match.home_team, 'Squadra Casa'))} vs ${escapeHtml(safe(match.away_team, 'Squadra Ospite'))}</h3>
+            <p>${escapeHtml(formatDate(match.match_date))}</p>
+          </div>
+          <div class="score-pill">${escapeHtml(normalizeScore(match.score))}</div>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    function renderCompetitionBlock(content, competition, items, options = {}) {
+      const competitionDetails = document.createElement('details');
+      competitionDetails.className = 'archive-competition';
+      if (options.open) competitionDetails.open = true;
+
+      competitionDetails.innerHTML = `
+        <summary class="competition-summary${options.private ? ' private' : ''}">
+          <strong>${escapeHtml(competition)}</strong>
+          <span>${items.length} partite</span>
+        </summary>
+        <div class="match-list"></div>
+      `;
+
+      renderMatchRows(competitionDetails.querySelector('.match-list'), items);
+      content.appendChild(competitionDetails);
+    }
+
+    function renderArchive(matches, competitionMap, allRegions) {
       archiveRoot.innerHTML = '';
 
-      if (!matches.length) {
+      if (!allRegions.length) {
         emptyState.style.display = 'block';
         return;
       }
 
       emptyState.style.display = 'none';
-      const grouped = groupArchivedMatches(matches, competitionMap);
+      const grouped = groupArchivedMatches(matches, competitionMap, allRegions);
 
       archivedMatchesCount.textContent = `${matches.length} partite`;
       archivedRegionsCount.textContent = `${grouped.length} regioni`;
       archivedCompetitionsCount.textContent = `${new Set(matches.map(match => match.competition_id || competitionLabel(match, competitionMap))).size} competizioni`;
 
-      grouped.forEach(([region, competitions], regionIndex) => {
-        const regionMatchesCount = [...competitions.values()].reduce((sum, items) => sum + items.length, 0);
+      grouped.forEach(([region, groups], regionIndex) => {
+        const officialEntries = [...groups.official.entries()].sort((a, b) => a[0].localeCompare(b[0], 'it'));
+        const privateEntries = [...groups.private.entries()].sort((a, b) => a[0].localeCompare(b[0], 'it'));
+        const regionMatchesCount = [...officialEntries, ...privateEntries].reduce((sum, [, items]) => sum + items.length, 0);
+        const competitionsCount = officialEntries.length + privateEntries.length;
         const regionDetails = document.createElement('details');
         regionDetails.className = 'archive-region';
-        if (regionIndex === 0) regionDetails.open = true;
+        if (regionIndex === 0 || regionMatchesCount > 0) regionDetails.open = regionIndex === 0;
 
         regionDetails.innerHTML = `
           <summary class="archive-summary">
             <strong>${escapeHtml(region)}</strong>
-            <span>${competitions.size} competizioni - ${regionMatchesCount} partite</span>
+            <span>${competitionsCount} competizioni - ${regionMatchesCount} partite</span>
           </summary>
           <div class="archive-content"></div>
         `;
 
         const content = regionDetails.querySelector('.archive-content');
-        [...competitions.entries()]
-          .sort((a, b) => a[0].localeCompare(b[0], 'it'))
-          .forEach(([competition, items], competitionIndex) => {
-            const competitionDetails = document.createElement('details');
-            competitionDetails.className = 'archive-competition';
-            if (regionIndex === 0 && competitionIndex === 0) competitionDetails.open = true;
 
-            competitionDetails.innerHTML = `
-              <summary class="competition-summary">
-                <strong>${escapeHtml(competition)}</strong>
-                <span>${items.length} partite</span>
-              </summary>
-              <div class="match-list"></div>
-            `;
-
-            const list = competitionDetails.querySelector('.match-list');
-            items.forEach(match => {
-              const row = document.createElement('article');
-              row.className = 'match-row';
-              row.innerHTML = `
-                <div>
-                  <h3>${escapeHtml(safe(match.home_team, 'Squadra Casa'))} vs ${escapeHtml(safe(match.away_team, 'Squadra Ospite'))}</h3>
-                  <p>${escapeHtml(formatDate(match.match_date))}</p>
-                </div>
-                <div class="score-pill">${escapeHtml(normalizeScore(match.score))}</div>
-              `;
-              list.appendChild(row);
-            });
-
-            content.appendChild(competitionDetails);
+        officialEntries.forEach(([competition, items], competitionIndex) => {
+          renderCompetitionBlock(content, competition, items, {
+            open: regionIndex === 0 && competitionIndex === 0
           });
+        });
+
+        const privateDetails = document.createElement('details');
+        privateDetails.className = 'archive-competition';
+        if (!officialEntries.length && privateEntries.length) privateDetails.open = true;
+        privateDetails.innerHTML = `
+          <summary class="competition-summary private">
+            <strong>Tornei privati</strong>
+            <span>${privateEntries.reduce((sum, [, items]) => sum + items.length, 0)} partite</span>
+          </summary>
+          <div class="match-list"></div>
+        `;
+
+        const privateList = privateDetails.querySelector('.match-list');
+        if (privateEntries.length) {
+          privateEntries.forEach(([competition, items], index) => {
+            renderCompetitionBlock(privateList, competition, items, {
+              private: true,
+              open: index === 0
+            });
+          });
+        } else {
+          privateList.innerHTML = '<div class="archive-note">Nessun torneo privato archiviato in questa regione.</div>';
+        }
+        content.appendChild(privateDetails);
+
+        if (!officialEntries.length && !privateEntries.length) {
+          content.insertAdjacentHTML('afterbegin', '<div class="archive-note">Nessuna partita archiviata in questa regione.</div>');
+        }
 
         archiveRoot.appendChild(regionDetails);
       });
@@ -792,10 +875,15 @@
         const competitionMap = buildCompetitionMap(payload.competitions || [], liveRows);
         const archivedMatches = mergeMatches(officialMatches, liveRows)
           .filter(isArchivedMatch)
-          .map(match => ({ ...match, status: 'finished' }));
+          .map(match => ({
+            ...match,
+            region: resolveRegion(match, competitionMap),
+            status: 'finished'
+          }));
+        const regions = regionList(payload, archivedMatches, competitionMap);
 
         emptyState.textContent = 'Nessuna partita archiviata al momento.';
-        renderArchive(archivedMatches, competitionMap);
+        renderArchive(archivedMatches, competitionMap, regions);
       } catch (error) {
         emptyState.style.display = 'block';
         emptyState.innerHTML = `Errore nel caricamento dell’archivio: <strong>${escapeHtml(error.message)}</strong>`;
