@@ -601,6 +601,7 @@
         <a href="#live-now">Live ora</a>
         <a href="#regioni">Regioni</a>
         <a href="#campionati">Campionati</a>
+        <a href="archiviopartite.html">Archivio</a>
       </nav>
 
       <div class="top-actions">
@@ -629,6 +630,7 @@
           <div class="hero-buttons">
             <a class="btn btn-primary" href="#live-now">Guarda le live</a>
             <a class="btn btn-secondary" href="#regioni">Esplora regioni</a>
+            <a class="btn btn-secondary" href="archiviopartite.html">Archivio partite</a>
           </div>
         </div>
 
@@ -720,19 +722,6 @@
       </div>
     </section>
 
-    <section class="section" id="archivio-partite">
-      <h2 class="section-title">Archivio partite</h2>
-      <p class="section-text">
-        Le partite con data passata vengono conservate qui e non risultano più disponibili per una nuova trasmissione.
-      </p>
-
-      <div id="archiveGrid" class="grid-3"></div>
-
-      <div id="archiveEmptyState" class="empty-state" style="display:none;">
-        Nessuna partita archiviata al momento.
-      </div>
-    </section>
-
     <section class="section" id="regioni">
       <h2 class="section-title">Scegli la regione</h2>
       <p class="section-text">
@@ -794,8 +783,6 @@
 
     const matchesGrid = document.getElementById('matchesGrid');
     const emptyState = document.getElementById('emptyState');
-    const archiveGrid = document.getElementById('archiveGrid');
-    const archiveEmptyState = document.getElementById('archiveEmptyState');
     const totalMatches = document.getElementById('totalMatches');
     const liveMatches = document.getElementById('liveMatches');
     const totalCompetitions = document.getElementById('totalCompetitions');
@@ -816,7 +803,6 @@
 
     let officialPayload = { competitions: [], teams: [], matches: [], sources: [] };
     let allMatches = [];
-    let archivedMatches = [];
     let allCompetitions = [];
     let selectedCompetitionId = '';
     let selectedRegion = '';
@@ -1090,8 +1076,7 @@
       addOptions(filters.categoria, [...new Set(allCompetitions.map(item => item.category))]);
     }
 
-    function createMatchCard(match, options = {}) {
-      const showBroadcast = options.showBroadcast !== false;
+    function createMatchCard(match) {
       const status = safe(match.status, 'soon');
       const score = normalizeScore(match.score);
       const minute = match.minute ? `${match.minute}'` : '';
@@ -1100,7 +1085,7 @@
       const category = safe(match.category, 'Categoria non specificata');
       const groupName = safe(match.group_name, '');
       const field = safe(match.field, 'Campo non specificato');
-      const broadcastAvailable = showBroadcast && isBroadcastAvailable(match);
+      const broadcastAvailable = isBroadcastAvailable(match);
 
       const card = document.createElement('article');
       card.className = 'match-card';
@@ -1151,21 +1136,6 @@
 
       matches.slice(0, 120).forEach(match => {
         matchesGrid.appendChild(createMatchCard(match));
-      });
-    }
-
-    function renderArchiveMatches() {
-      archiveGrid.innerHTML = '';
-
-      if (!archivedMatches.length) {
-        archiveEmptyState.style.display = 'block';
-        return;
-      }
-
-      archiveEmptyState.style.display = 'none';
-
-      archivedMatches.slice(0, 120).forEach(match => {
-        archiveGrid.appendChild(createMatchCard(match, { showBroadcast: false }));
       });
     }
 
@@ -1336,11 +1306,6 @@
         const visibleLiveRows = liveRows.filter(row => row.source !== 'archived');
         const mergedMatches = mergeMatches((payload.matches || []).map(officialMatchToCard), visibleLiveRows);
 
-        archivedMatches = mergedMatches
-          .filter(isArchivedMatch)
-          .map(match => ({ ...match, status: 'finished' }))
-          .sort((a, b) => String(b.match_date || '').localeCompare(String(a.match_date || '')));
-
         allMatches = mergedMatches.filter(match => !isArchivedMatch(match));
 
         allCompetitions = [
@@ -1353,7 +1318,6 @@
         populateFilters();
         renderRegions();
         renderCompetitions();
-        renderArchiveMatches();
         const liveOnly = allMatches.filter(match => match.status === 'live');
         renderMatches(liveOnly);
       } catch (error) {
