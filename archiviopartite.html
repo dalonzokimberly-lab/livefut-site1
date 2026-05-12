@@ -476,7 +476,7 @@
           </div>
           <div class="mini-stat">
             <strong id="archivedRegionsCount">0 regioni</strong>
-            <span>Territori presenti nell’archivio.</span>
+            <span>Territori con partite archiviate.</span>
           </div>
           <div class="mini-stat">
             <strong id="archivedCompetitionsCount">0 competizioni</strong>
@@ -576,11 +576,13 @@
 
     function normalizeScore(score) {
       const value = String(score || '').trim();
-      if (!value || value === '0-0' || value === '0 - 0') return 'Risultato non disponibile';
+      if (!value) return 'Risultato non disponibile';
       return value.replace('-', ' - ');
     }
 
     function isArchivedMatch(match) {
+      if (match.source === 'archived') return true;
+
       const date = parseLocalDate(match.match_date);
       if (!date) return match.status === 'finished';
 
@@ -778,7 +780,13 @@
       const grouped = groupArchivedMatches(matches, competitionMap, allRegions);
 
       archivedMatchesCount.textContent = `${matches.length} partite`;
-      archivedRegionsCount.textContent = `${grouped.length} regioni`;
+      const regionsWithMatches = grouped.filter(([, groups]) => {
+        const officialCount = [...groups.official.values()].reduce((sum, items) => sum + items.length, 0);
+        const privateCount = [...groups.private.values()].reduce((sum, items) => sum + items.length, 0);
+        return officialCount + privateCount > 0;
+      }).length;
+
+      archivedRegionsCount.textContent = `${regionsWithMatches} regioni`;
       archivedCompetitionsCount.textContent = `${new Set(matches.map(match => match.competition_id || competitionLabel(match, competitionMap))).size} competizioni`;
 
       grouped.forEach(([region, groups], regionIndex) => {

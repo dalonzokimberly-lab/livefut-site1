@@ -464,11 +464,8 @@
           <h2 id="videoTitle">Diretta partita</h2>
           <p id="videoDescription">Segui la partita su LiveFut TV.</p>
 
-          <div class="platforms">
+          <div class="platforms" id="platformsList">
             <span class="pill">LiveFut TV</span>
-            <span class="pill">YouTube</span>
-            <span class="pill">Facebook</span>
-            <span class="pill">Twitch</span>
           </div>
 
           <div class="broadcast-panel" id="broadcastPanel" style="display:none;">
@@ -606,6 +603,8 @@
     function formatCompetitionType(value) {
       if (value === 'campionato') return 'Campionato';
       if (value === 'coppa') return 'Coppa';
+      if (value === 'torneo_privato') return 'Torneo privato';
+      if (value === 'partita_privata') return 'Partita privata';
       return safe(value, 'Competizione');
     }
 
@@ -677,6 +676,56 @@
     function setText(id, value) {
       const el = document.getElementById(id);
       if (el) el.textContent = value;
+    }
+
+    function providerLabel(provider) {
+      if (provider === 'youtube') return 'YouTube';
+      if (provider === 'facebook') return 'Facebook';
+      if (provider === 'twitch') return 'Twitch';
+      return 'LiveFut TV';
+    }
+
+    function renderPlatformPills(providers = ['livefut']) {
+      const platformsList = document.getElementById('platformsList');
+      if (!platformsList) return;
+
+      const uniqueProviders = [...new Set(['livefut', ...providers])];
+      platformsList.innerHTML = uniqueProviders
+        .map(provider => `<span class="pill">${escapeHtml(providerLabel(provider))}</span>`)
+        .join('');
+    }
+
+    async function loadBroadcastDestinations(match) {
+      renderPlatformPills(['livefut']);
+
+      if (!match || match.status !== 'live') return;
+
+      try {
+        let query = supabaseClient
+          .from('broadcast_destinations')
+          .select('provider, enabled, status')
+          .eq('enabled', true);
+
+        if (isUuid(match.id)) {
+          query = query.eq('match_id', match.id);
+        } else if (match.match_id) {
+          query = query.eq('official_match_id', match.match_id);
+        } else {
+          return;
+        }
+
+        const { data, error } = await query;
+        if (error) throw error;
+
+        const providers = (data || [])
+          .filter(destination => destination.provider !== 'livefut')
+          .filter(destination => ['active', 'pending'].includes(destination.status))
+          .map(destination => destination.provider);
+
+        renderPlatformPills(providers);
+      } catch (error) {
+        console.warn('Destinazioni pubbliche non disponibili:', error.message);
+      }
     }
 
     function renderEvents(events) {
@@ -887,7 +936,7 @@
 
         playerHeadline.textContent = match.status === 'live' ? 'Diretta in corso' : 'Diretta non ancora avviata';
         playerText.textContent = match.status === 'live'
-          ? 'La diretta è in corso. Il player LiveFut sarà disponibile qui.'
+          ? 'La diretta è in corso. Il player LiveFut sarà disponibile qui quando il flusso video sarà attivo.'
           : 'La diretta apparirà qui appena sarà avviata.';
 
         videoDescription.textContent = 'Pagina spettatore LiveFut TV.';
@@ -927,6 +976,7 @@
       setText('eventMinute', minuteLabel(match));
 
       applyMode(match);
+      loadBroadcastDestinations(match);
       loadMatchEvents(match);
       if (options.subscribe) {
         subscribeMatchEvents(match);

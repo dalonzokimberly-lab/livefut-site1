@@ -364,6 +364,14 @@ create policy "broadcasters read own destinations"
   to authenticated
   using (auth.uid() = broadcaster_id);
 
+drop policy if exists "broadcast destinations enabled public readable" on public.broadcast_destinations;
+create policy "broadcast destinations enabled public readable"
+  on public.broadcast_destinations for select
+  using (
+    enabled = true
+    and status in ('active', 'pending', 'finished')
+  );
+
 drop policy if exists "broadcasters create own destinations" on public.broadcast_destinations;
 create policy "broadcasters create own destinations"
   on public.broadcast_destinations for insert

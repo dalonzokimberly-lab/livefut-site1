@@ -497,31 +497,31 @@
                 <div class="destination-top">
                   <div class="destination-name">
                     <strong>YouTube</strong>
-                    <span id="youtubeAccountLabel">Account non collegato</span>
+                    <span id="youtubeAccountLabel">Collega l'account e selezionalo come destinazione</span>
                   </div>
                   <input id="destinationYoutube" type="checkbox" data-destination-toggle="youtube" disabled>
                 </div>
-                <button class="btn btn-secondary btn-small" type="button" data-social-connect="youtube">Richiedi collegamento</button>
+                <button class="btn btn-secondary btn-small" type="button" data-social-connect="youtube">Collega account</button>
               </div>
               <div class="destination-card" data-destination="facebook">
                 <div class="destination-top">
                   <div class="destination-name">
                     <strong>Facebook</strong>
-                    <span id="facebookAccountLabel">Account non collegato</span>
+                    <span id="facebookAccountLabel">Collega l'account e selezionalo come destinazione</span>
                   </div>
                   <input id="destinationFacebook" type="checkbox" data-destination-toggle="facebook" disabled>
                 </div>
-                <button class="btn btn-secondary btn-small" type="button" data-social-connect="facebook">Richiedi collegamento</button>
+                <button class="btn btn-secondary btn-small" type="button" data-social-connect="facebook">Collega account</button>
               </div>
               <div class="destination-card" data-destination="twitch">
                 <div class="destination-top">
                   <div class="destination-name">
                     <strong>Twitch</strong>
-                    <span id="twitchAccountLabel">Account non collegato</span>
+                    <span id="twitchAccountLabel">Collega l'account e selezionalo come destinazione</span>
                   </div>
                   <input id="destinationTwitch" type="checkbox" data-destination-toggle="twitch" disabled>
                 </div>
-                <button class="btn btn-secondary btn-small" type="button" data-social-connect="twitch">Richiedi collegamento</button>
+                <button class="btn btn-secondary btn-small" type="button" data-social-connect="twitch">Collega account</button>
               </div>
             </div>
           </div>
@@ -1234,7 +1234,7 @@
         if (updatedMatch) {
           await saveBroadcastDestinations('active');
           stopBtn.disabled = false;
-          showMessage('Diretta avviata. La partita è collegata a Supabase e sarà visibile nella pagina live.');
+          showMessage('Diretta avviata su LiveFut. Le destinazioni esterne selezionate sono state salvate per il multistream.');
           startSponsorCycle();
         } else {
           startBtn.disabled = false;
@@ -1579,7 +1579,7 @@
         reason
       });
 
-      showMessage(error ? `Richiesta non inviata: ${error.message}` : 'Richiesta supporto inviata. Il team LiveFut potra intervenire sulla diretta.', error ? 'error' : 'ok');
+      showMessage(error ? `Richiesta non inviata: ${error.message}` : 'Richiesta supporto inviata. Il team LiveFut potrà intervenire sulla diretta.', error ? 'error' : 'ok');
     }
 
     function showBlockedBroadcast(activeLock) {
