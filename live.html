@@ -720,6 +720,19 @@
       </div>
     </section>
 
+    <section class="section" id="archivio-partite">
+      <h2 class="section-title">Archivio partite</h2>
+      <p class="section-text">
+        Le partite con data passata vengono conservate qui e non risultano più disponibili per una nuova trasmissione.
+      </p>
+
+      <div id="archiveGrid" class="grid-3"></div>
+
+      <div id="archiveEmptyState" class="empty-state" style="display:none;">
+        Nessuna partita archiviata al momento.
+      </div>
+    </section>
+
     <section class="section" id="regioni">
       <h2 class="section-title">Scegli la regione</h2>
       <p class="section-text">
@@ -781,6 +794,8 @@
 
     const matchesGrid = document.getElementById('matchesGrid');
     const emptyState = document.getElementById('emptyState');
+    const archiveGrid = document.getElementById('archiveGrid');
+    const archiveEmptyState = document.getElementById('archiveEmptyState');
     const totalMatches = document.getElementById('totalMatches');
     const liveMatches = document.getElementById('liveMatches');
     const totalCompetitions = document.getElementById('totalCompetitions');
@@ -801,6 +816,7 @@
 
     let officialPayload = { competitions: [], teams: [], matches: [], sources: [] };
     let allMatches = [];
+    let archivedMatches = [];
     let allCompetitions = [];
     let selectedCompetitionId = '';
     let selectedRegion = '';
@@ -870,6 +886,18 @@
 
       if (date < today) return 'finished';
       return 'soon';
+    }
+
+    function isArchivedMatch(match) {
+      const date = parseLocalDate(match.match_date);
+
+      if (!date) return match.status === 'finished';
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      date.setHours(0, 0, 0, 0);
+
+      return date < today;
     }
 
     function formatDate(dateValue) {
@@ -1062,6 +1090,51 @@
       addOptions(filters.categoria, [...new Set(allCompetitions.map(item => item.category))]);
     }
 
+    function createMatchCard(match, options = {}) {
+      const showBroadcast = options.showBroadcast !== false;
+      const status = safe(match.status, 'soon');
+      const score = normalizeScore(match.score);
+      const minute = match.minute ? `${match.minute}'` : '';
+      const discipline = safe(match.discipline, '');
+      const region = safe(match.region, 'Regione non specificata');
+      const category = safe(match.category, 'Categoria non specificata');
+      const groupName = safe(match.group_name, '');
+      const field = safe(match.field, 'Campo non specificato');
+      const broadcastAvailable = showBroadcast && isBroadcastAvailable(match);
+
+      const card = document.createElement('article');
+      card.className = 'match-card';
+
+      card.innerHTML = `
+        <div class="match-top">
+          <div>
+            <h3>${escapeHtml(safe(match.home_team, 'Squadra Casa'))} vs ${escapeHtml(safe(match.away_team, 'Squadra Ospite'))}</h3>
+            <p>${escapeHtml(region)} - ${escapeHtml(discipline)} - ${escapeHtml(category)}${groupName ? ' - ' + escapeHtml(groupName) : ''}</p>
+          </div>
+          <span class="status-badge ${statusClass(status)}">${statusLabel(status)}</span>
+        </div>
+
+        <div class="match-score">
+          <span>${escapeHtml(score)}</span>
+          ${minute ? `<span style="font-size:.9rem; color:#fff;">${escapeHtml(minute)}</span>` : ''}
+        </div>
+
+        <div class="meta-row">
+          <span class="tag">${escapeHtml(field)}</span>
+          <span class="tag">${escapeHtml(safe(match.competition_type_label, 'Competizione'))}</span>
+          <span class="tag">${escapeHtml(safe(match.age_group_label, 'Fascia'))}</span>
+          <span class="tag">${escapeHtml(safe(match.gender_label, 'Genere'))}</span>
+        </div>
+
+        <div class="row-actions">
+          <a class="btn btn-primary" href="${protectedMatchUrl(match, 'view')}">Dettaglio</a>
+          ${broadcastAvailable ? `<a class="btn btn-secondary" href="${buildMatchUrl(match, 'broadcast')}">Trasmetti</a>` : ''}
+        </div>
+      `;
+
+      return card;
+    }
+
     function renderMatches(matches) {
       matchesGrid.innerHTML = '';
 
@@ -1077,47 +1150,22 @@
       emptyState.style.display = 'none';
 
       matches.slice(0, 120).forEach(match => {
-        const status = safe(match.status, 'soon');
-        const score = normalizeScore(match.score);
-        const minute = match.minute ? `${match.minute}'` : '';
-        const discipline = safe(match.discipline, '');
-        const region = safe(match.region, 'Regione non specificata');
-        const category = safe(match.category, 'Categoria non specificata');
-        const groupName = safe(match.group_name, '');
-        const field = safe(match.field, 'Campo non specificato');
-        const broadcastAvailable = isBroadcastAvailable(match);
+        matchesGrid.appendChild(createMatchCard(match));
+      });
+    }
 
-        const card = document.createElement('article');
-        card.className = 'match-card';
+    function renderArchiveMatches() {
+      archiveGrid.innerHTML = '';
 
-        card.innerHTML = `
-          <div class="match-top">
-            <div>
-              <h3>${escapeHtml(safe(match.home_team, 'Squadra Casa'))} vs ${escapeHtml(safe(match.away_team, 'Squadra Ospite'))}</h3>
-              <p>${escapeHtml(region)} - ${escapeHtml(discipline)} - ${escapeHtml(category)}${groupName ? ' - ' + escapeHtml(groupName) : ''}</p>
-            </div>
-            <span class="status-badge ${statusClass(status)}">${statusLabel(status)}</span>
-          </div>
+      if (!archivedMatches.length) {
+        archiveEmptyState.style.display = 'block';
+        return;
+      }
 
-          <div class="match-score">
-            <span>${escapeHtml(score)}</span>
-            ${minute ? `<span style="font-size:.9rem; color:#fff;">${escapeHtml(minute)}</span>` : ''}
-          </div>
+      archiveEmptyState.style.display = 'none';
 
-          <div class="meta-row">
-            <span class="tag">${escapeHtml(field)}</span>
-            <span class="tag">${escapeHtml(safe(match.competition_type_label, 'Competizione'))}</span>
-            <span class="tag">${escapeHtml(safe(match.age_group_label, 'Fascia'))}</span>
-            <span class="tag">${escapeHtml(safe(match.gender_label, 'Genere'))}</span>
-          </div>
-
-          <div class="row-actions">
-            <a class="btn btn-primary" href="${protectedMatchUrl(match, 'view')}">Dettaglio</a>
-            ${broadcastAvailable ? `<a class="btn btn-secondary" href="${buildMatchUrl(match, 'broadcast')}">Trasmetti</a>` : ''}
-          </div>
-        `;
-
-        matchesGrid.appendChild(card);
+      archivedMatches.slice(0, 120).forEach(match => {
+        archiveGrid.appendChild(createMatchCard(match, { showBroadcast: false }));
       });
     }
 
@@ -1286,18 +1334,26 @@
 
         officialPayload = payload;
         const visibleLiveRows = liveRows.filter(row => row.source !== 'archived');
+        const mergedMatches = mergeMatches((payload.matches || []).map(officialMatchToCard), visibleLiveRows);
+
+        archivedMatches = mergedMatches
+          .filter(isArchivedMatch)
+          .map(match => ({ ...match, status: 'finished' }))
+          .sort((a, b) => String(b.match_date || '').localeCompare(String(a.match_date || '')));
+
+        allMatches = mergedMatches.filter(match => !isArchivedMatch(match));
 
         allCompetitions = [
           ...(payload.competitions || []),
-          ...buildPrivateCompetitions(visibleLiveRows)
-        ];
-        allMatches = mergeMatches((payload.matches || []).map(officialMatchToCard), visibleLiveRows);
+          ...buildPrivateCompetitions(visibleLiveRows.filter(row => !isArchivedMatch(row)))
+        ].filter(competition => allMatches.some(match => match.competition_id === competition.competition_id));
 
         emptyState.innerHTML = 'Nessuna partita disponibile con i filtri selezionati.';
 
         populateFilters();
         renderRegions();
         renderCompetitions();
+        renderArchiveMatches();
         const liveOnly = allMatches.filter(match => match.status === 'live');
         renderMatches(liveOnly);
       } catch (error) {
