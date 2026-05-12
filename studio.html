@@ -997,17 +997,8 @@
     }
 
     async function startLivepeerStream(streamInfo, stream) {
-      const redirectResponse = await fetch(streamInfo.ingest_url, {
-        method:'HEAD',
-        redirect:'follow'
-      });
-      const ingestUrl = redirectResponse.url || streamInfo.ingest_url;
-      const ingestHost = new URL(ingestUrl).host;
       const peerConnection = new RTCPeerConnection({
-        iceServers: [
-          { urls:`stun:${ingestHost}` },
-          { urls:`turn:${ingestHost}`, username:'livepeer', credential:'livepeer' }
-        ]
+        iceServers: [{ urls:'stun:stun.l.google.com:19302' }]
       });
 
       peerConnection.addEventListener('icecandidateerror', event => {
@@ -1022,11 +1013,13 @@
       const audioTrack = stream.getAudioTracks()[0] || null;
 
       if (videoTrack) {
-        peerConnection.addTransceiver(videoTrack, { direction:'sendonly' });
+        const videoTransceiver = peerConnection.addTransceiver('video', { direction:'sendonly' });
+        await videoTransceiver.sender.replaceTrack(videoTrack);
       }
 
       if (audioTrack) {
-        peerConnection.addTransceiver(audioTrack, { direction:'sendonly' });
+        const audioTransceiver = peerConnection.addTransceiver('audio', { direction:'sendonly' });
+        await audioTransceiver.sender.replaceTrack(audioTrack);
       }
 
       if (!videoTrack && !audioTrack) {
@@ -1037,7 +1030,7 @@
       await peerConnection.setLocalDescription(offer);
       await waitForIceGathering(peerConnection);
 
-      const response = await fetch(ingestUrl, {
+      const response = await fetch(streamInfo.ingest_url, {
         method:'POST',
         mode:'cors',
         headers:{
@@ -1423,6 +1416,7 @@
 
         mediaStream = await requestCameraStream();
         previewVideo.srcObject = mediaStream;
+        await previewVideo.play().catch(() => {});
         previewWrap.classList.add('active');
         showMessage('Preparazione player LiveFut...');
         const streamInfo = await prepareLivepeerStream();
