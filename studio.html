@@ -893,7 +893,7 @@
       if (peerConnection.iceGatheringState === 'complete') return Promise.resolve();
 
       return new Promise(resolve => {
-        const timeout = window.setTimeout(resolve, 3000);
+        const timeout = window.setTimeout(resolve, 5000);
         peerConnection.addEventListener('icegatheringstatechange', () => {
           if (peerConnection.iceGatheringState === 'complete') {
             window.clearTimeout(timeout);
@@ -943,9 +943,20 @@
         ]
       });
 
-      stream.getTracks().forEach(track => {
-        peerConnection.addTrack(track, stream);
-      });
+      const videoTrack = stream.getVideoTracks()[0] || null;
+      const audioTrack = stream.getAudioTracks()[0] || null;
+
+      if (videoTrack) {
+        peerConnection.addTransceiver(videoTrack, { direction:'sendonly' });
+      }
+
+      if (audioTrack) {
+        peerConnection.addTransceiver(audioTrack, { direction:'sendonly' });
+      }
+
+      if (!videoTrack && !audioTrack) {
+        throw new Error('Nessuna traccia audio o video disponibile.');
+      }
 
       const offer = await peerConnection.createOffer();
       await peerConnection.setLocalDescription(offer);
@@ -962,8 +973,9 @@
       });
 
       if (!response.ok) {
+        const details = await response.text().catch(() => '');
         peerConnection.close();
-        throw new Error('Livepeer non ha accettato il flusso video.');
+        throw new Error(`Livepeer non ha accettato il flusso video${details ? `: ${details}` : ` (HTTP ${response.status})`}`);
       }
 
       const answer = await response.text();
