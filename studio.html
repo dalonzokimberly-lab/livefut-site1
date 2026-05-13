@@ -693,6 +693,7 @@
     let currentLockId = null;
     let livepeerPeerConnection = null;
     let activeLivepeerStream = null;
+    let livepeerStatusInterval = null;
     let currentVideoFormat = 'landscape';
     let initialStudioSetupDone = false;
     let socialAccounts = new Map();
@@ -1003,7 +1004,7 @@
         ...currentMatch,
         livepeer_stream_id: data.stream_id,
         livepeer_playback_id: data.playback_id,
-        livepeer_status: 'ready'
+        livepeer_status: 'preparing'
       };
 
       return data;
@@ -1099,6 +1100,48 @@
       activeLivepeerStream = null;
       broadcastFrame.removeAttribute('src');
       previewWrap.classList.remove('broadcast-active');
+    }
+
+    function stopLivepeerStatusPolling() {
+      clearInterval(livepeerStatusInterval);
+      livepeerStatusInterval = null;
+    }
+
+    async function checkLivepeerStatus() {
+      if (!currentMatch || !isUuid(currentMatch.id)) return null;
+
+      const { data, error } = await supabaseClient.functions.invoke('livepeer-status', {
+        body: {
+          matchId: currentMatch.id
+        }
+      });
+
+      if (error || data?.error) {
+        showMessage(`Controllo Livepeer non riuscito: ${error?.message || data?.error}`, 'error');
+        return null;
+      }
+
+      if (data?.match) {
+        currentMatch = { ...currentMatch, ...data.match };
+        renderMatch(currentMatch);
+      }
+
+      if (data?.livepeer_status === 'active') {
+        stopLivepeerStatusPolling();
+        await saveBroadcastDestinations('active');
+        startSponsorCycle();
+        showMessage('Diretta LiveFut attiva. Il player spettatore è disponibile su match.html.');
+        return data;
+      }
+
+      showMessage('Diretta in preparazione. Avvia camera e microfono nel riquadro video e attendi l’attivazione del player.');
+      return data;
+    }
+
+    function startLivepeerStatusPolling() {
+      stopLivepeerStatusPolling();
+      livepeerStatusInterval = setInterval(checkLivepeerStatus, 5000);
+      window.setTimeout(checkLivepeerStatus, 3000);
     }
 
     function setupConsoleSections() {
@@ -1408,7 +1451,6 @@
         return currentMatch;
       }
       const payload = { status };
-      if (status === 'live') payload.livepeer_status = 'live';
       if (status === 'finished') payload.livepeer_status = 'ended';
       const { error } = await supabaseClient.from('matches').update(payload).eq('id', currentMatch.id);
       if (error) {
@@ -1445,15 +1487,10 @@
 
         const streamInfo = await prepareLivepeerStream();
         showLivepeerBroadcastFrame(streamInfo);
-        const updatedMatch = await updateMatchStatus('live');
-        if (updatedMatch) {
-          await saveBroadcastDestinations('active');
-          stopBtn.disabled = false;
-          showMessage('Studio LiveFut pronto. Avvia camera e microfono nel riquadro video.');
-          startSponsorCycle();
-        } else {
-          startBtn.disabled = false;
-        }
+        await saveBroadcastDestinations('pending');
+        stopBtn.disabled = false;
+        startLivepeerStatusPolling();
+        showMessage('Studio LiveFut pronto. Avvia camera e microfono nel riquadro video. Il player si attiva appena Livepeer conferma la diretta.');
       } catch (error) {
         startBtn.disabled = false;
         await stopLivepeerStream();
@@ -1473,6 +1510,7 @@
     async function stopBroadcast() {
       stopBtn.disabled = true;
       pauseTimer();
+      stopLivepeerStatusPolling();
       stopSponsorCycle();
       hideSponsor();
       hideScene();
@@ -1986,6 +2024,7 @@
 
     window.addEventListener('pagehide', () => {
       if (mediaStream) mediaStream.getTracks().forEach(track => track.stop());
+      stopLivepeerStatusPolling();
       stopSponsorCycle();
       clearInterval(waitingCountdownInterval);
     });

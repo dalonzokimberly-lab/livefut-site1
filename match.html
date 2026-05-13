@@ -669,6 +669,12 @@
       return safe(status, 'In arrivo');
     }
 
+    function isLivepeerReady(match) {
+      return match.status === 'live'
+        && match.livepeer_status === 'active'
+        && Boolean(match.livepeer_playback_id);
+    }
+
     function minuteLabel(match) {
       if (match.status === 'finished') return 'FT';
       if (match.status === 'soon') return 'Non iniziata';
@@ -745,7 +751,7 @@
       const playerArea = document.getElementById('playerArea');
       if (!playerArea || mode === 'broadcast') return;
 
-      if (match.status === 'live' && match.livepeer_playback_id) {
+      if (isLivepeerReady(match)) {
         const playbackId = encodeURIComponent(match.livepeer_playback_id);
         const title = escapeHtml(`${safe(match.home_team, 'Casa')} vs ${safe(match.away_team, 'Ospite')}`);
         playerArea.innerHTML = `
@@ -767,8 +773,8 @@
 
       playerArea.innerHTML = `
         <div class="player-placeholder">
-          <strong id="playerHeadline">${match.status === 'live' ? 'Diretta in preparazione' : 'Diretta non ancora avviata'}</strong>
-          <span id="playerText">${match.status === 'live'
+          <strong id="playerHeadline">${match.livepeer_status === 'preparing' ? 'Diretta in preparazione' : 'Diretta non ancora avviata'}</strong>
+          <span id="playerText">${match.livepeer_status === 'preparing'
             ? 'Il player LiveFut sarà disponibile qui appena il flusso video sarà attivo.'
             : 'La diretta apparirà qui appena sarà avviata.'}</span>
         </div>
@@ -979,12 +985,22 @@
         setText('eventStatusBadge', 'BROADCAST');
       } else {
         modeBadge.classList.remove('broadcast-badge');
-        modeBadgeText.textContent = match.status === 'live' ? 'Diretta live' : statusLabel(match.status);
+        modeBadgeText.textContent = isLivepeerReady(match)
+          ? 'Diretta live'
+          : match.livepeer_status === 'preparing'
+            ? 'Diretta in preparazione'
+            : statusLabel(match.status);
 
-        playerHeadline.textContent = match.status === 'live' ? 'Diretta in corso' : 'Diretta non ancora avviata';
-        playerText.textContent = match.status === 'live'
-          ? 'La diretta è in corso. Il player LiveFut sarà disponibile qui quando il flusso video sarà attivo.'
-          : 'La diretta apparirà qui appena sarà avviata.';
+        playerHeadline.textContent = isLivepeerReady(match)
+          ? 'Diretta in corso'
+          : match.livepeer_status === 'preparing'
+            ? 'Diretta in preparazione'
+            : 'Diretta non ancora avviata';
+        playerText.textContent = isLivepeerReady(match)
+          ? 'La diretta è in corso su LiveFut TV.'
+          : match.livepeer_status === 'preparing'
+            ? 'La regia sta attivando il flusso video. Il player apparirà qui appena pronto.'
+            : 'La diretta apparirà qui appena sarà avviata.';
 
         videoDescription.textContent = 'Pagina spettatore LiveFut TV.';
         broadcastPanel.style.display = 'none';
