@@ -919,14 +919,15 @@
 
     async function resolveLivepeerIngestUrl(streamInfo) {
       const streamKey = streamInfo?.stream_key || activeLivepeerStream?.stream_key;
-      const fallbackUrl = streamInfo?.ingest_url || (streamKey ? `https://livepeer.studio/webrtc/${streamKey}` : '');
+      const fallbackUrl = streamInfo?.ingest_url || (streamKey ? `https://playback.livepeer.studio/webrtc/${streamKey}` : '');
+      const redirectUrl = streamKey ? `https://livepeer.studio/webrtc/${streamKey}` : fallbackUrl;
 
       if (!fallbackUrl) {
         throw new Error('Endpoint Livepeer non disponibile.');
       }
 
       try {
-        const response = await fetch(fallbackUrl, {
+        const response = await fetch(redirectUrl, {
           method:'HEAD',
           mode:'cors'
         });
@@ -1180,7 +1181,18 @@
         return data;
       }
 
-      showMessage('Diretta in preparazione. Avvia camera e microfono nel riquadro video e attendi l’attivazione del player.');
+      const diagnostics = data?.diagnostics;
+      if (diagnostics) {
+        const details = [
+          `active: ${diagnostics.isActive ?? 'no'}`,
+          `segments: ${diagnostics.sourceSegments ?? 0}`,
+          `bytes: ${diagnostics.sourceBytes ?? 0}`,
+          `rate: ${diagnostics.ingestRate ?? 0}`
+        ].join(' | ');
+        showMessage(`Diretta in preparazione. Livepeer: ${details}`);
+      } else {
+        showMessage('Diretta in preparazione. Attendi l’attivazione del player.');
+      }
       return data;
     }
 
