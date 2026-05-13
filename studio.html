@@ -917,6 +917,39 @@
       });
     }
 
+    async function resolveLivepeerIngestUrl(streamInfo) {
+      const streamKey = streamInfo?.stream_key || activeLivepeerStream?.stream_key;
+      const fallbackUrl = streamInfo?.ingest_url || (streamKey ? `https://livepeer.studio/webrtc/${streamKey}` : '');
+
+      if (!fallbackUrl) {
+        throw new Error('Endpoint Livepeer non disponibile.');
+      }
+
+      try {
+        const response = await fetch(fallbackUrl, {
+          method:'HEAD',
+          mode:'cors'
+        });
+
+        return response.url || fallbackUrl;
+      } catch (error) {
+        return fallbackUrl;
+      }
+    }
+
+    function livepeerIceServers(ingestUrl) {
+      const host = new URL(ingestUrl).host;
+
+      return [
+        { urls:`stun:${host}` },
+        {
+          urls:`turn:${host}`,
+          username:'livepeer',
+          credential:'livepeer'
+        }
+      ];
+    }
+
     function waitForPeerConnection(peerConnection, timeoutMs = 15000) {
       if (['connected', 'completed'].includes(peerConnection.iceConnectionState)) {
         return Promise.resolve();
@@ -1011,8 +1044,9 @@
     }
 
     async function startLivepeerStream(streamInfo, stream) {
+      const ingestUrl = await resolveLivepeerIngestUrl(streamInfo);
       const peerConnection = new RTCPeerConnection({
-        iceServers: [{ urls:'stun:stun.l.google.com:19302' }]
+        iceServers: livepeerIceServers(ingestUrl)
       });
 
       peerConnection.addEventListener('icecandidateerror', event => {
@@ -1026,14 +1060,16 @@
       const videoTrack = stream.getVideoTracks()[0] || null;
       const audioTrack = stream.getAudioTracks()[0] || null;
 
+      previewVideo.srcObject = stream;
+      previewWrap.classList.add('active');
+      await previewVideo.play().catch(() => {});
+
       if (videoTrack) {
-        const videoTransceiver = peerConnection.addTransceiver('video', { direction:'sendonly' });
-        await videoTransceiver.sender.replaceTrack(videoTrack);
+        peerConnection.addTransceiver(videoTrack, { direction:'sendonly' });
       }
 
       if (audioTrack) {
-        const audioTransceiver = peerConnection.addTransceiver('audio', { direction:'sendonly' });
-        await audioTransceiver.sender.replaceTrack(audioTrack);
+        peerConnection.addTransceiver(audioTrack, { direction:'sendonly' });
       }
 
       if (!videoTrack && !audioTrack) {
@@ -1044,12 +1080,11 @@
       await peerConnection.setLocalDescription(offer);
       await waitForIceGathering(peerConnection);
 
-      const response = await fetch(streamInfo.ingest_url, {
+      const response = await fetch(ingestUrl, {
         method:'POST',
         mode:'cors',
         headers:{
-          'Content-Type':'application/sdp',
-          'Accept':'application/sdp'
+          'Content-Type':'application/sdp'
         },
         body:peerConnection.localDescription.sdp
       });
@@ -1486,11 +1521,12 @@
         }
 
         const streamInfo = await prepareLivepeerStream();
-        showLivepeerBroadcastFrame(streamInfo);
+        mediaStream = await requestCameraStream();
+        await startLivepeerStream(streamInfo, mediaStream);
         await saveBroadcastDestinations('pending');
         stopBtn.disabled = false;
         startLivepeerStatusPolling();
-        showMessage('Studio LiveFut pronto. Avvia camera e microfono nel riquadro video. Il player si attiva appena Livepeer conferma la diretta.');
+        showMessage('Diretta inviata a Livepeer. Il player spettatore si attiva appena Livepeer conferma il flusso.');
       } catch (error) {
         startBtn.disabled = false;
         await stopLivepeerStream();
