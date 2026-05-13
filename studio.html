@@ -1183,11 +1183,13 @@
 
       const diagnostics = data?.diagnostics;
       if (diagnostics) {
+        const playback = data?.playback_diagnostics;
         const details = [
-          `active: ${diagnostics.isActive ?? 'no'}`,
-          `segments: ${diagnostics.sourceSegments ?? 0}`,
-          `bytes: ${diagnostics.sourceBytes ?? 0}`,
-          `rate: ${diagnostics.ingestRate ?? 0}`
+          `stream: ${data?.stream_active ? 'ok' : 'no'}`,
+          `playback: ${data?.playback_ready ? 'ok' : 'no'}`,
+          `segments: ${diagnostics.transcodedSegments ?? diagnostics.sourceSegments ?? 0}`,
+          `bytes: ${diagnostics.transcodedBytes ?? diagnostics.sourceBytes ?? 0}`,
+          `sources: ${playback?.sourceCount ?? 0}`
         ].join(' | ');
         showMessage(`Diretta in preparazione. Livepeer: ${details}`);
       } else {
