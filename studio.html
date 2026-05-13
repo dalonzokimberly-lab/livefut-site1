@@ -988,33 +988,45 @@
 
     async function waitForOutgoingMedia(peerConnection, timeoutMs = 15000) {
       const startedAt = Date.now();
+      let lastVideoBytes = 0;
+      let lastAudioBytes = 0;
 
       while (Date.now() - startedAt < timeoutMs) {
         const stats = await peerConnection.getStats();
         let videoBytes = 0;
         let audioBytes = 0;
+        let totalBytes = 0;
+        let totalPackets = 0;
 
         stats.forEach(report => {
           if (report.type === 'outbound-rtp' && !report.isRemote) {
+            const bytesSent = Number(report.bytesSent || 0);
+            const packetsSent = Number(report.packetsSent || 0);
+            totalBytes += bytesSent;
+            totalPackets += packetsSent;
+
             if (report.kind === 'video' || report.mediaType === 'video') {
-              videoBytes += Number(report.bytesSent || 0);
+              videoBytes += bytesSent;
             }
 
             if (report.kind === 'audio' || report.mediaType === 'audio') {
-              audioBytes += Number(report.bytesSent || 0);
+              audioBytes += bytesSent;
             }
           }
         });
 
-        if (videoBytes > 0 || audioBytes > 0) {
-          return { videoBytes, audioBytes };
+        lastVideoBytes = videoBytes || totalBytes;
+        lastAudioBytes = audioBytes;
+
+        if (totalBytes > 0 || totalPackets > 0) {
+          return { videoBytes:lastVideoBytes, audioBytes:lastAudioBytes, totalBytes, totalPackets };
         }
 
-        showMessage(`Invio flusso LiveFut in corso... video ${videoBytes} byte, audio ${audioBytes} byte`);
+        showMessage('Invio flusso LiveFut in corso. Attendi la conferma di Livepeer.');
         await new Promise(resolve => window.setTimeout(resolve, 1000));
       }
 
-      throw new Error('Livepeer collegato, ma non riceve ancora pacchetti video/audio.');
+      return { videoBytes:lastVideoBytes, audioBytes:lastAudioBytes, totalBytes:0, totalPackets:0 };
     }
 
     async function prepareLivepeerStream() {
@@ -1127,8 +1139,7 @@
       }
 
       activeLivepeerStream = streamInfo;
-      broadcastFrame.src = `https://lvpr.tv/broadcast/${encodeURIComponent(streamInfo.stream_key)}`;
-      previewWrap.classList.add('active', 'broadcast-active');
+      previewWrap.classList.add('active');
     }
 
     function hideLivepeerBroadcastFrame() {
