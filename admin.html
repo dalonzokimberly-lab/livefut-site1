@@ -412,6 +412,7 @@
           <button class="tab" data-panel="requestsArchivePanel">Archivio richieste</button>
           <button class="tab" data-panel="matchesPanel">Dirette</button>
           <button class="tab" data-panel="locksPanel">Blocchi</button>
+          <button class="tab" data-panel="coinsPanel">Monete</button>
           <button class="tab" data-panel="eventsPanel">Telecronaca</button>
           <button class="tab" data-panel="systemPanel">Sistema</button>
         </div>
@@ -487,6 +488,25 @@
         </div>
         <div class="table-wrap"><table><thead><tr><th>Partita</th><th>Broadcaster</th><th>Lock</th><th>Anomalia</th><th>Azioni</th></tr></thead><tbody id="locksTable"></tbody></table></div>
         <div class="empty-state" id="locksEmpty">Nessun blocco diretta attivo.</div>
+      </article>
+    </section>
+
+    <section class="section panel" id="coinsPanel">
+      <article class="card">
+        <h2>Monete LiveFut</h2>
+        <p>Classifica mensile broadcaster e storico delle donazioni simboliche.</p>
+        <div class="grid-3" style="margin-top:16px;">
+          <article class="metric"><strong id="metricCoinsMonth">-</strong><span>Monete donate nel mese</span></article>
+          <article class="metric"><strong id="metricCoinDonations">-</strong><span>Donazioni registrate</span></article>
+          <article class="metric"><strong id="metricCoinBroadcasters">-</strong><span>Broadcaster supportati</span></article>
+        </div>
+        <h3 style="margin-top:22px;">Classifica broadcaster</h3>
+        <div class="table-wrap"><table><thead><tr><th>Posizione</th><th>Broadcaster</th><th>Monete</th><th>Donazioni</th><th>Dirette</th></tr></thead><tbody id="coinsRankingTable"></tbody></table></div>
+        <div class="empty-state" id="coinsRankingEmpty">Nessuna donazione nel mese corrente.</div>
+
+        <h3 style="margin-top:22px;">Storico donazioni</h3>
+        <div class="table-wrap"><table><thead><tr><th>Data</th><th>Donatore</th><th>Broadcaster</th><th>Partita</th><th>Monete</th></tr></thead><tbody id="coinDonationsTable"></tbody></table></div>
+        <div class="empty-state" id="coinDonationsEmpty">Nessuna donazione registrata.</div>
       </article>
     </section>
 
@@ -808,6 +828,30 @@
       `);
     }
 
+    function renderCoinsRanking(rows) {
+      renderRows('coinsRankingTable', 'coinsRankingEmpty', rows, row => `
+        <tr>
+          <td><strong>#${escapeHtml(row.ranking_position)}</strong></td>
+          <td><strong>${escapeHtml(row.broadcaster_name || 'Broadcaster LiveFut')}</strong><br><span>${escapeHtml(row.broadcaster_id || '')}</span></td>
+          <td>${Number(row.coins_received || 0).toLocaleString('it-IT')}</td>
+          <td>${Number(row.donations_count || 0).toLocaleString('it-IT')}</td>
+          <td>${Number(row.live_count || 0).toLocaleString('it-IT')}</td>
+        </tr>
+      `);
+    }
+
+    function renderCoinDonations(rows) {
+      renderRows('coinDonationsTable', 'coinDonationsEmpty', rows, row => `
+        <tr>
+          <td>${formatDate(row.created_at)}</td>
+          <td><strong>${escapeHtml(profileName(row.donorProfile, 'Donatore'))}</strong><br><span>${escapeHtml(profileEmail(row.donorProfile, row.donor_id || ''))}</span></td>
+          <td><strong>${escapeHtml(profileName(row.broadcasterProfile, 'Broadcaster'))}</strong><br><span>${escapeHtml(profileEmail(row.broadcasterProfile, row.broadcaster_id || ''))}</span></td>
+          <td><strong>${escapeHtml(matchName(row.match, row.official_match_id || 'Partita non trovata'))}</strong><br><span>${escapeHtml(row.official_match_id || '')}</span></td>
+          <td>${Number(row.amount || 0).toLocaleString('it-IT')}</td>
+        </tr>
+      `);
+    }
+
     function renderSystem(items) {
       document.getElementById('systemList').innerHTML = items.map(item => `
         <div class="system-item">
@@ -868,7 +912,9 @@
         support,
         matches,
         events,
-        activeLocks
+        activeLocks,
+        coinDonations,
+        coinsRankingResult
       ] = await Promise.all([
         countRows('profiles'),
         countRows('matches'),
@@ -882,7 +928,12 @@
         loadTable('support_requests'),
         loadTable('matches', 'created_at', 80),
         loadTable('match_events', 'created_at', 80),
-        loadTable('broadcast_locks', 'started_at', 80).then(rows => rows.filter(row => row.status === 'active'))
+        loadTable('broadcast_locks', 'started_at', 80).then(rows => rows.filter(row => row.status === 'active')),
+        loadTable('coin_donations', 'created_at', 100).catch(() => []),
+        supabaseClient.rpc('get_monthly_broadcaster_ranking', { p_month: new Date().toISOString().slice(0, 10) }).then(({ data, error }) => {
+          if (error) throw error;
+          return data || [];
+        }).catch(() => [])
       ]);
 
       setMetric('metricUsers', usersCount);
@@ -897,16 +948,20 @@
         ...accreditations.map(row => row.user_id),
         ...support.map(row => row.requester_id),
         ...events.map(row => row.created_by),
-        ...activeLocks.map(row => row.broadcaster_id)
+        ...activeLocks.map(row => row.broadcaster_id),
+        ...coinDonations.map(row => row.donor_id),
+        ...coinDonations.map(row => row.broadcaster_id)
       ]);
       const matchMap = await loadMatchesMap([
         ...support.map(row => row.match_id),
         ...events.map(row => row.match_id),
-        ...activeLocks.map(row => row.match_id)
+        ...activeLocks.map(row => row.match_id),
+        ...coinDonations.map(row => row.match_id)
       ], [
         ...support.map(row => row.official_match_id),
         ...events.map(row => row.official_match_id),
-        ...activeLocks.map(row => row.official_match_id)
+        ...activeLocks.map(row => row.official_match_id),
+        ...coinDonations.map(row => row.official_match_id)
       ]);
 
       const enrichedAccreditations = accreditations.map(row => ({
@@ -928,6 +983,18 @@
         profile: profileMap.get(row.broadcaster_id),
         match: matchMap.get(row.match_id) || matchMap.get(row.official_match_id)
       }));
+      const enrichedCoinDonations = coinDonations.map(row => ({
+        ...row,
+        donorProfile: profileMap.get(row.donor_id),
+        broadcasterProfile: profileMap.get(row.broadcaster_id),
+        match: matchMap.get(row.match_id) || matchMap.get(row.official_match_id)
+      }));
+
+      const monthCoins = coinsRankingResult.reduce((sum, row) => sum + Number(row.coins_received || 0), 0);
+      const monthDonations = coinsRankingResult.reduce((sum, row) => sum + Number(row.donations_count || 0), 0);
+      setMetric('metricCoinsMonth', monthCoins);
+      setMetric('metricCoinDonations', monthDonations);
+      setMetric('metricCoinBroadcasters', coinsRankingResult.length);
 
       renderAccreditations(enrichedAccreditations.filter(row => row.status === 'pending'));
       renderAccreditationArchive(enrichedAccreditations.filter(row => row.status !== 'pending'));
@@ -937,6 +1004,8 @@
       renderSupportArchive(enrichedSupport.filter(row => ['resolved', 'archived'].includes(row.status)));
       renderMatches(matches);
       renderLocks(enrichedLocks);
+      renderCoinsRanking(coinsRankingResult);
+      renderCoinDonations(enrichedCoinDonations);
       renderEvents(enrichedEvents);
 
       cachedReport = {
@@ -947,6 +1016,8 @@
         support: enrichedSupport,
         matches,
         locks: enrichedLocks,
+        coinDonations: enrichedCoinDonations,
+        coinsRanking: coinsRankingResult,
         events: enrichedEvents
       };
 

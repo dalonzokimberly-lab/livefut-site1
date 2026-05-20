@@ -340,6 +340,49 @@
       margin-bottom:6px;
     }
 
+    .coins-panel {
+      margin-top:18px;
+      display:none;
+      gap:12px;
+      background:rgba(255,209,102,0.07);
+      border:1px solid rgba(255,209,102,0.22);
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .coins-panel.show { display:grid; }
+    .coins-panel strong { color:var(--warning); }
+
+    .coin-actions {
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .coin-button {
+      border:1px solid rgba(255,209,102,0.28);
+      background:rgba(255,209,102,0.12);
+      color:#fff;
+      border-radius:999px;
+      padding:10px 13px;
+      font-weight:900;
+      cursor:pointer;
+      font-family:inherit;
+    }
+
+    .coin-button:disabled {
+      opacity:.52;
+      cursor:not-allowed;
+    }
+
+    .coin-message {
+      color:#fff;
+      line-height:1.5;
+      font-size:.92rem;
+    }
+
+    .coin-message.error { color:#ffd4d4; }
+
     .error-box {
       padding:28px;
       margin:34px 0;
@@ -489,6 +532,17 @@
 
             <a class="btn btn-warning" id="startBroadcastBtn" href="#">Avvia diretta</a>
           </div>
+
+          <div class="coins-panel" id="coinsPanel">
+            <strong>Supporta il broadcaster</strong>
+            <p id="coinsText">Caricamento monete...</p>
+            <div class="coin-actions">
+              <button class="coin-button" data-coins="1">+1 moneta</button>
+              <button class="coin-button" data-coins="2">+2 monete</button>
+              <button class="coin-button" data-coins="3">+3 monete</button>
+            </div>
+            <div class="coin-message" id="coinsMessage"></div>
+          </div>
         </div>
       </article>
 
@@ -583,6 +637,8 @@
 
     const pageContent = document.getElementById('pageContent');
     let currentMatch = null;
+    let currentSession = null;
+    let coinWallet = null;
     let eventsChannel = null;
     let matchChannel = null;
 
@@ -779,6 +835,93 @@
             : 'La diretta apparirà qui appena sarà avviata.'}</span>
         </div>
       `;
+    }
+
+    function setCoinMessage(message, type = 'ok') {
+      const node = document.getElementById('coinsMessage');
+      if (!node) return;
+      node.textContent = message || '';
+      node.className = type === 'error' ? 'coin-message error' : 'coin-message';
+    }
+
+    function updateCoinsPanel() {
+      const panel = document.getElementById('coinsPanel');
+      const text = document.getElementById('coinsText');
+      const buttons = panel ? panel.querySelectorAll('[data-coins]') : [];
+
+      if (!panel || mode === 'broadcast') return;
+
+      const canDonate = Boolean(
+        currentSession
+        && currentMatch
+        && currentMatch.status === 'live'
+        && currentMatch.broadcaster_id
+        && currentMatch.broadcaster_id !== currentSession.user.id
+      );
+
+      panel.classList.toggle('show', Boolean(currentSession && currentMatch?.status === 'live'));
+
+      if (!currentSession) return;
+      if (!currentMatch || currentMatch.status !== 'live') {
+        text.textContent = 'Le monete si possono donare solo durante una diretta live.';
+        buttons.forEach(button => { button.disabled = true; });
+        return;
+      }
+      if (!currentMatch.broadcaster_id) {
+        text.textContent = 'Il broadcaster non è ancora associato a questa partita.';
+        buttons.forEach(button => { button.disabled = true; });
+        return;
+      }
+      if (currentMatch.broadcaster_id === currentSession.user.id) {
+        text.textContent = 'Stai guardando una tua diretta: non puoi donare monete a te stessa/o.';
+        buttons.forEach(button => { button.disabled = true; });
+        return;
+      }
+
+      if (!coinWallet) {
+        text.textContent = 'Caricamento monete...';
+        buttons.forEach(button => { button.disabled = true; });
+        return;
+      }
+
+      const balance = Number(coinWallet.balance || 0);
+      text.textContent = `Hai ${balance} monete disponibili. Ricarica gratuita ogni settimana, fino a 9 monete.`;
+      buttons.forEach(button => {
+        const amount = Number(button.dataset.coins);
+        button.disabled = !canDonate || balance < amount;
+      });
+    }
+
+    async function loadCoinWallet() {
+      if (!currentSession) return;
+      const { data, error } = await supabaseClient.rpc('get_my_coin_wallet');
+      if (error) {
+        setCoinMessage(`Monete non disponibili: ${error.message}`, 'error');
+        return;
+      }
+      coinWallet = Array.isArray(data) ? data[0] : data;
+      updateCoinsPanel();
+    }
+
+    async function donateCoins(amount) {
+      if (!currentMatch || !currentSession) return;
+      setCoinMessage('Invio supporto in corso...');
+
+      const { data, error } = await supabaseClient.rpc('donate_coins', {
+        p_match_id: isUuid(currentMatch.id) ? currentMatch.id : null,
+        p_official_match_id: currentMatch.match_id || null,
+        p_amount: amount
+      });
+
+      if (error) {
+        setCoinMessage(error.message, 'error');
+        return;
+      }
+
+      const result = Array.isArray(data) ? data[0] : data;
+      coinWallet = { ...(coinWallet || {}), balance: Number(result?.wallet_balance || 0) };
+      setCoinMessage(`Hai donato ${amount} ${amount === 1 ? 'moneta' : 'monete'} al broadcaster.`);
+      updateCoinsPanel();
     }
 
     function renderEvents(events) {
@@ -1040,6 +1183,7 @@
 
       applyMode(match);
       renderLivePlayer(match);
+      updateCoinsPanel();
       loadBroadcastDestinations(match);
       loadMatchEvents(match);
       if (options.subscribe) {
@@ -1095,8 +1239,10 @@
     async function loadMatch() {
       try {
         const { data: { session } } = await supabaseClient.auth.getSession();
+        currentSession = session;
         document.querySelectorAll('.auth-login').forEach(el => el.style.display = session ? 'none' : '');
         document.querySelectorAll('.auth-logged').forEach(el => el.style.display = session ? '' : 'none');
+        if (session) await loadCoinWallet();
 
         if (isUuid(supabaseMatchId)) {
           renderMatch(await loadSupabaseMatch(supabaseMatchId));
@@ -1126,6 +1272,12 @@
     window.addEventListener('pagehide', () => {
       if (eventsChannel) supabaseClient.removeChannel(eventsChannel);
       if (matchChannel) supabaseClient.removeChannel(matchChannel);
+    });
+
+    document.addEventListener('click', event => {
+      const button = event.target.closest('[data-coins]');
+      if (!button) return;
+      donateCoins(Number(button.dataset.coins));
     });
 
     loadMatch();
