@@ -30,7 +30,7 @@ as $$
     select 1
     from public.profiles
     where id = auth.uid()
-      and role in ('admin', 'owner', 'superuser', 'super_admin')
+      and role in ('admin', 'administrator', 'owner', 'superuser', 'super_admin')
   );
 $$;
 
@@ -116,11 +116,24 @@ create policy "admin reads broadcast locks"
   to authenticated
   using (public.is_livefut_admin());
 
+drop policy if exists "admin updates broadcast locks" on public.broadcast_locks;
+create policy "admin updates broadcast locks"
+  on public.broadcast_locks for update
+  to authenticated
+  using (public.is_livefut_admin())
+  with check (public.is_livefut_admin());
+
 drop policy if exists "admin reads all match events" on public.match_events;
 create policy "admin reads all match events"
   on public.match_events for select
   to authenticated
   using (public.is_livefut_admin());
+
+drop policy if exists "admin creates match events" on public.match_events;
+create policy "admin creates match events"
+  on public.match_events for insert
+  to authenticated
+  with check (public.is_livefut_admin());
 
 drop policy if exists "admin updates matches" on public.matches;
 create policy "admin updates matches"
