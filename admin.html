@@ -411,6 +411,7 @@
           <button class="tab" data-panel="supportPanel">Supporto</button>
           <button class="tab" data-panel="requestsArchivePanel">Archivio richieste</button>
           <button class="tab" data-panel="matchesPanel">Dirette</button>
+          <button class="tab" data-panel="locksPanel">Blocchi</button>
           <button class="tab" data-panel="eventsPanel">Telecronaca</button>
           <button class="tab" data-panel="systemPanel">Sistema</button>
         </div>
@@ -477,6 +478,18 @@
       </article>
     </section>
 
+    <section class="section panel" id="locksPanel">
+      <article class="card">
+        <h2>Blocchi diretta</h2>
+        <p>Sblocca eventi rimasti occupati, chiudi lock vecchi e resetta lo stato Livepeer quando una prova non è partita davvero.</p>
+        <div class="button-row" style="margin-top:16px;">
+          <button class="btn btn-warning" data-action="cleanup-stale-locks">Chiudi lock vecchi</button>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>Partita</th><th>Broadcaster</th><th>Lock</th><th>Anomalia</th><th>Azioni</th></tr></thead><tbody id="locksTable"></tbody></table></div>
+        <div class="empty-state" id="locksEmpty">Nessun blocco diretta attivo.</div>
+      </article>
+    </section>
+
     <section class="section panel" id="eventsPanel">
       <article class="card">
         <h2>Telecronaca</h2>
@@ -510,7 +523,7 @@
     const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    const ADMIN_ROLES = ['admin', 'owner', 'superuser', 'super_admin'];
+    const ADMIN_ROLES = ['admin', 'administrator', 'owner', 'superuser', 'super_admin'];
 
     let currentUser = null;
     let currentProfile = null;
@@ -543,7 +556,10 @@
         live:'Live',
         finished:'Conclusa',
         active:'Attivo',
-        ended:'Terminato'
+        ended:'Terminato',
+        preparing:'In preparazione',
+        idle:'Inattivo',
+        expired:'Scaduto'
       };
       return labels[value] || value || '-';
     }
@@ -566,6 +582,19 @@
       const home = match.home_team || 'Casa';
       const away = match.away_team || 'Ospite';
       return `${home} vs ${away}`;
+    }
+
+    function lockAgeMinutes(lock) {
+      return Math.max(0, Math.round((Date.now() - new Date(lock.started_at).getTime()) / 60000));
+    }
+
+    function lockAnomaly(lock) {
+      const match = lock.match;
+      if (!match) return 'Partita non trovata in Supabase.';
+      if (match.status !== 'live') return `Partita ${statusLabel(match.status)}, ma lock ancora attivo.`;
+      if (['idle', 'ended'].includes(match.livepeer_status || 'idle')) return `Livepeer ${statusLabel(match.livepeer_status || 'idle')} con lock attivo.`;
+      if (lockAgeMinutes(lock) >= 120) return 'Lock attivo da oltre 2 ore.';
+      return 'Nessuna anomalia evidente.';
     }
 
     function showMessage(message, type = 'ok') {
@@ -761,6 +790,24 @@
       `);
     }
 
+    function renderLocks(rows) {
+      renderRows('locksTable', 'locksEmpty', rows, row => `
+        <tr>
+          <td><strong>${escapeHtml(matchName(row.match, row.official_match_id || 'Partita non trovata'))}</strong><br><span>${escapeHtml(row.match?.field || row.official_match_id || '')}</span></td>
+          <td><strong>${escapeHtml(profileName(row.profile, 'Broadcaster non trovato'))}</strong><br><span>${escapeHtml(profileEmail(row.profile, row.broadcaster_id || ''))}</span></td>
+          <td>${badge(row.status)}<br><span>Da ${escapeHtml(String(lockAgeMinutes(row)))} min - ${formatDate(row.started_at)}</span></td>
+          <td>${escapeHtml(lockAnomaly(row))}</td>
+          <td>
+            <div class="button-row">
+              <button class="btn btn-warning btn-small" data-action="unlock-lock" data-id="${escapeHtml(row.id)}">Sblocca</button>
+              <button class="btn btn-danger btn-small" data-action="finish-lock-match" data-id="${escapeHtml(row.id)}">Forza conclusa</button>
+              <button class="btn btn-secondary btn-small" data-action="reset-lock-livepeer" data-id="${escapeHtml(row.id)}">Reset Livepeer</button>
+            </div>
+          </td>
+        </tr>
+      `);
+    }
+
     function renderSystem(items) {
       document.getElementById('systemList').innerHTML = items.map(item => `
         <div class="system-item">
@@ -820,7 +867,8 @@
         contacts,
         support,
         matches,
-        events
+        events,
+        activeLocks
       ] = await Promise.all([
         countRows('profiles'),
         countRows('matches'),
@@ -833,7 +881,8 @@
         loadTable('contact_requests'),
         loadTable('support_requests'),
         loadTable('matches', 'created_at', 80),
-        loadTable('match_events', 'created_at', 80)
+        loadTable('match_events', 'created_at', 80),
+        loadTable('broadcast_locks', 'started_at', 80).then(rows => rows.filter(row => row.status === 'active'))
       ]);
 
       setMetric('metricUsers', usersCount);
@@ -847,14 +896,17 @@
       const profileMap = await loadProfilesMap([
         ...accreditations.map(row => row.user_id),
         ...support.map(row => row.requester_id),
-        ...events.map(row => row.created_by)
+        ...events.map(row => row.created_by),
+        ...activeLocks.map(row => row.broadcaster_id)
       ]);
       const matchMap = await loadMatchesMap([
         ...support.map(row => row.match_id),
-        ...events.map(row => row.match_id)
+        ...events.map(row => row.match_id),
+        ...activeLocks.map(row => row.match_id)
       ], [
         ...support.map(row => row.official_match_id),
-        ...events.map(row => row.official_match_id)
+        ...events.map(row => row.official_match_id),
+        ...activeLocks.map(row => row.official_match_id)
       ]);
 
       const enrichedAccreditations = accreditations.map(row => ({
@@ -871,6 +923,11 @@
         profile: profileMap.get(row.created_by),
         match: matchMap.get(row.match_id) || matchMap.get(row.official_match_id)
       }));
+      const enrichedLocks = activeLocks.map(row => ({
+        ...row,
+        profile: profileMap.get(row.broadcaster_id),
+        match: matchMap.get(row.match_id) || matchMap.get(row.official_match_id)
+      }));
 
       renderAccreditations(enrichedAccreditations.filter(row => row.status === 'pending'));
       renderAccreditationArchive(enrichedAccreditations.filter(row => row.status !== 'pending'));
@@ -879,6 +936,7 @@
       renderSupport(enrichedSupport.filter(row => !['resolved', 'archived'].includes(row.status)));
       renderSupportArchive(enrichedSupport.filter(row => ['resolved', 'archived'].includes(row.status)));
       renderMatches(matches);
+      renderLocks(enrichedLocks);
       renderEvents(enrichedEvents);
 
       cachedReport = {
@@ -888,6 +946,7 @@
         contacts,
         support: enrichedSupport,
         matches,
+        locks: enrichedLocks,
         events: enrichedEvents
       };
 
@@ -906,6 +965,44 @@
     async function updateRecord(table, id, payload) {
       const { error } = await supabaseClient.from(table).update(payload).eq('id', id);
       if (error) throw error;
+      await loadAdminData();
+    }
+
+    async function unlockBroadcastLock(id, status = 'ended') {
+      const { error } = await supabaseClient
+        .from('broadcast_locks')
+        .update({ status, ended_at:new Date().toISOString() })
+        .eq('id', id);
+      if (error) throw error;
+    }
+
+    async function updateLockMatch(lock, payload) {
+      if (!lock?.match_id) return;
+      const { error } = await supabaseClient
+        .from('matches')
+        .update({ ...payload, updated_at:new Date().toISOString() })
+        .eq('id', lock.match_id);
+      if (error) throw error;
+    }
+
+    async function resetLivepeerForLock(lock) {
+      await updateLockMatch(lock, {
+        livepeer_status:'idle',
+        livepeer_stream_id:null,
+        livepeer_playback_id:null,
+        livepeer_ended_at:new Date().toISOString()
+      });
+    }
+
+    async function cleanupStaleLocks() {
+      const staleLocks = (cachedReport.locks || []).filter(lock => lockAgeMinutes(lock) >= 120 || lock.match?.status !== 'live' || ['idle', 'ended'].includes(lock.match?.livepeer_status || 'idle'));
+      if (!staleLocks.length) {
+        showMessage('Nessun lock vecchio o anomalo da chiudere.');
+        return;
+      }
+
+      await Promise.all(staleLocks.map(lock => unlockBroadcastLock(lock.id, 'expired')));
+      showMessage(`${staleLocks.length} lock anomali chiusi.`);
       await loadAdminData();
     }
 
@@ -963,9 +1060,33 @@
           await updateRecord('support_requests', id, { status:'new', handled_by:null, handled_at:null, response_notes:null });
           showMessage('Richiesta supporto riaperta.');
         }
+        if (action === 'unlock-lock') {
+          await unlockBroadcastLock(id);
+          showMessage('Blocco diretta sbloccato.');
+          await loadAdminData();
+        }
+        if (action === 'finish-lock-match') {
+          const lock = (cachedReport.locks || []).find(row => row.id === id);
+          await unlockBroadcastLock(id);
+          await updateLockMatch(lock, { status:'finished', livepeer_status:'ended', broadcast_ended_at:new Date().toISOString(), livepeer_ended_at:new Date().toISOString() });
+          showMessage('Diretta forzata come conclusa e blocco chiuso.');
+          await loadAdminData();
+        }
+        if (action === 'reset-lock-livepeer') {
+          const lock = (cachedReport.locks || []).find(row => row.id === id);
+          await resetLivepeerForLock(lock);
+          await unlockBroadcastLock(id);
+          showMessage('Stato Livepeer resettato e blocco chiuso.');
+          await loadAdminData();
+        }
+        if (action === 'cleanup-stale-locks') {
+          await cleanupStaleLocks();
+        }
       } catch (error) {
         showMessage(`Operazione non riuscita: ${error.message}`, 'error');
         button.disabled = false;
+      } finally {
+        if (document.body.contains(button)) button.disabled = false;
       }
     }
 

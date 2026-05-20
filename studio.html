@@ -1823,7 +1823,7 @@
     }
 
     function isAdminProfile() {
-      return ['admin', 'administrator', 'support', 'staff'].includes(String(currentProfile?.role || '').toLowerCase());
+      return ['admin', 'administrator', 'owner', 'superuser', 'super_admin'].includes(String(currentProfile?.role || '').toLowerCase());
     }
 
     async function acquireBroadcastLock() {
@@ -1946,6 +1946,32 @@
       }
 
       if (existing) {
+        if (!existing.broadcaster_id && currentUser?.id) {
+          const { data: claimed, error: claimError } = await supabaseClient
+            .from('matches')
+            .update({ broadcaster_id: currentUser.id, updated_at: new Date().toISOString() })
+            .eq('id', existing.id)
+            .is('broadcaster_id', null)
+            .select('*')
+            .maybeSingle();
+
+          if (claimError) {
+            throw new Error(`Impossibile assegnare la partita al broadcaster: ${claimError.message}`);
+          }
+
+          if (claimed) {
+            return {
+              ...officialMatch,
+              ...claimed,
+              match_id: claimed.match_id || officialMatch.match_id,
+              competition_id: claimed.competition_id || officialMatch.competition_id,
+              discipline: claimed.discipline || officialMatch.discipline,
+              field: claimed.field || officialMatch.field,
+              source: claimed.source || 'lnd'
+            };
+          }
+        }
+
         return {
           ...officialMatch,
           ...existing,
@@ -1969,6 +1995,7 @@
         status: 'soon',
         score: '0-0',
         minute: 0,
+        broadcaster_id: currentUser.id,
         source: 'lnd',
         source_url: officialMatch.source_url,
         match_date: officialMatch.match_date,
