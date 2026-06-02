@@ -1,546 +1,202 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>LiveFut TV - Admin</title>
   <script src="https://app.termly.io/resource-blocker/ecfeb307-3d9a-4e26-a7de-4dab9c2345f9?autoBlock=on"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    :root {
-      --green:#31d158;
-      --border:rgba(49,209,88,.18);
-      --shadow:0 20px 60px rgba(0,0,0,.55);
-      --muted:#cfd6cf;
-      --danger:#ff6b6b;
-      --warning:#ffd166;
-      --panel:rgba(49,209,88,.04);
-    }
-
-    * { box-sizing:border-box; }
-
-    body {
-      margin:0;
-      min-height:100vh;
-      font-family:"Space Grotesk",sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(49,209,88,.12), transparent 24%),
-        radial-gradient(circle at top right, rgba(49,209,88,.08), transparent 22%),
-        linear-gradient(180deg,#020202 0%,#080808 100%);
-      color:#fff;
-    }
-
-    a { color:inherit; text-decoration:none; }
-    button,input,select,textarea { font:inherit; }
-
-    .container { width:min(1220px,calc(100% - 32px)); margin:0 auto; }
-
-    .topbar {
-      position:sticky;
-      top:0;
-      z-index:30;
-      backdrop-filter:blur(14px);
-      background:rgba(0,0,0,.84);
-      border-bottom:1px solid var(--border);
-    }
-
-    .topbar-inner {
-      min-height:78px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:20px;
-      flex-wrap:wrap;
-    }
-
-    .brand {
-      display:flex;
-      align-items:center;
-      gap:12px;
-      font-weight:800;
-      min-width:0;
-      overflow:hidden;
-    }
-
-    .site-logo {
-      height:42px;
-      width:auto;
-      max-height:42px;
-      display:block;
-      object-fit:contain;
-      flex-shrink:0;
-    }
-
-    .brand-text strong { display:block; font-size:1.12rem; line-height:1.1; }
-    .brand-text span { display:block; margin-top:4px; color:var(--muted); font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; }
-
-    .top-actions,.button-row,.filters-row {
-      display:flex;
-      align-items:center;
-      gap:12px;
-      flex-wrap:wrap;
-    }
-
-    .btn {
-      border:0;
-      cursor:pointer;
-      border-radius:999px;
-      padding:12px 18px;
-      font-weight:800;
-      font-size:.94rem;
-      transition:.2s ease;
-      white-space:nowrap;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-    }
-
-    .btn:hover { transform:translateY(-1px); }
-    .btn:disabled { opacity:.58; cursor:not-allowed; transform:none; }
-    .btn-primary { background:linear-gradient(135deg,#19a83f,#31d158); color:#000; box-shadow:0 12px 28px rgba(49,209,88,.28); }
-    .btn-secondary { background:rgba(49,209,88,.06); color:#fff; border:1px solid var(--border); }
-    .btn-danger { background:rgba(255,107,107,.1); color:#fff; border:1px solid rgba(255,107,107,.28); }
-    .btn-warning { background:rgba(255,209,102,.12); color:#fff; border:1px solid rgba(255,209,102,.28); }
-    .btn-small { padding:9px 12px; font-size:.82rem; }
-
-    .hero { padding:34px 0 22px; }
-
-    .hero-card,.card {
-      background:linear-gradient(180deg,rgba(49,209,88,.03),rgba(255,255,255,.01));
-      border:1px solid var(--border);
-      border-radius:32px;
-      box-shadow:var(--shadow);
-      padding:28px;
-      min-width:0;
-      overflow:hidden;
-    }
-
-    .hero-card {
-      display:grid;
-      grid-template-columns:minmax(0,1fr) auto;
-      gap:24px;
-      align-items:start;
-    }
-
-    .eyebrow {
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      background:rgba(49,209,88,.08);
-      border:1px solid var(--border);
-      border-radius:999px;
-      padding:10px 14px;
-      color:var(--green);
-      font-weight:800;
-      font-size:.82rem;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      margin-bottom:16px;
-    }
-
-    .pulse {
-      width:10px;
-      height:10px;
-      border-radius:999px;
-      background:var(--green);
-      box-shadow:0 0 0 8px rgba(49,209,88,.12);
-      flex-shrink:0;
-    }
-
-    h1 {
-      margin:0 0 12px;
-      color:var(--green);
-      font-size:clamp(2rem,4vw,3.2rem);
-      line-height:1.02;
-      letter-spacing:0;
-      overflow-wrap:anywhere;
-    }
-
-    h2,h3 { color:var(--green); margin:0 0 10px; letter-spacing:0; }
-    p { margin:0; color:#fff; line-height:1.7; }
-
-    .section { padding:12px 0 28px; }
-    .grid-4 { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; }
-    .grid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
-    .grid-2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
-
-    .metric {
-      background:rgba(49,209,88,.05);
-      border:1px solid var(--border);
-      border-radius:20px;
-      padding:18px;
-      min-width:0;
-    }
-
-    .metric strong {
-      display:block;
-      color:var(--green);
-      font-size:2rem;
-      line-height:1;
-      margin-bottom:8px;
-      overflow-wrap:anywhere;
-    }
-
-    .metric span { color:#fff; line-height:1.5; }
-
-    .status-message {
-      margin-top:16px;
-      padding:14px 16px;
-      border-radius:16px;
-      border:1px solid var(--border);
-      background:rgba(49,209,88,.06);
-      color:#fff;
-      line-height:1.6;
-      display:none;
-    }
-
-    .status-message.show { display:block; }
-    .status-message.error { border-color:rgba(255,107,107,.28); background:rgba(255,107,107,.1); color:#ffd4d4; }
-
-    .tabs {
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:18px;
-    }
-
-    .tab {
-      border:1px solid var(--border);
-      border-radius:999px;
-      background:rgba(49,209,88,.05);
-      color:#fff;
-      padding:10px 14px;
-      cursor:pointer;
-      font-weight:800;
-    }
-
-    .tab.is-active {
-      background:linear-gradient(135deg,#19a83f,#31d158);
-      color:#000;
-    }
-
-    .panel { display:none; }
-    .panel.is-active { display:block; }
-
-    .table-wrap {
-      margin-top:16px;
-      border:1px solid var(--border);
-      border-radius:20px;
-      overflow:auto;
-      background:rgba(0,0,0,.2);
-    }
-
-    table {
-      width:100%;
-      border-collapse:collapse;
-      min-width:840px;
-    }
-
-    th,td {
-      padding:14px;
-      border-bottom:1px solid rgba(49,209,88,.12);
-      text-align:left;
-      vertical-align:top;
-      color:#fff;
-      line-height:1.5;
-    }
-
-    th {
-      color:var(--green);
-      font-size:.82rem;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      background:rgba(49,209,88,.04);
-      position:sticky;
-      top:0;
-      z-index:1;
-    }
-
-    tr:last-child td { border-bottom:0; }
-
-    .badge {
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:7px 10px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background:rgba(49,209,88,.08);
-      color:#fff;
-      font-size:.78rem;
-      font-weight:900;
-      white-space:nowrap;
-    }
-
-    .badge.pending,.badge.new { color:var(--warning); border-color:rgba(255,209,102,.28); background:rgba(255,209,102,.1); }
-    .badge.approved,.badge.live,.badge.ok { color:var(--green); }
-    .badge.rejected,.badge.finished,.badge.error { color:#ffd4d4; border-color:rgba(255,107,107,.28); background:rgba(255,107,107,.1); }
-
-    .empty-state {
-      margin-top:16px;
-      padding:20px;
-      border:1px solid var(--border);
-      border-radius:20px;
-      background:rgba(49,209,88,.04);
-      color:#fff;
-      line-height:1.6;
-    }
-
-    .system-list {
-      display:grid;
-      gap:12px;
-      margin-top:16px;
-    }
-
-    .system-item {
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:14px;
-      padding:16px;
-      border:1px solid var(--border);
-      border-radius:18px;
-      background:rgba(49,209,88,.04);
-      min-width:0;
-    }
-
-    .system-item strong { color:var(--green); display:block; margin-bottom:4px; }
-    .system-item span { color:#fff; line-height:1.5; }
-
-    select,textarea {
-      width:100%;
-      border:1px solid var(--border);
-      background:rgba(255,255,255,.04);
-      color:#fff;
-      border-radius:14px;
-      padding:11px 12px;
-      outline:none;
-    }
-
-    select option { color:#000; }
-    textarea { min-height:76px; resize:vertical; }
-
-    .footer-note {
-      padding:0 0 42px;
-      color:var(--muted);
-      font-size:.92rem;
-      line-height:1.6;
-    }
-
-    footer a { color:var(--green); text-decoration:underline; }
-
-    @media (max-width:1080px) {
-      .hero-card,.grid-4,.grid-3,.grid-2 { grid-template-columns:1fr 1fr; }
-      .hero-card { grid-template-columns:1fr; }
-    }
-
-    @media (max-width:760px) {
-      .container { width:min(100% - 20px,1220px); }
-      .grid-4,.grid-3,.grid-2 { grid-template-columns:1fr; }
-      .topbar-inner { min-height:56px; gap:10px; flex-wrap:nowrap; }
-      .site-logo { height:30px; max-height:30px; }
-      .brand { gap:8px; flex:1 1 auto; }
-      .brand-text strong { font-size:.95rem; }
-      .brand-text span { display:none; }
-      .top-actions { flex:0 0 auto; gap:8px; flex-wrap:nowrap; overflow-x:auto; max-width:58vw; padding-bottom:2px; }
-      .top-actions .btn { width:auto; min-height:38px; padding:9px 12px; font-size:.78rem; flex:0 0 auto; }
-      .hero { padding:18px 0 14px; }
-      .hero-card,.card { border-radius:20px; padding:18px; }
-      h1 { font-size:1.65rem; }
-      .metric strong { font-size:1.65rem; }
-      .tabs,.filters-row,.button-row { display:grid; grid-template-columns:1fr; }
-      .tab,.filters-row .btn,.button-row .btn { width:100%; }
-      .system-item { flex-direction:column; }
-    }
+    :root{--bg:#060a0f;--bg2:#080d14;--bg3:#0a1018;--accent:#00c8ff;--border:rgba(0,200,255,0.12);--border2:rgba(0,200,255,0.22);--text:#e8f4ff;--muted:#5a8aaa;--muted2:#3a5a6a;--radius:8px;--radius-lg:12px;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+    a{color:inherit;text-decoration:none;}
+    .container{width:min(1180px,calc(100% - 32px));margin:0 auto;}
+    .page-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+    .page-bg svg{width:100%;height:100%;}
+    .topbar{position:sticky;top:0;z-index:50;background:rgba(6,10,15,0.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+    .topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px;flex-wrap:wrap;}
+    .logo-live{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;color:#fff;}
+    .logo-fut{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;color:#00c8ff;}
+    .logo-tv{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:#00c8ff;font-style:italic;margin-left:2px;opacity:0.8;}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;}
+    .btn{display:inline-flex;align-items:center;border:none;cursor:pointer;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;padding:8px 14px;border-radius:var(--radius);transition:all 0.2s;}
+    .btn-primary{background:#00c8ff;color:#060a0f;}
+    .btn-secondary{background:transparent;color:#00c8ff;border:1px solid var(--border2);}
+    .btn-danger{background:rgba(220,40,10,0.1);color:#ff5533;border:1px solid rgba(220,40,10,0.25);}
+    .btn-warning{background:rgba(255,180,0,0.1);color:#ffaa00;border:1px solid rgba(255,180,0,0.2);}
+    main{position:relative;z-index:1;padding:28px 0 48px;}
+    .page-tag{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--muted2);text-transform:uppercase;margin-bottom:8px;}
+    h1{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:900;color:#fff;text-transform:uppercase;margin:0 0 4px;}
+    h2{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;color:#fff;text-transform:uppercase;margin:0 0 6px;}
+    h3{font-size:14px;font-weight:700;color:#fff;margin:0 0 8px;}
+    p{font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6;}
+    .header-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+    .button-row{display:flex;gap:8px;flex-wrap:wrap;}
+    /* METRICS */
+    .metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+    .metric{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;text-align:center;}
+    .metric strong{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;color:#00c8ff;display:block;margin-bottom:3px;}
+    .metric span{font-size:11px;color:var(--muted);letter-spacing:0.3px;}
+    /* TABS */
+    .tabs-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;margin-bottom:16px;}
+    .tabs{display:flex;gap:6px;flex-wrap:wrap;}
+    .tab{background:transparent;border:1px solid var(--border);border-radius:var(--radius);color:var(--muted);font-family:'Barlow',sans-serif;font-size:12px;font-weight:700;padding:6px 12px;cursor:pointer;transition:all 0.2s;letter-spacing:0.3px;}
+    .tab.is-active,.tab:hover{border-color:#00c8ff;color:#00c8ff;background:rgba(0,200,255,0.06);}
+    /* PANELS */
+    .panel{display:none;}
+    .panel.is-active{display:block;}
+    .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;margin-bottom:14px;}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+    /* TABLE */
+    .table-wrap{overflow-x:auto;margin-top:14px;}
+    table{width:100%;border-collapse:collapse;font-size:13px;}
+    th{text-align:left;padding:8px 10px;color:var(--muted);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border);}
+    td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top;}
+    tr:last-child td{border-bottom:none;}
+    .empty-state{font-size:13px;color:var(--muted2);padding:20px 0;text-align:center;}
+    .tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;}
+    .tag-live{background:rgba(220,40,10,0.15);color:#ff5533;border:1px solid rgba(220,40,10,0.3);}
+    .tag-ok{background:rgba(0,200,100,0.1);color:#00cc66;border:1px solid rgba(0,200,100,0.2);}
+    .tag-pending{background:rgba(255,180,0,0.1);color:#ffaa00;border:1px solid rgba(255,180,0,0.2);}
+    .status-msg{font-size:13px;padding:8px 12px;border-radius:var(--radius);margin-bottom:12px;display:none;}
+    .status-msg.show{display:block;}
+    .status-msg.ok{background:rgba(0,200,100,0.1);color:#00cc66;border:1px solid rgba(0,200,100,0.2);}
+    .status-msg.error{background:rgba(220,40,10,0.1);color:#ff5533;border:1px solid rgba(220,40,10,0.2);}
+    .system-list{display:grid;gap:8px;margin-top:12px;}
+    .system-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+    footer{position:relative;z-index:1;text-align:center;padding:20px;font-size:12px;color:var(--muted2);border-top:1px solid var(--border);}
+    footer a{color:var(--muted);}
+    @media(max-width:820px){.metrics-grid{grid-template-columns:1fr 1fr;}.grid-3{grid-template-columns:1fr 1fr;}}
+    @media(max-width:540px){.metrics-grid{grid-template-columns:1fr 1fr;}}
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="container topbar-inner">
-      <a href="index.html" class="brand">
-        <img src="livefut-logo.png" alt="LiveFut TV logo" class="site-logo" />
-        <div class="brand-text">
-          <strong>LiveFut</strong>
-          <span>Football United Team</span>
-        </div>
-      </a>
-      <div class="top-actions">
-        <a class="btn btn-secondary" href="dashboard.html">Dashboard</a>
-        <a class="btn btn-secondary" href="live.html">Live</a>
-        <button class="btn btn-danger" id="logoutBtn">Esci</button>
-      </div>
+<div class="page-bg"><svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" fill="none"><defs><radialGradient id="gp"><stop offset="0%" stop-color="#00c8ff" stop-opacity="0.07"/><stop offset="100%" stop-color="#00c8ff" stop-opacity="0"/></radialGradient></defs><ellipse cx="720" cy="450" rx="420" ry="270" fill="url(#gp)"/><rect x="120" y="60" width="1200" height="780" stroke="#00c8ff" stroke-width="1.5" opacity="0.06"/><line x1="720" y1="60" x2="720" y2="840" stroke="#00c8ff" stroke-width="1" opacity="0.05"/><circle cx="720" cy="450" r="110" stroke="#00c8ff" stroke-width="1" opacity="0.05"/><rect x="120" y="240" width="220" height="360" stroke="#00c8ff" stroke-width="1" opacity="0.05"/><rect x="1100" y="240" width="220" height="360" stroke="#00c8ff" stroke-width="1" opacity="0.05"/></svg></div>
+<header class="topbar"><div class="container topbar-inner">
+  <a href="index.html"><span class="logo-live">LIVE</span><span class="logo-fut">FUT</span><span class="logo-tv">.TV</span></a>
+  <div class="actions">
+    <a class="btn btn-secondary" href="dashboard.html">Dashboard</a>
+    <a class="btn btn-secondary" href="live.html">Live</a>
+    <button class="btn btn-danger" id="logoutBtn">Esci</button>
+  </div>
+</div></header>
+<main id="adminPage"><div class="container">
+  <div class="header-row">
+    <div>
+      <div class="page-tag">Pannello admin</div>
+      <h1>Regia operativa LiveFut</h1>
+      <p>Gestione accrediti, richieste, dirette, contenuti e stato piattaforma.</p>
+      <div id="adminMessage" class="status-msg"></div>
     </div>
-  </header>
+    <div class="button-row">
+      <button class="btn btn-primary" id="refreshBtn">Aggiorna dati</button>
+      <button class="btn btn-secondary" id="exportBtn">Esporta report</button>
+    </div>
+  </div>
 
-  <main class="container" id="adminPage">
-    <section class="hero">
-      <div class="hero-card">
-        <div>
-          <div class="eyebrow"><span class="pulse"></span> Pannello admin</div>
-          <h1>Regia operativa LiveFut</h1>
-          <p>Gestione accrediti, richieste, dirette, contenuti e stato piattaforma.</p>
-          <div class="status-message" id="adminMessage"></div>
-        </div>
-        <div class="button-row">
-          <button class="btn btn-primary" id="refreshBtn">Aggiorna dati</button>
-          <button class="btn btn-secondary" id="exportBtn">Esporta report</button>
-        </div>
-      </div>
-    </section>
+  <div class="metrics-grid">
+    <div class="metric"><strong id="metricUsers">—</strong><span>Profili registrati</span></div>
+    <div class="metric"><strong id="metricMatches">—</strong><span>Partite presenti</span></div>
+    <div class="metric"><strong id="metricLive">—</strong><span>Dirette live</span></div>
+    <div class="metric"><strong id="metricPendingAccreditations">—</strong><span>Accrediti in attesa</span></div>
+  </div>
 
-    <section class="section">
-      <div class="grid-4">
-        <article class="metric"><strong id="metricUsers">-</strong><span>Profili registrati</span></article>
-        <article class="metric"><strong id="metricMatches">-</strong><span>Partite presenti</span></article>
-        <article class="metric"><strong id="metricLive">-</strong><span>Dirette live</span></article>
-        <article class="metric"><strong id="metricPendingAccreditations">-</strong><span>Accrediti in attesa</span></article>
-      </div>
-    </section>
+  <div class="tabs-card">
+    <h2 style="margin-bottom:12px">Controllo operativo</h2>
+    <div class="tabs">
+      <button class="tab is-active" data-panel="accreditationsPanel">Accrediti</button>
+      <button class="tab" data-panel="contactsPanel">Contatti</button>
+      <button class="tab" data-panel="supportPanel">Supporto</button>
+      <button class="tab" data-panel="requestsArchivePanel">Archivio</button>
+      <button class="tab" data-panel="matchesPanel">Dirette</button>
+      <button class="tab" data-panel="locksPanel">Blocchi</button>
+      <button class="tab" data-panel="coinsPanel">Monete</button>
+      <button class="tab" data-panel="eventsPanel">Telecronaca</button>
+      <button class="tab" data-panel="systemPanel">Sistema</button>
+    </div>
+  </div>
 
-    <section class="section">
-      <article class="card">
-        <h2>Controllo operativo</h2>
-        <p>Le sezioni mostrano i dati salvati su Supabase e permettono di gestire le richieste principali.</p>
-        <div class="tabs">
-          <button class="tab is-active" data-panel="accreditationsPanel">Accrediti</button>
-          <button class="tab" data-panel="contactsPanel">Contatti</button>
-          <button class="tab" data-panel="supportPanel">Supporto</button>
-          <button class="tab" data-panel="requestsArchivePanel">Archivio richieste</button>
-          <button class="tab" data-panel="matchesPanel">Dirette</button>
-          <button class="tab" data-panel="locksPanel">Blocchi</button>
-          <button class="tab" data-panel="coinsPanel">Monete</button>
-          <button class="tab" data-panel="eventsPanel">Telecronaca</button>
-          <button class="tab" data-panel="systemPanel">Sistema</button>
-        </div>
-      </article>
-    </section>
+  <div class="panel is-active" id="accreditationsPanel">
+    <div class="card"><h2>Richieste accredito</h2><p>Approva o rifiuta le richieste di associazione a squadre e ruoli operativi.</p>
+    <div class="table-wrap"><table><thead><tr><th>Squadra</th><th>Ruolo</th><th>Stato</th><th>Utente</th><th>Note</th><th>Data</th><th>Azioni</th></tr></thead><tbody id="accreditationsTable"></tbody></table></div>
+    <div class="empty-state" id="accreditationsEmpty">Nessuna richiesta accredito trovata.</div></div>
+  </div>
 
-    <section class="section panel is-active" id="accreditationsPanel">
-      <article class="card">
-        <h2>Richieste accredito</h2>
-        <p>Approva o rifiuta le richieste di associazione a squadre e ruoli operativi.</p>
-        <div class="table-wrap"><table><thead><tr><th>Squadra</th><th>Ruolo</th><th>Stato</th><th>Utente</th><th>Note</th><th>Data</th><th>Azioni</th></tr></thead><tbody id="accreditationsTable"></tbody></table></div>
-        <div class="empty-state" id="accreditationsEmpty">Nessuna richiesta accredito trovata.</div>
-      </article>
-    </section>
+  <div class="panel" id="contactsPanel">
+    <div class="card"><h2>Richieste contatto</h2><p>Monitora i messaggi arrivati dal sito e segna quelli già gestiti.</p>
+    <div class="table-wrap"><table><thead><tr><th>Nome</th><th>Email</th><th>Oggetto</th><th>Messaggio</th><th>Stato</th><th>Data</th><th>Azioni</th></tr></thead><tbody id="contactsTable"></tbody></table></div>
+    <div class="empty-state" id="contactsEmpty">Nessuna richiesta contatto trovata.</div></div>
+  </div>
 
-    <section class="section panel" id="contactsPanel">
-      <article class="card">
-        <h2>Richieste contatto</h2>
-        <p>Monitora i messaggi arrivati dal sito e segna quelli già gestiti.</p>
-        <div class="table-wrap"><table><thead><tr><th>Nome</th><th>Email</th><th>Oggetto</th><th>Messaggio</th><th>Stato</th><th>Data</th><th>Azioni</th></tr></thead><tbody id="contactsTable"></tbody></table></div>
-        <div class="empty-state" id="contactsEmpty">Nessuna richiesta contatto trovata.</div>
-      </article>
-    </section>
+  <div class="panel" id="requestsArchivePanel">
+    <div class="card"><h2>Archivio richieste</h2><p>Accrediti, contatti e supporto già gestiti.</p>
+    <h3 style="margin-top:16px">Autorizzazioni</h3>
+    <div class="table-wrap"><table><thead><tr><th>Squadra</th><th>Ruolo</th><th>Esito</th><th>Utente</th><th>Motivazione</th><th>Revisione</th><th>Azioni</th></tr></thead><tbody id="accreditationArchiveTable"></tbody></table></div>
+    <div class="empty-state" id="accreditationArchiveEmpty">Nessuna autorizzazione archiviata.</div>
+    <h3 style="margin-top:20px">Contatti</h3>
+    <div class="table-wrap"><table><thead><tr><th>Nome</th><th>Email</th><th>Oggetto</th><th>Messaggio</th><th>Stato</th><th>Data</th><th>Azioni</th></tr></thead><tbody id="contactsArchiveTable"></tbody></table></div>
+    <div class="empty-state" id="contactsArchiveEmpty">Nessun contatto archiviato.</div>
+    <h3 style="margin-top:20px">Supporto</h3>
+    <div class="table-wrap"><table><thead><tr><th>Partita</th><th>Motivo</th><th>Stato</th><th>Utente</th><th>Data</th><th>Azioni</th></tr></thead><tbody id="supportArchiveTable"></tbody></table></div>
+    <div class="empty-state" id="supportArchiveEmpty">Nessuna richiesta supporto archiviata.</div></div>
+  </div>
 
-    <section class="section panel" id="requestsArchivePanel">
-      <article class="card">
-        <h2>Archivio richieste</h2>
-        <p>Accrediti, contatti e supporto già gestiti. Puoi riaprire una richiesta quando serve.</p>
+  <div class="panel" id="supportPanel">
+    <div class="card"><h2>Richieste supporto</h2><p>Controlla segnalazioni sulle partite e richieste di intervento operativo.</p>
+    <div class="table-wrap"><table><thead><tr><th>Partita</th><th>Motivo</th><th>Stato</th><th>Utente</th><th>Data</th><th>Azioni</th></tr></thead><tbody id="supportTable"></tbody></table></div>
+    <div class="empty-state" id="supportEmpty">Nessuna richiesta supporto trovata.</div></div>
+  </div>
 
-        <h3 style="margin-top:18px;">Autorizzazioni</h3>
-        <div class="table-wrap"><table><thead><tr><th>Squadra</th><th>Ruolo</th><th>Esito</th><th>Utente</th><th>Motivazione</th><th>Revisione</th><th>Azioni</th></tr></thead><tbody id="accreditationArchiveTable"></tbody></table></div>
-        <div class="empty-state" id="accreditationArchiveEmpty">Nessuna autorizzazione archiviata.</div>
+  <div class="panel" id="matchesPanel">
+    <div class="card"><h2>Dirette e partite</h2><p>Vista rapida dello stato delle partite registrate su Supabase.</p>
+    <div class="grid-3">
+      <div class="metric"><strong id="metricSoon">—</strong><span>In arrivo</span></div>
+      <div class="metric"><strong id="metricFinished">—</strong><span>Concluse</span></div>
+      <div class="metric"><strong id="metricLocks">—</strong><span>Blocchi attivi</span></div>
+    </div>
+    <div class="table-wrap"><table><thead><tr><th>Partita</th><th>Stato</th><th>Risultato</th><th>Minuto</th><th>Data</th><th>Campo</th><th>Azioni</th></tr></thead><tbody id="matchesTable"></tbody></table></div>
+    <div class="empty-state" id="matchesEmpty">Nessuna partita trovata.</div></div>
+  </div>
 
-        <h3 style="margin-top:22px;">Contatti</h3>
-        <div class="table-wrap"><table><thead><tr><th>Nome</th><th>Email</th><th>Oggetto</th><th>Messaggio</th><th>Stato</th><th>Data</th><th>Azioni</th></tr></thead><tbody id="contactsArchiveTable"></tbody></table></div>
-        <div class="empty-state" id="contactsArchiveEmpty">Nessun contatto archiviato.</div>
+  <div class="panel" id="locksPanel">
+    <div class="card"><h2>Blocchi diretta</h2><p>Sblocca eventi rimasti occupati, chiudi lock vecchi e resetta lo stato Livepeer.</p>
+    <div class="button-row" style="margin:12px 0">
+      <button class="btn btn-warning" data-action="cleanup-stale-locks">Chiudi lock vecchi</button>
+    </div>
+    <div class="table-wrap"><table><thead><tr><th>Partita</th><th>Broadcaster</th><th>Lock</th><th>Anomalia</th><th>Azioni</th></tr></thead><tbody id="locksTable"></tbody></table></div>
+    <div class="empty-state" id="locksEmpty">Nessun blocco diretta attivo.</div></div>
+  </div>
 
-        <h3 style="margin-top:22px;">Supporto</h3>
-        <div class="table-wrap"><table><thead><tr><th>Partita</th><th>Motivo</th><th>Stato</th><th>Utente</th><th>Data</th><th>Azioni</th></tr></thead><tbody id="supportArchiveTable"></tbody></table></div>
-        <div class="empty-state" id="supportArchiveEmpty">Nessuna richiesta supporto archiviata.</div>
-      </article>
-    </section>
+  <div class="panel" id="coinsPanel">
+    <div class="card"><h2>Monete LiveFut</h2><p>Classifica mensile broadcaster e storico delle donazioni simboliche.</p>
+    <div class="grid-3">
+      <div class="metric"><strong id="metricCoinsMonth">—</strong><span>Monete nel mese</span></div>
+      <div class="metric"><strong id="metricCoinDonations">—</strong><span>Donazioni</span></div>
+      <div class="metric"><strong id="metricCoinBroadcasters">—</strong><span>Broadcaster</span></div>
+    </div>
+    <h3>Classifica broadcaster</h3>
+    <div class="table-wrap"><table><thead><tr><th>Posizione</th><th>Broadcaster</th><th>Monete</th><th>Donazioni</th><th>Dirette</th></tr></thead><tbody id="coinsRankingTable"></tbody></table></div>
+    <div class="empty-state" id="coinsRankingEmpty">Nessuna donazione nel mese corrente.</div>
+    <h3 style="margin-top:20px">Storico donazioni</h3>
+    <div class="table-wrap"><table><thead><tr><th>Data</th><th>Donatore</th><th>Broadcaster</th><th>Partita</th><th>Monete</th></tr></thead><tbody id="coinDonationsTable"></tbody></table></div>
+    <div class="empty-state" id="coinDonationsEmpty">Nessuna donazione registrata.</div></div>
+  </div>
 
-    <section class="section panel" id="supportPanel">
-      <article class="card">
-        <h2>Richieste supporto</h2>
-        <p>Controlla segnalazioni sulle partite e richieste di intervento operativo.</p>
-        <div class="table-wrap"><table><thead><tr><th>Partita</th><th>Motivo</th><th>Stato</th><th>Utente</th><th>Data</th><th>Azioni</th></tr></thead><tbody id="supportTable"></tbody></table></div>
-        <div class="empty-state" id="supportEmpty">Nessuna richiesta supporto trovata.</div>
-      </article>
-    </section>
+  <div class="panel" id="eventsPanel">
+    <div class="card"><h2>Telecronaca</h2><p>Ultimi eventi generati dalla console studio durante le dirette.</p>
+    <div class="table-wrap"><table><thead><tr><th>Evento</th><th>Partita</th><th>Minuto</th><th>Risultato</th><th>Testo</th><th>Data</th></tr></thead><tbody id="eventsTable"></tbody></table></div>
+    <div class="empty-state" id="eventsEmpty">Nessun evento telecronaca trovato.</div></div>
+  </div>
 
-    <section class="section panel" id="matchesPanel">
-      <article class="card">
-        <h2>Dirette e partite</h2>
-        <p>Vista rapida dello stato delle partite registrate su Supabase.</p>
-        <div class="grid-3" style="margin-top:16px;">
-          <article class="metric"><strong id="metricSoon">-</strong><span>In arrivo</span></article>
-          <article class="metric"><strong id="metricFinished">-</strong><span>Concluse</span></article>
-          <article class="metric"><strong id="metricLocks">-</strong><span>Blocchi diretta attivi</span></article>
-        </div>
-        <div class="table-wrap"><table><thead><tr><th>Partita</th><th>Stato</th><th>Risultato</th><th>Minuto</th><th>Data</th><th>Campo</th><th>Azioni</th></tr></thead><tbody id="matchesTable"></tbody></table></div>
-        <div class="empty-state" id="matchesEmpty">Nessuna partita trovata.</div>
-      </article>
-    </section>
-
-    <section class="section panel" id="locksPanel">
-      <article class="card">
-        <h2>Blocchi diretta</h2>
-        <p>Sblocca eventi rimasti occupati, chiudi lock vecchi e resetta lo stato Livepeer quando una prova non è partita davvero.</p>
-        <div class="button-row" style="margin-top:16px;">
-          <button class="btn btn-warning" data-action="cleanup-stale-locks">Chiudi lock vecchi</button>
-        </div>
-        <div class="table-wrap"><table><thead><tr><th>Partita</th><th>Broadcaster</th><th>Lock</th><th>Anomalia</th><th>Azioni</th></tr></thead><tbody id="locksTable"></tbody></table></div>
-        <div class="empty-state" id="locksEmpty">Nessun blocco diretta attivo.</div>
-      </article>
-    </section>
-
-    <section class="section panel" id="coinsPanel">
-      <article class="card">
-        <h2>Monete LiveFut</h2>
-        <p>Classifica mensile broadcaster e storico delle donazioni simboliche.</p>
-        <div class="grid-3" style="margin-top:16px;">
-          <article class="metric"><strong id="metricCoinsMonth">-</strong><span>Monete donate nel mese</span></article>
-          <article class="metric"><strong id="metricCoinDonations">-</strong><span>Donazioni registrate</span></article>
-          <article class="metric"><strong id="metricCoinBroadcasters">-</strong><span>Broadcaster supportati</span></article>
-        </div>
-        <h3 style="margin-top:22px;">Classifica broadcaster</h3>
-        <div class="table-wrap"><table><thead><tr><th>Posizione</th><th>Broadcaster</th><th>Monete</th><th>Donazioni</th><th>Dirette</th></tr></thead><tbody id="coinsRankingTable"></tbody></table></div>
-        <div class="empty-state" id="coinsRankingEmpty">Nessuna donazione nel mese corrente.</div>
-
-        <h3 style="margin-top:22px;">Storico donazioni</h3>
-        <div class="table-wrap"><table><thead><tr><th>Data</th><th>Donatore</th><th>Broadcaster</th><th>Partita</th><th>Monete</th></tr></thead><tbody id="coinDonationsTable"></tbody></table></div>
-        <div class="empty-state" id="coinDonationsEmpty">Nessuna donazione registrata.</div>
-      </article>
-    </section>
-
-    <section class="section panel" id="eventsPanel">
-      <article class="card">
-        <h2>Telecronaca</h2>
-        <p>Ultimi eventi generati dalla console studio durante le dirette.</p>
-        <div class="table-wrap"><table><thead><tr><th>Evento</th><th>Partita</th><th>Minuto</th><th>Risultato</th><th>Testo</th><th>Data</th></tr></thead><tbody id="eventsTable"></tbody></table></div>
-        <div class="empty-state" id="eventsEmpty">Nessun evento telecronaca trovato.</div>
-      </article>
-    </section>
-
-    <section class="section panel" id="systemPanel">
-      <article class="card">
-        <h2>Stato piattaforma</h2>
-        <p>Controlli base attuali e indicatori predisposti per monitoraggi futuri.</p>
-        <div class="system-list" id="systemList"></div>
-      </article>
-    </section>
-
-    <section class="footer-note">
-      LiveFut TV - Area amministrazione
-    </section>
-  </main>
-
-  <footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
-    (c) 2026 LiveFut TV - Football United Team. Tutti i diritti riservati.<br><br>
-    <a href="https://www.iubenda.com/privacy-policy/71949704" class="iubenda-white iubenda-noiframe iubenda-embed">Privacy Policy</a> |
-    <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy" class="iubenda-white iubenda-noiframe iubenda-embed">Cookie Policy</a> |
-    <a href="terms.html">Termini e Condizioni</a>
-  </footer>
-
-  <script>
-    const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
+  <div class="panel" id="systemPanel">
+    <div class="card"><h2>Stato piattaforma</h2><p>Controlli base e indicatori operativi.</p>
+    <div class="system-list" id="systemList"></div></div>
+  </div>
+</div></main>
+<footer>&copy; 2026 LiveFut TV — <a href="https://www.iubenda.com/privacy-policy/71949704">Privacy</a> | <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy">Cookie</a> | <a href="terms.html">Termini</a></footer>
+<script>
+const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const ADMIN_ROLES = ['admin', 'administrator', 'owner', 'superuser', 'super_admin'];
@@ -1195,9 +851,4 @@
 
     verifyAccess().then(allowed => {
       if (allowed) loadAdminData().catch(error => showMessage(`Errore caricamento admin: ${error.message}`, 'error'));
-    });
-  </script>
-  <script src="https://cdn.iubenda.com/iubenda.js"></script>
-</body>
-</html>
-
+    });</script><script src="https://cdn.iubenda.com/iubenda.js"></script></body></html>
