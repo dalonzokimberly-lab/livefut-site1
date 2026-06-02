@@ -9,7 +9,7 @@
   <style>
     :root{--bg:#060a0f;--bg2:#080d14;--bg3:#0a1018;--accent:#00c8ff;--border:rgba(0,200,255,0.12);--border2:rgba(0,200,255,0.22);--text:#e8f4ff;--muted:#5a8aaa;--muted2:#3a5a6a;--radius:8px;--radius-lg:12px;}
     *{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+    body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
     a{color:inherit;text-decoration:none;}
     .container{width:min(1180px,calc(100% - 32px));margin:0 auto;}
     .page-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
@@ -28,7 +28,7 @@
     .page-tag{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--muted2);text-transform:uppercase;margin-bottom:8px;}
     h1{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:900;color:#fff;text-transform:uppercase;margin:0 0 6px;}
     p{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;}
-    .stats-row{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:28px;}
+    .stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:28px;}
     .stat{padding:16px;text-align:center;border-right:1px solid var(--border);}
     .stat:last-child{border-right:none;}
     .stat strong{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:#00c8ff;display:block;}
@@ -41,7 +41,7 @@
     .region-body.open{display:block;}
     .comp-group{margin-bottom:14px;}
     .comp-name{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:10px 0 8px;}
-    .match-card{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+    .match-card{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
     .match-card:last-child{border-bottom:none;}
     .match-teams{font-weight:700;color:var(--text);}
     .match-score{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;color:#00c8ff;}
