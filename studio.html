@@ -76,7 +76,6 @@
     .video-wrap video{width:100%;height:100%;object-fit:cover;display:none;background:#000;}
     .video-wrap.active video{display:block;}
     .video-wrap.active .preview-placeholder{display:none;}
-    .video-wrap.contain video{object-fit:contain;}
     .video-wrap .broadcast-frame{width:100%;height:100%;border:0;display:none;background:#000;position:absolute;inset:0;z-index:2;}
     .preview-placeholder{text-align:center;padding:24px;z-index:1;position:relative;}
     .preview-placeholder strong{font-family:'Barlow Condensed',sans-serif;font-size:22px;color:#fff;display:block;margin-bottom:6px;}
@@ -89,9 +88,12 @@
     .score-team{color:var(--overlay-text,#fff);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:clamp(110px,18vw,220px);}
     .score-value{min-width:64px;background:var(--overlay-primary,#ff4422);color:#000;font-size:calc(.92rem * var(--overlay-scale,1));font-variant-numeric:tabular-nums;}
     .score-time{min-width:86px;max-width:160px;color:var(--overlay-accent,#ff6600);border-left:1px solid color-mix(in srgb,var(--overlay-accent,#ff6600) 45%,transparent);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .sponsor-overlay{align-self:center;justify-self:center;max-width:min(420px,70%);max-height:34%;border-radius:18px;padding:12px;background:rgba(0,0,0,.78);border:1px solid color-mix(in srgb,var(--overlay-accent,#ff6600) 50%,transparent);box-shadow:0 18px 44px rgba(0,0,0,.5);display:none;place-items:center;}
-    .sponsor-overlay img{max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;}
+    .is-hidden{opacity:0!important;visibility:hidden!important;}
+    .sponsor-overlay{position:absolute;left:50%;bottom:clamp(12px,4%,28px);z-index:5;transform:translateX(-50%);width:clamp(118px,20vw,210px);aspect-ratio:1/1;border-radius:10px;padding:10px;background:rgba(0,0,0,.82);border:1px solid color-mix(in srgb,var(--overlay-accent,#ff6600) 50%,transparent);box-shadow:0 16px 38px rgba(0,0,0,.55);display:none;place-items:center;pointer-events:none;}
+    .sponsor-overlay.show{display:grid;}
+    .sponsor-overlay img{width:100%;height:100%;object-fit:contain;border-radius:6px;}
     .scene-overlay{position:absolute;inset:0;z-index:6;display:none;place-items:center;padding:clamp(14px,4%,34px);text-align:center;font-family:'Barlow Condensed',sans-serif;background:linear-gradient(115deg,rgba(0,0,0,.86),rgba(0,0,0,.62)),repeating-linear-gradient(135deg,rgba(200,40,10,.1) 0 2px,transparent 2px 22px);overflow:hidden;}
+    .scene-overlay.show{display:grid;}
     .scene-box{width:min(760px,100%);max-height:100%;border-radius:28px;padding:clamp(18px,5vw,46px);background:color-mix(in srgb,rgba(0,0,0,.82) 86%,transparent);border:1px solid color-mix(in srgb,var(--overlay-primary,#ff4422) 45%,transparent);box-shadow:0 24px 70px rgba(0,0,0,.55);overflow:hidden;}
     .scene-kicker{color:var(--overlay-accent,#ff6600);font-weight:900;text-transform:uppercase;letter-spacing:.14em;margin-bottom:12px;font-size:calc(.9rem * var(--overlay-scale,1));}
     .scene-title{color:var(--overlay-primary,#ff4422);font-size:clamp(1.55rem,8vw,calc(4rem * var(--overlay-scale,1)));line-height:1;font-weight:900;letter-spacing:0;margin-bottom:14px;overflow-wrap:anywhere;}
@@ -324,9 +326,6 @@
             <button class="btn btn-danger" id="stopBtn" disabled>Termina</button>
           </div>
           <div class="ctrl-row">
-            <button class="btn btn-secondary btn-small" id="landscapeBtn">16:9</button>
-            <button class="btn btn-secondary btn-small" id="portraitBtn">9:16</button>
-            <button class="btn btn-secondary btn-small" id="fitVideoBtn">Adatta</button>
             <button class="btn btn-secondary btn-small" id="fullscreenBtn">Schermo intero</button>
           </div>
           <div class="status-message" id="statusMessage"></div>
@@ -618,9 +617,6 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     const accentColorInput = document.getElementById('accentColorInput');
     const overlayFontSizeInput = document.getElementById('overlayFontSizeInput');
     const overlayPositionSelect = document.getElementById('overlayPositionSelect');
-    const landscapeBtn = document.getElementById('landscapeBtn');
-    const portraitBtn = document.getElementById('portraitBtn');
-    const fitVideoBtn = document.getElementById('fitVideoBtn');
     const fullscreenBtn = document.getElementById('fullscreenBtn');
     const sponsorOverlay = document.getElementById('sponsorOverlay');
     const sponsorImage = document.getElementById('sponsorImage');
@@ -667,6 +663,7 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     let livepeerStatusInterval = null;
     let currentVideoFormat = 'landscape';
     let initialStudioSetupDone = false;
+    let hasStoredOverlaySettings = false;
     let socialAccounts = new Map();
     let broadcastDestinations = new Map([['livefut', true]]);
 
@@ -713,6 +710,12 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
 
     function currentMinute() {
       return Math.floor(elapsedSeconds / 60);
+    }
+
+    function secondsSince(dateValue) {
+      const date = dateValue ? new Date(dateValue) : null;
+      if (!date || Number.isNaN(date.getTime())) return 0;
+      return Math.max(0, Math.floor((Date.now() - date.getTime()) / 1000));
     }
 
     function setText(id, value) {
@@ -838,11 +841,58 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
       updateOverlay();
     }
 
+    function syncOverlayControlsFromMatch(match) {
+      hasStoredOverlaySettings = Boolean(match.overlay_updated_at);
+      if (match.overlay_visible !== null && match.overlay_visible !== undefined) {
+        overlayToggle.checked = match.overlay_visible !== false;
+      }
+      if (match.overlay_scoreboard_visible !== null && match.overlay_scoreboard_visible !== undefined) {
+        scoreboardToggle.checked = match.overlay_scoreboard_visible !== false;
+      }
+      if (match.overlay_primary) primaryColorInput.value = match.overlay_primary;
+      if (match.overlay_accent) accentColorInput.value = match.overlay_accent;
+      if (match.overlay_font) fontSelect.value = match.overlay_font;
+      if (match.overlay_scale) overlayFontSizeInput.value = String(Math.round(Number(match.overlay_scale) * 100));
+      if (match.overlay_position) overlayPositionSelect.value = match.overlay_position;
+      applyCustomGraphics();
+    }
+
+    function syncTimerFromMatch(match) {
+      const storedSeconds = Number(match.elapsed_seconds_at_save);
+      const baseSeconds = Number.isFinite(storedSeconds) ? storedSeconds : 0;
+      timerRunning = Boolean(match.timer_running);
+      recoveryMode = Number(match.minute) < 0;
+
+      if (recoveryMode) {
+        recoverySeconds = baseSeconds || Math.abs(Number(match.minute) || 0);
+        elapsedSeconds = 0;
+      } else {
+        elapsedSeconds = baseSeconds || (Number.isFinite(Number(match.minute)) ? Number(match.minute) * 60 : elapsedSeconds);
+        recoverySeconds = 0;
+      }
+
+      if (timerRunning) {
+        const liveSeconds = secondsSince(match.timer_started_at);
+        if (recoveryMode) recoverySeconds += liveSeconds;
+        else elapsedSeconds += liveSeconds;
+        if (!timerInterval) {
+          timerInterval = setInterval(() => {
+            if (recoveryMode) recoverySeconds += 1;
+            else elapsedSeconds += 1;
+            updateOverlay();
+            const sec = recoveryMode ? recoverySeconds : elapsedSeconds;
+            if (sec % 10 === 0) saveMatchData();
+          }, 1000);
+        }
+      } else if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+
     function setVideoFormat(format) {
       currentVideoFormat = format;
       previewWrap.classList.toggle('portrait', format === 'portrait');
-      landscapeBtn.classList.toggle('is-active', format === 'landscape');
-      portraitBtn.classList.toggle('is-active', format === 'portrait');
       showMessage(format === 'portrait'
         ? 'Formato verticale 9:16 attivo. Utile per pubblico da smartphone.'
         : 'Formato orizzontale 16:9 attivo. Consigliato per trasmettere la partita.');
@@ -1231,7 +1281,6 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
 
     function toggleVideoFit() {
       previewWrap.classList.toggle('contain');
-      fitVideoBtn.classList.toggle('is-active', previewWrap.classList.contains('contain'));
       showMessage(previewWrap.classList.contains('contain') ? 'Video adattato senza tagli.' : 'Video riempie tutta la preview.');
     }
 
@@ -1275,7 +1324,8 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
       const parsedScore = parseScore(match.score);
       homeScore = parsedScore.home;
       awayScore = parsedScore.away;
-      elapsedSeconds = Number.isFinite(Number(match.minute)) ? Number(match.minute) * 60 : elapsedSeconds;
+      syncTimerFromMatch(match);
+      syncOverlayControlsFromMatch(match);
       document.title = `${currentHomeTeam} vs ${currentAwayTeam} - Studio LiveFut TV`;
       const matchParams = new URLSearchParams({ mode:'broadcast' });
       if (isUuid(match.id)) matchParams.set('id', match.id);
@@ -1457,8 +1507,10 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
       if (initialStudioSetupDone) return;
       initialStudioSetupDone = true;
 
-      scoreboardToggle.checked = true;
-      overlayToggle.checked = true;
+      if (!hasStoredOverlaySettings) {
+        scoreboardToggle.checked = true;
+        overlayToggle.checked = true;
+      }
       updateOverlay();
 
       if (initialWaitMinutes > 0) {
@@ -1681,6 +1733,7 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     }
 
     function goalEvent() {
+      hideSponsor();
       const team = eventTeamSelect.value;
       const scorer = document.getElementById('scorerInput').value.trim();
       const assist = document.getElementById('assistInput').value.trim();
@@ -1704,6 +1757,7 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     }
 
     function chanceEvent() {
+      hideSponsor();
       const team = eventTeamSelect.value;
       const player = document.getElementById('scorerInput').value.trim();
       const body = `${teamName(team)} si rende pericolosa${player ? ` con ${player}` : ''}. Azione importante, il risultato resta ${homeScore} - ${awayScore}.`;
@@ -1719,6 +1773,7 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     }
 
     function cardEvent() {
+      hideSponsor();
       const team = eventTeamSelect.value;
       const player = document.getElementById('cardPlayerInput').value.trim() || 'un giocatore';
       const card = document.getElementById('cardTypeSelect').value;
@@ -1739,30 +1794,42 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     function loadSponsorFile(input) {
       const file = input.files && input.files[0];
       if (!file) return;
+      const previousUrl = input.dataset.sponsorUrl;
+      if (previousUrl) URL.revokeObjectURL(previousUrl);
       const url = URL.createObjectURL(file);
-      sponsorImages.push(url);
-      sponsorImages = sponsorImages.slice(0, 3);
+      input.dataset.sponsorUrl = url;
+      sponsorImages = ['sponsorInput1', 'sponsorInput2', 'sponsorInput3']
+        .map(id => document.getElementById(id)?.dataset.sponsorUrl)
+        .filter(Boolean);
       showMessage('Sponsor caricato.');
     }
 
-    function showSponsor() {
+    function renderSponsorFrame() {
       if (!sponsorImages.length) {
         const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="360" viewBox="0 0 900 360"><rect width="900" height="360" rx="34" fill="#050505"/><rect x="16" y="16" width="868" height="328" rx="28" fill="none" stroke="#31d158" stroke-width="6"/><text x="450" y="158" text-anchor="middle" font-family="Arial" font-size="54" font-weight="800" fill="#31d158">LiveFut TV</text><text x="450" y="220" text-anchor="middle" font-family="Arial" font-size="28" font-weight="700" fill="#ffffff">Spazio sponsor</text></svg>`;
         sponsorImage.src = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
         sponsorOverlay.classList.add('show');
-        clearTimeout(sponsorHideTimeout);
-        sponsorHideTimeout = setTimeout(hideSponsor, 10000);
         showMessage('Carica immagini sponsor per mostrarle durante la diretta.');
         return;
       }
+
       sponsorImage.src = sponsorImages[sponsorIndex % sponsorImages.length];
       sponsorIndex += 1;
       sponsorOverlay.classList.add('show');
-      clearTimeout(sponsorHideTimeout);
-      sponsorHideTimeout = setTimeout(hideSponsor, 10000);
+    }
+
+    function showSponsor() {
+      hideScene();
+      stopSponsorCycle();
+      renderSponsorFrame();
+      if (sponsorImages.length > 1) {
+        sponsorCycleInterval = setInterval(renderSponsorFrame, 7000);
+      }
+      showMessage(sponsorImages.length ? 'Sponsor in onda. Premi Nascondi per tornare subito alla partita.' : 'Carica immagini sponsor per mostrarle durante la diretta.');
     }
 
     function hideSponsor() {
+      stopSponsorCycle();
       sponsorOverlay.classList.remove('show');
       clearTimeout(sponsorHideTimeout);
       sponsorHideTimeout = null;
@@ -1772,7 +1839,11 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
       stopSponsorCycle();
       if (!sponsorAutoToggle.checked) return;
       sponsorCycleInterval = setInterval(() => {
-        if (sponsorAutoToggle.checked && sponsorImages.length) showSponsor();
+        if (sponsorAutoToggle.checked && sponsorImages.length && !sceneOverlay.classList.contains('show')) {
+          renderSponsorFrame();
+          clearTimeout(sponsorHideTimeout);
+          sponsorHideTimeout = setTimeout(() => sponsorOverlay.classList.remove('show'), 7000);
+        }
       }, 600000);
     }
 
@@ -1782,6 +1853,7 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     }
 
     function showScene(type) {
+      hideSponsor();
       clearInterval(waitingCountdownInterval);
       sceneOverlay.classList.add('show');
       const score = `${currentHomeTeam} ${homeScore} - ${awayScore} ${currentAwayTeam}`;
@@ -2101,9 +2173,6 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     document.getElementById('applyGraphicsBtn').addEventListener('click', applyCustomGraphics);
     overlayFontSizeInput.addEventListener('input', applyCustomGraphics);
     overlayPositionSelect.addEventListener('change', applyCustomGraphics);
-    landscapeBtn.addEventListener('click', () => setVideoFormat('landscape'));
-    portraitBtn.addEventListener('click', () => setVideoFormat('portrait'));
-    fitVideoBtn.addEventListener('click', toggleVideoFit);
     fullscreenBtn.addEventListener('click', toggleFullscreen);
     document.getElementById('showSponsorBtn').addEventListener('click', showSponsor);
     document.getElementById('hideSponsorBtn').addEventListener('click', hideSponsor);
