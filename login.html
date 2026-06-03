@@ -318,9 +318,10 @@
     const{data,error}=await supabaseClient.auth.signUp({email,password,options:{emailRedirectTo:authRedirectUrl(redirectTarget),data:{display_name:displayName,privacy_accepted:true}}});
     if(error){showStatus(error.message,'error');return;}
     if(data.session&&data.user){
-      await supabaseClient.from('profiles').insert([{id:data.user.id,email,display_name:displayName,role:'user',privacy_accepted:true}]);
+      await ensureProfile(data.user);
+      window.location.href=await smartRedirect(data.user,redirectTarget);
+      return;
     }
-    if(data.session){window.location.href=redirectTarget;return;}
     showStatus('Account creato. Controlla la tua email e conferma la registrazione.');
     setTab('login');
   });
