@@ -64,23 +64,23 @@
   <p>Imposta username, dati personali e le informazioni mostrate nella dashboard.</p>
   <div class="grid2">
     <div>
-      <div class="card">
+      <form class="card" id="profileForm">
         <h2>Dati profilo</h2>
-        <div class="form-group"><label>Nome profilo</label><input id="displayName" type="text" placeholder="Il tuo nome"/></div>
+        <div class="form-group"><label>Nome profilo</label><input id="display_name" data-alias="display_name" type="text" placeholder="Il tuo nome"/></div>
         <div class="form-group"><label>Username</label><input id="username" type="text" placeholder="username"/></div>
-        <div class="form-group"><label>Nome</label><input id="firstName" type="text" placeholder="Nome"/></div>
-        <div class="form-group"><label>Cognome</label><input id="lastName" type="text" placeholder="Cognome"/></div>
-        <div class="form-group"><label>Data di nascita</label><input id="birthDate" type="date"/></div>
+        <div class="form-group"><label>Nome</label><input id="first_name" type="text" placeholder="Nome"/></div>
+        <div class="form-group"><label>Cognome</label><input id="last_name" type="text" placeholder="Cognome"/></div>
+        <div class="form-group"><label>Data di nascita</label><input id="birth_date" type="date"/></div>
         <div class="form-group"><label>Città</label><input id="city" type="text" placeholder="Città"/></div>
-        <div class="form-group"><label>Squadra del cuore</label><input id="favoriteTeam" type="text" placeholder="Es. Napoli FC"/></div>
-        <div class="form-group"><label>Ruolo</label><input id="role" type="text" placeholder="Es. Broadcaster"/></div>
+        <div class="form-group"><label>Squadra del cuore</label><input id="favorite_team" type="text" placeholder="Es. Napoli FC"/></div>
+        <div class="form-group"><label>Ruolo</label><input id="role_readonly" type="text" placeholder="Es. Broadcaster" readonly/></div>
         <div class="form-group"><label>Bio</label><textarea id="bio" placeholder="Breve presentazione"></textarea></div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button class="btn btn-primary" id="saveProfileBtn">Salva profilo</button>
+          <button class="btn btn-primary" type="submit" id="saveProfileBtn">Salva profilo</button>
           <button class="btn btn-secondary" id="reloadProfileBtn">Ricarica dati</button>
         </div>
         <div id="profileStatus" class="status-msg"></div>
-      </div>
+      </form>
     </div>
     <div class="card">
       <h2>Anteprima profilo</h2>
