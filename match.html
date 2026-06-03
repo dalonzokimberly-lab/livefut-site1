@@ -37,6 +37,7 @@
     /* LAYOUT */
     .layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(240px,0.6fr);gap:16px;margin-bottom:16px;}
     .player-card,.side-card,.events-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
+    .player-card{position:relative;overflow:visible;}
     .player{background:#000;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;position:relative;}
     .player-placeholder{text-align:center;padding:24px;}
     .player-placeholder strong{font-family:'Barlow Condensed',sans-serif;font-size:20px;color:#fff;display:block;margin-bottom:6px;}
@@ -72,9 +73,11 @@
     .player{position:relative;}
     
     /* ── OVERLAY SPETTATORE — scoreboard sopra il player ── */
-    .player{position:relative;}
     .spectator-overlay{
-      position:absolute;inset:0;z-index:5;
+      position:absolute;
+      top:0;left:0;right:0;
+      aspect-ratio:16/9;
+      z-index:10;
       pointer-events:none;
       padding:12px;
       display:flex;flex-direction:column;justify-content:space-between;
@@ -156,21 +159,21 @@
   <div class="layout">
     <div class="player-card">
       <div class="player" id="playerArea">
-        <!-- Overlay spettatore — aggiornato in realtime via JS -->
-        <div class="spectator-overlay" id="spectatorOverlay">
-          <div class="spec-scoreboard" id="specScoreboard">
-            <div class="spec-team" id="specHomeTeam">Casa</div>
-            <div class="spec-score" id="specScore">0 - 0</div>
-            <div class="spec-team" id="specAwayTeam">Ospite</div>
-            <div class="spec-time" id="specTime">LIVE</div>
-          </div>
-          <div class="spec-rec" id="specRec" style="display:none">
-            <span class="spec-rec-dot"></span>LIVE
-          </div>
-        </div>
         <div class="player-placeholder">
           <strong id="playerHeadline">Diretta LiveFut</strong>
           <span id="playerText">La diretta sarà disponibile qui appena avviata.</span>
+        </div>
+      </div>
+      <!-- Overlay spettatore — fuori da playerArea per non essere sovrascritto dal JS -->
+      <div class="spectator-overlay" id="spectatorOverlay">
+        <div class="spec-scoreboard" id="specScoreboard">
+          <div class="spec-team" id="specHomeTeam">Casa</div>
+          <div class="spec-score" id="specScore">0 - 0</div>
+          <div class="spec-team" id="specAwayTeam">Ospite</div>
+          <div class="spec-time" id="specTime">LIVE</div>
+        </div>
+        <div class="spec-rec" id="specRec" style="display:none">
+          <span class="spec-rec-dot"></span>LIVE
         </div>
       </div>
       <div class="card-body">
