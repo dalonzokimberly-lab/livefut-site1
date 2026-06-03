@@ -1,492 +1,194 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>LiveFut TV - Partita</title>
-
   <script src="https://app.termly.io/resource-blocker/ecfeb307-3d9a-4e26-a7de-4dab9c2345f9?autoBlock=on"></script>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
-    :root {
-      --bg:#050505;
-      --green:#31d158;
-      --border:rgba(49,209,88,0.18);
-      --text:#ffffff;
-      --muted:#cfd6cf;
-      --shadow:0 20px 60px rgba(0,0,0,0.55);
-      --live:#ff5252;
-      --warning:#ffd166;
+    :root{--bg:#060a0f;--bg2:#080d14;--bg3:#0a1018;--accent:#00c8ff;--border:rgba(0,200,255,0.12);--border2:rgba(0,200,255,0.22);--text:#e8f4ff;--muted:#5a8aaa;--muted2:#3a5a6a;--radius:8px;--radius-lg:12px;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+    a{color:inherit;text-decoration:none;}
+    .container{width:min(1180px,calc(100% - 32px));margin:0 auto;}
+    .page-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+    .page-bg svg{width:100%;height:100%;}
+    .topbar{position:sticky;top:0;z-index:50;background:rgba(6,10,15,0.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+    .topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px;flex-wrap:wrap;}
+    .logo-live{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;color:#fff;}
+    .logo-fut{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;color:#00c8ff;}
+    .logo-tv{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:#00c8ff;font-style:italic;margin-left:2px;opacity:0.8;}
+    .btn{display:inline-flex;align-items:center;border:none;cursor:pointer;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;padding:8px 16px;border-radius:var(--radius);transition:all 0.2s;}
+    .btn-primary{background:#00c8ff;color:#060a0f;}
+    .btn-secondary{background:transparent;color:#00c8ff;border:1px solid var(--border2);}
+    .btn-warning{background:rgba(255,180,0,0.12);color:#ffaa00;border:1px solid rgba(255,180,0,0.25);}
+    main{position:relative;z-index:1;padding:28px 0 48px;}
+    /* MATCH HEADER */
+    .match-header{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:24px;flex-wrap:wrap;}
+    .live-badge{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:700;letter-spacing:2px;color:#ff5533;border:1px solid rgba(220,40,10,0.3);padding:4px 10px;border-radius:20px;background:rgba(220,40,10,0.08);text-transform:uppercase;margin-bottom:10px;}
+    .dot{width:7px;height:7px;background:#ff3311;border-radius:50%;animation:rec-blink 1.4s infinite;}
+    @keyframes rec-blink{0%,100%{opacity:1}50%{opacity:0.15}}
+    h1{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:#fff;text-transform:uppercase;margin:0 0 4px;}
+    .subtitle{font-size:13px;color:var(--muted);}
+    .score-box{text-align:right;min-width:100px;}
+    .score{font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:900;color:#fff;line-height:1;}
+    .minute{font-size:12px;color:#ff5533;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-top:4px;}
+    /* LAYOUT */
+    .layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(240px,0.6fr);gap:16px;margin-bottom:16px;}
+    .player-card,.side-card,.events-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
+    .player-card{position:relative;overflow:visible;}
+    .player{background:#000;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;position:relative;}
+    .player-placeholder{text-align:center;padding:24px;}
+    .player-placeholder strong{font-family:'Barlow Condensed',sans-serif;font-size:20px;color:#fff;display:block;margin-bottom:6px;}
+    .player-placeholder span{font-size:13px;color:var(--muted);}
+    .card-body{padding:18px;}
+    h2{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;color:#fff;text-transform:uppercase;margin:0 0 6px;}
+    p{font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6;}
+    .platforms{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+    .pill{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:4px;background:rgba(0,200,255,0.08);color:#00c8ff;border:1px solid var(--border);}
+    .broadcast-panel{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:14px;margin-top:12px;}
+    .broadcast-panel strong{font-size:14px;color:#fff;display:block;margin-bottom:4px;}
+    /* COINS PANEL */
+    .coins-panel{background:var(--bg3);border:1px solid rgba(255,180,0,0.2);border-radius:var(--radius);padding:14px;margin-top:12px;}
+    .coins-panel strong{font-size:14px;color:#ffaa00;display:block;margin-bottom:4px;}
+    .coin-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+    .coin-button{background:rgba(255,180,0,0.08);border:1px solid rgba(255,180,0,0.25);border-radius:var(--radius);color:#ffaa00;font-family:'Barlow',sans-serif;font-size:12px;font-weight:700;padding:7px 12px;cursor:pointer;}
+    .coin-message{font-size:12px;color:#ffaa00;margin-top:8px;}
+    /* INFO LIST */
+    .info-list{display:grid;gap:0;}
+    .info-item{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;}
+    .info-item:last-child{border-bottom:none;}
+    .info-item strong{color:var(--muted);font-weight:600;font-size:12px;flex-shrink:0;}
+    /* EVENTS */
+    .events-card .card-body{padding:18px;}
+    .event-list{display:grid;gap:0;}
+    .event{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+    .event:last-child{border-bottom:none;}
+    .event strong{color:var(--accent);}
+    footer{position:relative;z-index:1;text-align:center;padding:20px;font-size:12px;color:var(--muted2);border-top:1px solid var(--border);}
+    footer a{color:var(--muted);}
+    /* player iframe iniettato dal JS */
+    .player-frame{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000;}
+    .player{position:relative;}
+    
+    /* ── OVERLAY SPETTATORE — scoreboard sopra il player ── */
+    :root{
+      --spec-primary: #ff4422;
+      --spec-accent:  #ff6600;
+      --spec-font:    'Barlow Condensed', sans-serif;
+      --spec-scale:   1;
     }
-
-    * { box-sizing:border-box; }
-
-    body {
-      margin:0;
-      min-height:100vh;
-      font-family:"Space Grotesk", sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(49,209,88,0.12), transparent 24%),
-        linear-gradient(180deg, #020202 0%, #080808 100%);
-      color:var(--text);
-    }
-
-    a { color:inherit; text-decoration:none; }
-
-    .container {
-      width:min(1180px, calc(100% - 32px));
-      margin:0 auto;
-    }
-
-    .topbar {
-      position:sticky;
-      top:0;
-      z-index:30;
-      backdrop-filter:blur(14px);
-      background:rgba(0,0,0,0.84);
-      border-bottom:1px solid var(--border);
-    }
-
-    .topbar-inner {
-      min-height:78px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:20px;
-      flex-wrap:wrap;
-    }
-
-    .brand {
-      display:flex;
-      align-items:center;
-      gap:12px;
-      font-weight:800;
-      min-width:0;
-      overflow:hidden;
-    }
-
-    .btn {
-      border:0;
-      cursor:pointer;
-      border-radius:999px;
-      padding:12px 18px;
-      font-weight:800;
-      font-family:inherit;
-      font-size:0.94rem;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      white-space:nowrap;
-      transition:.2s ease;
-    }
-
-    .btn:hover { transform:translateY(-1px); }
-
-    .btn-primary {
-      background:linear-gradient(135deg,#19a83f,#31d158);
-      color:#000;
-      box-shadow:0 12px 28px rgba(49,209,88,0.28);
-    }
-
-    .btn-secondary {
-      background:rgba(49,209,88,0.06);
-      color:#fff;
-      border:1px solid var(--border);
-    }
-
-    .btn-warning {
-      background:linear-gradient(135deg,#ffb703,#ffd166);
-      color:#000;
-      box-shadow:0 12px 28px rgba(255,209,102,0.22);
-    }
-
-    .hero { padding:34px 0 22px; }
-
-    .match-header {
-      background:linear-gradient(180deg, rgba(49,209,88,0.03), rgba(255,255,255,0.01));
-      border:1px solid var(--border);
-      border-radius:32px;
-      box-shadow:var(--shadow);
-      padding:30px;
-      display:grid;
-      grid-template-columns:minmax(0, 1fr) auto;
-      gap:24px;
-      align-items:start;
-    }
-
-    .live-badge {
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      background:rgba(255,82,82,0.12);
-      border:1px solid rgba(255,82,82,0.24);
-      border-radius:999px;
-      padding:10px 14px;
-      font-weight:800;
-      text-transform:uppercase;
-      font-size:0.82rem;
-      margin-bottom:16px;
-    }
-
-    .broadcast-badge {
-      background:rgba(255,209,102,0.12);
-      border-color:rgba(255,209,102,0.28);
-    }
-
-    .dot {
-      width:10px;
-      height:10px;
-      border-radius:999px;
-      background:var(--live);
-      box-shadow:0 0 0 8px rgba(255,82,82,0.12);
-      animation:pulse 1.8s infinite;
-    }
-
-    .broadcast-badge .dot {
-      background:var(--warning);
-      box-shadow:0 0 0 8px rgba(255,209,102,0.12);
-    }
-
-    @keyframes pulse {
-      0%,100% { transform:scale(1); opacity:1; }
-      50% { transform:scale(1.18); opacity:.82; }
-    }
-
-    h1 {
-      margin:0 0 12px;
-      color:var(--green);
-      font-size:clamp(2rem, 4vw, 3.4rem);
-      line-height:1.02;
-      letter-spacing:0;
-      overflow-wrap:anywhere;
-    }
-
-    .subtitle {
-      color:#fff;
-      line-height:1.7;
-      margin:0;
-    }
-
-    .score-box {
-      min-width:220px;
-      background:rgba(49,209,88,0.05);
-      border:1px solid var(--border);
-      border-radius:24px;
-      padding:22px;
-      text-align:center;
-    }
-
-    .score {
-      color:var(--green);
-      font-size:2.7rem;
-      font-weight:900;
-      line-height:1;
-    }
-
-    .minute {
-      margin-top:10px;
-      color:#fff;
-      font-weight:800;
-    }
-
-    .layout {
-      display:grid;
-      grid-template-columns:minmax(0, 1.4fr) minmax(280px, .6fr);
-      gap:18px;
-      padding-bottom:34px;
-    }
-
-    .player-card,
-    .side-card,
-    .events-card {
-      background:linear-gradient(180deg, rgba(49,209,88,0.03), rgba(255,255,255,0.01));
-      border:1px solid var(--border);
-      border-radius:24px;
-      box-shadow:var(--shadow);
-      overflow:hidden;
-    }
-
-    .player {
-      width:100%;
-      aspect-ratio:16/9;
-      background:
-        radial-gradient(circle at center, rgba(49,209,88,0.16), transparent 34%),
-        linear-gradient(135deg, #050505, #000);
-      display:grid;
-      place-items:center;
-      padding:22px;
-      text-align:center;
-    }
-
-    .player-placeholder { max-width:620px; }
-
-    .player-placeholder strong {
-      display:block;
-      color:var(--green);
-      font-size:clamp(1.5rem, 3vw, 2.4rem);
-      margin-bottom:12px;
-      letter-spacing:0;
-    }
-
-    .player-placeholder span {
-      display:block;
-      color:#fff;
-      line-height:1.7;
-    }
-
-    .card-body { padding:22px; }
-
-    h2, h3 {
-      color:var(--green);
-      margin:0 0 10px;
-      letter-spacing:0;
-    }
-
-    p {
-      color:#fff;
-      line-height:1.7;
-      margin:0;
-    }
-
-    .info-list {
-      display:grid;
-      gap:12px;
-      margin-top:16px;
-    }
-
-    .info-item {
-      background:rgba(49,209,88,0.05);
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:14px;
-    }
-
-    .info-item strong {
-      color:var(--green);
-      display:block;
-      margin-bottom:4px;
-    }
-
-    .platforms {
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:16px;
-    }
-
-    .pill {
-      background:rgba(49,209,88,0.09);
-      border:1px solid rgba(49,209,88,0.16);
-      color:#fff;
-      border-radius:999px;
-      padding:9px 12px;
-      font-size:.82rem;
-      font-weight:800;
-    }
-
-    .event-list {
-      display:grid;
-      gap:12px;
-      margin-top:16px;
-    }
-
-    .event {
-      display:flex;
-      justify-content:space-between;
-      gap:14px;
-      background:rgba(255,255,255,0.02);
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:14px;
-    }
-
-    .event strong { color:var(--green); }
-
-    .broadcast-panel {
-      margin-top:16px;
-      display:grid;
-      gap:12px;
-    }
-
-    .broadcast-box {
-      background:rgba(255,209,102,0.07);
-      border:1px solid rgba(255,209,102,0.22);
-      border-radius:18px;
-      padding:16px;
-    }
-
-    .broadcast-box strong {
-      display:block;
-      color:var(--warning);
-      margin-bottom:6px;
-    }
-
-    .error-box {
-      padding:28px;
-      margin:34px 0;
-      border-radius:24px;
-      border:1px solid rgba(255,82,82,0.25);
-      background:rgba(255,82,82,0.08);
-      color:#fff;
-      line-height:1.7;
-    }
-
-    footer a {
-      color:var(--green);
-      text-decoration:underline;
-    }
-
-    .site-logo {
-      height:42px;
-      width:auto;
-      max-height:42px;
-      display:block;
-      object-fit:contain;
-      flex-shrink:0;
-    }
-
-    .brand-text strong {
-      display:block;
-      font-size:1.12rem;
-      line-height:1.1;
-    }
-
-    .brand-text span {
-      display:block;
-      margin-top:4px;
-      color:var(--muted);
-      font-size:.72rem;
-      letter-spacing:.1em;
-      text-transform:uppercase;
-    }
-
-    @media (max-width: 900px) {
-      .match-header,
-      .layout {
-        grid-template-columns:1fr;
-      }
-
-      .score-box { text-align:left; }
-    }
-
-    @media (max-width: 700px) {
-      .topbar-inner,
-      .topbar-inner > div {
-        flex-direction:column;
-        align-items:stretch;
-      }
-
-      .btn { width:100%; }
-    }
-  
-    /* ── OVERLAY SPETTATORE ── */
-    :root{--spec-primary:#ff4422;--spec-accent:#ff6600;--spec-font:'Barlow Condensed',sans-serif;--spec-scale:1;}
-    .player-card{position:relative;}
     .spectator-overlay{
-      position:absolute;top:0;left:0;right:0;
-      aspect-ratio:16/9;z-index:10;
-      pointer-events:none;padding:12px;
+      position:absolute;
+      top:0;left:0;right:0;
+      aspect-ratio:16/9;
+      z-index:10;
+      pointer-events:none;
+      padding:12px;
       display:flex;flex-direction:column;justify-content:space-between;
       opacity:0;transition:opacity 0.4s ease;
     }
     .spectator-overlay.visible{opacity:1;}
-    .spectator-overlay.pos-bottom{flex-direction:column-reverse;}
+    .spectator-overlay.pos-bottom{
+      flex-direction:column-reverse;
+    }
+    .spec-scoreboard{
+      font-family: var(--spec-font);
+      font-size: calc(14px * var(--spec-scale));
+    }
+    .spec-score{
+      background: var(--spec-primary) !important;
+    }
+    .spec-time{
+      color: var(--spec-accent) !important;
+    }
+
+    /* Scoreboard */
     .spec-scoreboard{
       display:inline-flex;align-items:stretch;
       border-radius:6px;overflow:hidden;
-      border:1px solid color-mix(in srgb,var(--spec-primary) 60%,transparent);
+      border:1px solid rgba(220,40,10,0.5);
       box-shadow:0 4px 20px rgba(0,0,0,0.6);
-      font-family:var(--spec-font);font-weight:900;
-      font-size:calc(14px * var(--spec-scale));width:fit-content;max-width:90%;
+      font-family:'Barlow Condensed',sans-serif;
+      font-weight:900;font-size:14px;
+      width:fit-content;max-width:90%;
     }
     .spec-team{
       background:rgba(0,0,0,0.85);color:#fff;
       padding:7px 14px;display:flex;align-items:center;
-      max-width:160px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+      max-width:160px;overflow:hidden;
+      white-space:nowrap;text-overflow:ellipsis;
     }
     .spec-score{
-      background:var(--spec-primary);color:#fff;
+      background:#ff4422;color:#fff;
       padding:7px 16px;display:flex;align-items:center;
-      font-size:calc(16px * var(--spec-scale));
+      font-size:16px;letter-spacing:1px;
       border-left:1px solid rgba(255,255,255,0.15);
       border-right:1px solid rgba(255,255,255,0.15);
     }
     .spec-time{
-      background:rgba(0,0,0,0.85);color:var(--spec-accent);
+      background:rgba(0,0,0,0.85);color:#ff6600;
       padding:7px 12px;display:flex;align-items:center;
-      font-size:calc(13px * var(--spec-scale));letter-spacing:1px;
-      border-left:1px solid color-mix(in srgb,var(--spec-primary) 30%,transparent);
-      transition:color 0.3s ease;
+      font-size:13px;letter-spacing:1px;
+      border-left:1px solid rgba(220,40,10,0.3);
     }
+
+    /* REC badge */
     .spec-rec{
       display:inline-flex;align-items:center;gap:6px;
-      background:rgba(0,0,0,0.75);border:1px solid rgba(220,40,10,0.4);
+      background:rgba(0,0,0,0.75);
+      border:1px solid rgba(220,40,10,0.4);
       border-radius:20px;padding:5px 10px;
-      font-size:11px;font-weight:700;letter-spacing:2px;color:#ff5533;
-      text-transform:uppercase;font-family:'Barlow',sans-serif;width:fit-content;
+      font-size:11px;font-weight:700;letter-spacing:2px;
+      color:#ff5533;text-transform:uppercase;
+      font-family:'Barlow',sans-serif;
+      width:fit-content;
     }
-    .spec-rec-dot{width:7px;height:7px;background:#ff3311;border-radius:50%;
-      animation:rec-blink 1.4s infinite;flex-shrink:0;}
-    /* player-frame iniettato dal JS */
-    .player{position:relative;}
-    .player-frame{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000;}
+    .spec-rec-dot{
+      width:7px;height:7px;background:#ff3311;border-radius:50%;
+      animation:rec-blink 1.4s infinite;flex-shrink:0;
+    }
 
+
+    /* timer recupero — colore gestito via JS */
+    #specTime { transition: color 0.3s ease; }
+
+    @media(max-width:820px){.layout{grid-template-columns:1fr;}.match-header{flex-direction:column;gap:12px;}}
   </style>
 </head>
-
 <body>
-  <header class="topbar">
-    <div class="container topbar-inner">
-      <a href="index.html" class="brand">
-        <img src="livefut-logo.png" alt="LiveFut TV logo" class="site-logo" />
-        <div class="brand-text">
-          <strong>LiveFut</strong>
-          <span>Football United Team</span>
-        </div>
-      </a>
-
-      <div style="display:flex; gap:12px; flex-wrap:wrap;">
-        <a class="btn btn-secondary" href="live.html">Torna alle live</a>
-        <a class="btn btn-primary" href="login.html">Accedi</a>
-      </div>
+<div class="page-bg"><svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" fill="none"><defs><radialGradient id="gp"><stop offset="0%" stop-color="#00c8ff" stop-opacity="0.07"/><stop offset="100%" stop-color="#00c8ff" stop-opacity="0"/></radialGradient></defs><ellipse cx="720" cy="450" rx="420" ry="270" fill="url(#gp)"/><rect x="120" y="60" width="1200" height="780" stroke="#00c8ff" stroke-width="1.5" opacity="0.06"/><line x1="720" y1="60" x2="720" y2="840" stroke="#00c8ff" stroke-width="1" opacity="0.05"/><circle cx="720" cy="450" r="110" stroke="#00c8ff" stroke-width="1" opacity="0.05"/><rect x="120" y="240" width="220" height="360" stroke="#00c8ff" stroke-width="1" opacity="0.05"/><rect x="1100" y="240" width="220" height="360" stroke="#00c8ff" stroke-width="1" opacity="0.05"/></svg></div>
+<header class="topbar"><div class="container topbar-inner">
+  <a href="index.html"><span class="logo-live">LIVE</span><span class="logo-fut">FUT</span><span class="logo-tv">.TV</span></a>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <a class="btn btn-secondary" href="live.html">← Torna alle live</a>
+    <a class="btn btn-primary auth-login" href="login.html">Accedi</a>
+    <a class="btn btn-primary auth-logged" href="dashboard.html" style="display:none">Dashboard</a>
+  </div>
+</div></header>
+<main id="pageContent"><div class="container">
+  <div class="match-header">
+    <div>
+      <div class="live-badge" id="modeBadge"><span class="dot"></span><span id="modeBadgeText">Caricamento</span></div>
+      <h1 id="matchTitle">Partita LiveFut TV</h1>
+      <p class="subtitle" id="matchSubtitle">Caricamento informazioni partita...</p>
     </div>
-  </header>
-
-  <main class="container" id="pageContent">
-    <section class="hero">
-      <div class="match-header">
-        <div>
-          <div class="live-badge" id="modeBadge">
-            <span class="dot"></span>
-            <span id="modeBadgeText">Caricamento</span>
-          </div>
-
-          <h1 id="matchTitle">Partita LiveFut TV</h1>
-          <p class="subtitle" id="matchSubtitle">Caricamento informazioni partita...</p>
-        </div>
-
-        <div class="score-box">
-          <div class="score" id="matchScore">0 - 0</div>
-          <div class="minute" id="matchMinute">LIVE</div>
+    <div class="score-box">
+      <div class="score" id="matchScore">0 - 0</div>
+      <div class="minute" id="matchMinute">LIVE</div>
+    </div>
+  </div>
+  <div class="layout">
+    <div class="player-card">
+      <div class="player" id="playerArea">
+        <div class="player-placeholder">
+          <strong id="playerHeadline">Diretta LiveFut</strong>
+          <span id="playerText">La diretta sarà disponibile qui appena avviata.</span>
         </div>
       </div>
-    </section>
-
-    <section class="layout">
-      <article class="player-card">
-        <div class="player" id="playerArea">
-          <div class="player-placeholder">
-            <strong id="playerHeadline">Diretta LiveFut</strong>
-            <span id="playerText">La diretta sarà disponibile qui appena avviata.</span>
-          </div>
-      <!-- Overlay spettatore — fuori da #playerArea per non essere sovrascritto dal JS -->
-      <div class="spectator-overlay" id="spectatorOverlay" style="display:none">
+      <!-- Overlay spettatore — fuori da playerArea per non essere sovrascritto dal JS -->
+      <div class="spectator-overlay" id="spectatorOverlay">
         <div class="spec-scoreboard" id="specScoreboard">
           <div class="spec-team" id="specHomeTeam">Casa</div>
           <div class="spec-score" id="specScore">0 - 0</div>
@@ -497,111 +199,55 @@
           <span class="spec-rec-dot"></span>LIVE
         </div>
       </div>
-        </div>
-
-        <div class="card-body">
-          <h2 id="videoTitle">Diretta partita</h2>
-          <p id="videoDescription">Segui la partita su LiveFut TV.</p>
-
-          <div class="platforms">
-            <span class="pill">LiveFut TV</span>
-            <span class="pill">YouTube</span>
-            <span class="pill">Facebook</span>
-            <span class="pill">Twitch</span>
-          </div>
-
-          <div class="broadcast-panel" id="broadcastPanel" style="display:none;">
-            <div class="broadcast-box">
-              <strong>Modalità broadcaster</strong>
-              <p>Gestisci la trasmissione della partita selezionata.</p>
-            </div>
-
-            <a class="btn btn-warning" id="startBroadcastBtn" href="#">Avvia diretta</a>
-          </div>
-        </div>
-      </article>
-
-      <aside class="side-card">
-        <div class="card-body">
-          <h2>Info partita</h2>
-          <p>Dati principali della partita selezionata.</p>
-
-          <div class="info-list">
-            <div class="info-item">
-              <strong>Regione</strong>
-              <span id="matchRegion">-</span>
-            </div>
-
-            <div class="info-item">
-              <strong>Disciplina</strong>
-              <span id="matchDiscipline">-</span>
-            </div>
-
-            <div class="info-item">
-              <strong>Categoria</strong>
-              <span id="matchCategory">-</span>
-            </div>
-
-            <div class="info-item">
-              <strong>Campo</strong>
-              <span id="matchField">-</span>
-            </div>
-
-            <div class="info-item">
-              <strong>Stato</strong>
-              <span id="matchStatus">-</span>
-            </div>
-          </div>
-        </div>
-      </aside>
-    </section>
-
-    <section class="events-card" style="margin-bottom:34px;">
       <div class="card-body">
-        <h2>Eventi partita</h2>
-        <p>Aggiornamenti principali della partita.</p>
-
-        <div class="event-list">
-          <div class="event">
-            <div>
-              <strong id="eventMinute">LIVE</strong>
-              <span> Aggiornamento punteggio</span>
-            </div>
-            <span id="eventScore">-</span>
+        <h2 id="videoTitle">Diretta partita</h2>
+        <p id="videoDescription">Segui la partita su LiveFut TV.</p>
+        <div class="platforms" id="platformsList"><span class="pill">LiveFut TV</span></div>
+        <div class="broadcast-panel" id="broadcastPanel" style="display:none">
+          <strong>Modalità broadcaster</strong>
+          <p>Gestisci la trasmissione della partita selezionata.</p>
+          <a class="btn btn-warning" id="startBroadcastBtn" href="#">Avvia diretta</a>
+        </div>
+        <div class="coins-panel" id="coinsPanel">
+          <strong>Supporta il broadcaster</strong>
+          <p id="coinsText">Caricamento monete...</p>
+          <div class="coin-actions">
+            <button class="coin-button" data-coins="1">+1 moneta</button>
+            <button class="coin-button" data-coins="2">+2 monete</button>
+            <button class="coin-button" data-coins="3">+3 monete</button>
           </div>
-
-          <div class="event">
-            <div>
-              <strong>LiveFut</strong>
-              <span id="eventStatusText">Pagina partita pronta</span>
-            </div>
-            <span id="eventStatusBadge">READY</span>
-          </div>
+          <div class="coin-message" id="coinsMessage"></div>
         </div>
       </div>
-    </section>
-  </main>
-
-  <footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
-    © 2026 LiveFut TV - Football United Team. Tutti i diritti riservati.<br><br>
-
-    <a href="https://www.iubenda.com/privacy-policy/71949704"
-       class="iubenda-white iubenda-noiframe iubenda-embed">
-       Privacy Policy
-    </a> |
-
-    <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy"
-       class="iubenda-white iubenda-noiframe iubenda-embed">
-       Cookie Policy
-    </a> |
-
-    <a href="terms.html">Termini e Condizioni</a>
-  </footer>
-
-  <script>
-    const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
-    const OFFICIAL_DATA_URL = 'data/abruzzo_2025_26_api.json';
+    </div>
+    <div class="side-card">
+      <div class="card-body">
+        <h2>Info partita</h2>
+        <div class="info-list">
+          <div class="info-item"><strong>Regione</strong><span id="matchRegion">—</span></div>
+          <div class="info-item"><strong>Disciplina</strong><span id="matchDiscipline">—</span></div>
+          <div class="info-item"><strong>Categoria</strong><span id="matchCategory">—</span></div>
+          <div class="info-item"><strong>Campo</strong><span id="matchField">—</span></div>
+          <div class="info-item"><strong>Stato</strong><span id="matchStatus">—</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="events-card" style="margin-bottom:24px">
+    <div class="card-body">
+      <h2>Eventi partita</h2>
+      <div class="event-list">
+        <div class="event"><div><strong id="eventMinute">LIVE</strong><span> Aggiornamento punteggio</span></div><span id="eventScore">—</span></div>
+        <div class="event"><div><strong>LiveFut</strong><span id="eventStatusText"> Pagina partita pronta</span></div><span id="eventStatusBadge">READY</span></div>
+      </div>
+    </div>
+  </div>
+</div></main>
+<footer>&copy; 2026 LiveFut TV — <a href="https://www.iubenda.com/privacy-policy/71949704">Privacy</a> | <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy">Cookie</a> | <a href="terms.html">Termini</a></footer>
+<script>
+const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
+    const OFFICIAL_DATA_URL = 'data/italia_2025_26_api.json';
 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -611,6 +257,11 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
     const mode = params.get('mode') || 'view';
 
     const pageContent = document.getElementById('pageContent');
+    let currentMatch = null;
+    let currentSession = null;
+    let coinWallet = null;
+    let eventsChannel = null;
+    let matchChannel = null;
 
     function safe(value, fallback = '-') {
       return value === null || value === undefined || value === '' ? fallback : value;
@@ -642,6 +293,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
     function formatCompetitionType(value) {
       if (value === 'campionato') return 'Campionato';
       if (value === 'coppa') return 'Coppa';
+      if (value === 'torneo_privato') return 'Torneo privato';
+      if (value === 'partita_privata') return 'Partita privata';
       return safe(value, 'Competizione');
     }
 
@@ -689,8 +342,14 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
     function statusLabel(status) {
       if (status === 'live') return 'Live';
       if (status === 'soon') return 'In arrivo';
-      if (status === 'finished') return 'Calendario';
+      if (status === 'finished') return 'Conclusa';
       return safe(status, 'In arrivo');
+    }
+
+    function isLivepeerReady(match) {
+      return match.status === 'live'
+        && match.livepeer_status === 'active'
+        && Boolean(match.livepeer_playback_id);
     }
 
     function minuteLabel(match) {
@@ -713,6 +372,286 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
     function setText(id, value) {
       const el = document.getElementById(id);
       if (el) el.textContent = value;
+    }
+
+    function providerLabel(provider) {
+      if (provider === 'youtube') return 'YouTube';
+      if (provider === 'facebook') return 'Facebook';
+      if (provider === 'twitch') return 'Twitch';
+      return 'LiveFut TV';
+    }
+
+    function renderPlatformPills(providers = ['livefut']) {
+      const platformsList = document.getElementById('platformsList');
+      if (!platformsList) return;
+
+      const uniqueProviders = [...new Set(['livefut', ...providers])];
+      platformsList.innerHTML = uniqueProviders
+        .map(provider => `<span class="pill">${escapeHtml(providerLabel(provider))}</span>`)
+        .join('');
+    }
+
+    async function loadBroadcastDestinations(match) {
+      renderPlatformPills(['livefut']);
+
+      if (!match || match.status !== 'live') return;
+
+      try {
+        let query = supabaseClient
+          .from('broadcast_destinations')
+          .select('provider, enabled, status')
+          .eq('enabled', true);
+
+        if (isUuid(match.id)) {
+          query = query.eq('match_id', match.id);
+        } else if (match.match_id) {
+          query = query.eq('official_match_id', match.match_id);
+        } else {
+          return;
+        }
+
+        const { data, error } = await query;
+        if (error) throw error;
+
+        const providers = (data || [])
+          .filter(destination => destination.provider !== 'livefut')
+          .filter(destination => ['active', 'pending'].includes(destination.status))
+          .map(destination => destination.provider);
+
+        renderPlatformPills(providers);
+      } catch (error) {
+        console.warn('Destinazioni pubbliche non disponibili:', error.message);
+      }
+    }
+
+    function renderLivePlayer(match) {
+      const playerArea = document.getElementById('playerArea');
+      if (!playerArea || mode === 'broadcast') return;
+
+      if (isLivepeerReady(match)) {
+        const playbackId = encodeURIComponent(match.livepeer_playback_id);
+        const title = escapeHtml(`${safe(match.home_team, 'Casa')} vs ${safe(match.away_team, 'Ospite')}`);
+        playerArea.innerHTML = `
+          <iframe
+            class="player-frame"
+            title="Diretta ${title}"
+            src="https://lvpr.tv?v=${playbackId}&lowLatency=false&autoplay=false"
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+          <div class="player-placeholder is-hidden">
+            <strong id="playerHeadline">Diretta in corso</strong>
+            <span id="playerText">La diretta è in corso su LiveFut TV.</span>
+          </div>
+        `;
+        setText('videoDescription', 'Diretta LiveFut TV in tempo reale.');
+        return;
+      }
+
+      playerArea.innerHTML = `
+        <div class="player-placeholder">
+          <strong id="playerHeadline">${match.livepeer_status === 'preparing' ? 'Diretta in preparazione' : 'Diretta non ancora avviata'}</strong>
+          <span id="playerText">${match.livepeer_status === 'preparing'
+            ? 'Il player LiveFut sarà disponibile qui appena il flusso video sarà attivo.'
+            : 'La diretta apparirà qui appena sarà avviata.'}</span>
+        </div>
+      `;
+    }
+
+    function setCoinMessage(message, type = 'ok') {
+      const node = document.getElementById('coinsMessage');
+      if (!node) return;
+      node.textContent = message || '';
+      node.className = type === 'error' ? 'coin-message error' : 'coin-message';
+    }
+
+    function updateCoinsPanel() {
+      const panel = document.getElementById('coinsPanel');
+      const text = document.getElementById('coinsText');
+      const buttons = panel ? panel.querySelectorAll('[data-coins]') : [];
+
+      if (!panel || mode === 'broadcast') return;
+
+      const canDonate = Boolean(
+        currentSession
+        && currentMatch
+        && currentMatch.status === 'live'
+        && currentMatch.broadcaster_id
+        && currentMatch.broadcaster_id !== currentSession.user.id
+      );
+
+      panel.classList.toggle('show', Boolean(currentSession && currentMatch?.status === 'live'));
+
+      if (!currentSession) return;
+      if (!currentMatch || currentMatch.status !== 'live') {
+        text.textContent = 'Le monete si possono donare solo durante una diretta live.';
+        buttons.forEach(button => { button.disabled = true; });
+        return;
+      }
+      if (!currentMatch.broadcaster_id) {
+        text.textContent = 'Il broadcaster non è ancora associato a questa partita.';
+        buttons.forEach(button => { button.disabled = true; });
+        return;
+      }
+      if (currentMatch.broadcaster_id === currentSession.user.id) {
+        text.textContent = 'Stai guardando una tua diretta: non puoi donare monete a te stessa/o.';
+        buttons.forEach(button => { button.disabled = true; });
+        return;
+      }
+
+      if (!coinWallet) {
+        text.textContent = 'Caricamento monete...';
+        buttons.forEach(button => { button.disabled = true; });
+        return;
+      }
+
+      const balance = Number(coinWallet.balance || 0);
+      text.textContent = `Hai ${balance} monete disponibili. Ricarica gratuita ogni settimana, fino a 9 monete.`;
+      buttons.forEach(button => {
+        const amount = Number(button.dataset.coins);
+        button.disabled = !canDonate || balance < amount;
+      });
+    }
+
+    async function loadCoinWallet() {
+      if (!currentSession) return;
+      const { data, error } = await supabaseClient.rpc('get_my_coin_wallet');
+      if (error) {
+        setCoinMessage(`Monete non disponibili: ${error.message}`, 'error');
+        return;
+      }
+      coinWallet = Array.isArray(data) ? data[0] : data;
+      updateCoinsPanel();
+    }
+
+    async function donateCoins(amount) {
+      if (!currentMatch || !currentSession) return;
+      setCoinMessage('Invio supporto in corso...');
+
+      const { data, error } = await supabaseClient.rpc('donate_coins', {
+        p_match_id: isUuid(currentMatch.id) ? currentMatch.id : null,
+        p_official_match_id: currentMatch.match_id || null,
+        p_amount: amount
+      });
+
+      if (error) {
+        setCoinMessage(error.message, 'error');
+        return;
+      }
+
+      const result = Array.isArray(data) ? data[0] : data;
+      coinWallet = { ...(coinWallet || {}), balance: Number(result?.wallet_balance || 0) };
+      setCoinMessage(`Hai donato ${amount} ${amount === 1 ? 'moneta' : 'monete'} al broadcaster.`);
+      updateCoinsPanel();
+    }
+
+    function renderEvents(events) {
+      const eventList = document.querySelector('.event-list');
+      if (!eventList) return;
+
+      if (!events.length) {
+        eventList.innerHTML = `
+          <div class="event">
+            <div>
+              <strong>LiveFut</strong>
+              <span> Pagina partita pronta</span>
+            </div>
+            <span>READY</span>
+          </div>
+        `;
+        return;
+      }
+
+      eventList.innerHTML = events.map(event => `
+        <div class="event">
+          <div>
+            <strong>${escapeHtml(event.minute !== null && event.minute !== undefined ? `${event.minute}'` : safe(event.title, 'LiveFut'))}</strong>
+            <span> ${escapeHtml(event.body || event.title || 'Aggiornamento partita')}</span>
+          </div>
+          <span>${escapeHtml(event.score || '')}</span>
+        </div>
+      `).join('');
+    }
+
+    async function loadMatchEvents(match) {
+      let query = supabaseClient
+        .from('match_events')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(30);
+
+      if (isUuid(match.id)) {
+        query = query.eq('match_id', match.id);
+      } else if (match.match_id) {
+        query = query.eq('official_match_id', match.match_id);
+      } else {
+        renderEvents([]);
+        return;
+      }
+
+      const { data, error } = await query;
+      if (error) {
+        console.warn('Eventi partita non disponibili:', error.message);
+        renderEvents([]);
+        return;
+      }
+
+      renderEvents(data || []);
+    }
+
+    function subscribeMatchEvents(match) {
+      if (eventsChannel) {
+        supabaseClient.removeChannel(eventsChannel);
+        eventsChannel = null;
+      }
+
+      const filter = isUuid(match.id)
+        ? `match_id=eq.${match.id}`
+        : `official_match_id=eq.${match.match_id}`;
+
+      eventsChannel = supabaseClient
+        .channel(`match-events-${match.id || match.match_id}`)
+        .on(
+          'postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'match_events', filter },
+          () => loadMatchEvents(currentMatch || match)
+        )
+        .subscribe();
+    }
+
+    function subscribeMatchUpdates(match) {
+      if (matchChannel) {
+        supabaseClient.removeChannel(matchChannel);
+        matchChannel = null;
+      }
+
+      const filter = isUuid(match.id)
+        ? `id=eq.${match.id}`
+        : match.match_id
+          ? `match_id=eq.${match.match_id}`
+          : '';
+
+      if (!filter) return;
+
+      matchChannel = supabaseClient
+        .channel(`match-live-${match.id || match.match_id}`)
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'matches', filter },
+          payload => {
+            if (!payload.new) return;
+
+            const updatedMatch = normalizeSupabaseMatch(payload.new);
+            const mergedMatch = {
+              ...(currentMatch || {}),
+              ...updatedMatch,
+              match_id: currentMatch?.match_id || updatedMatch.match_id
+            };
+
+            renderMatch(mergedMatch, { subscribe: false });
+          }
+        )
+        .subscribe();
     }
 
     function officialMatchToPage(match) {
@@ -747,7 +686,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         ...match,
         id: match.id || match.match_id,
         match_id: match.match_id || match.id,
-        region: match.region || 'Abruzzo',
+        region: match.region || 'Non specificata',
         discipline: match.discipline || formatDiscipline(match.sport),
         category: match.category || 'Non specificata',
         field: match.field || formatDate(match.match_date),
@@ -785,6 +724,18 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
       if (mode === 'broadcast') {
         modeBadge.classList.add('broadcast-badge');
+        if (match.status === 'finished') {
+          modeBadgeText.textContent = 'Partita conclusa';
+          playerHeadline.textContent = 'Partita conclusa';
+          playerText.textContent = 'Questa partita non è più disponibile per la trasmissione.';
+          videoDescription.textContent = 'La partita resta disponibile come scheda risultato.';
+          broadcastPanel.style.display = 'none';
+
+          setText('eventStatusText', 'Partita conclusa');
+          setText('eventStatusBadge', 'FT');
+          return;
+        }
+
         modeBadgeText.textContent = 'Modalità broadcaster';
 
         playerHeadline.textContent = 'Studio diretta';
@@ -798,12 +749,22 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         setText('eventStatusBadge', 'BROADCAST');
       } else {
         modeBadge.classList.remove('broadcast-badge');
-        modeBadgeText.textContent = match.status === 'live' ? 'Diretta live' : statusLabel(match.status);
+        modeBadgeText.textContent = isLivepeerReady(match)
+          ? 'Diretta live'
+          : match.livepeer_status === 'preparing'
+            ? 'Diretta in preparazione'
+            : statusLabel(match.status);
 
-        playerHeadline.textContent = match.status === 'live' ? 'Diretta in corso' : 'Diretta non ancora avviata';
-        playerText.textContent = match.status === 'live'
-          ? 'La diretta è in corso. Il player LiveFut sarà disponibile qui.'
-          : 'La diretta apparirà qui appena sarà avviata.';
+        playerHeadline.textContent = isLivepeerReady(match)
+          ? 'Diretta in corso'
+          : match.livepeer_status === 'preparing'
+            ? 'Diretta in preparazione'
+            : 'Diretta non ancora avviata';
+        playerText.textContent = isLivepeerReady(match)
+          ? 'La diretta è in corso su LiveFut TV.'
+          : match.livepeer_status === 'preparing'
+            ? 'La regia sta attivando il flusso video. Il player apparirà qui appena pronto.'
+            : 'La diretta apparirà qui appena sarà avviata.';
 
         videoDescription.textContent = 'Pagina spettatore LiveFut TV.';
         broadcastPanel.style.display = 'none';
@@ -814,45 +775,130 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
     }
 
 
+
+    // ── TIMER SPETTATORE ──
+    let specTimerInterval  = null;
+    let specTimerRunning   = false;
+    let specElapsedAtSave  = 0;
+    let specStartedAt      = null; // Date object
+    let specIsRecovery     = false;
+
+    function formatSpecClock(totalSeconds) {
+      const abs = Math.abs(totalSeconds);
+      const m = Math.floor(abs / 60);
+      const s = abs % 60;
+      return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+
+    function specCurrentSeconds() {
+      if (!specTimerRunning || !specStartedAt) return specElapsedAtSave;
+      const elapsed = Math.floor((Date.now() - specStartedAt.getTime()) / 1000);
+      return specElapsedAtSave + elapsed;
+    }
+
+    function updateSpecTimer() {
+      const elTime  = document.getElementById('specTime');
+      if (!elTime) return;
+      const secs = specCurrentSeconds();
+      if (specIsRecovery) {
+        elTime.textContent = `REC +${formatSpecClock(secs)}`;
+        elTime.style.color = '#ff3311'; // rosso per recupero
+      } else {
+        elTime.textContent = formatSpecClock(secs);
+        elTime.style.color = ''; // colore default (accent da CSS)
+      }
+    }
+
+    function startSpecTimer() {
+      if (specTimerInterval) clearInterval(specTimerInterval);
+      specTimerInterval = setInterval(updateSpecTimer, 1000);
+      updateSpecTimer(); // aggiorna subito
+    }
+
+    function stopSpecTimer() {
+      if (specTimerInterval) {
+        clearInterval(specTimerInterval);
+        specTimerInterval = null;
+      }
+      updateSpecTimer(); // mostra valore fermo
+    }
+
+    function applySpecTimerFromMatch(match) {
+      // Leggi stato timer dal match
+      const timerRunning  = Boolean(match.timer_running);
+      const elapsedAtSave = Number(match.elapsed_seconds_at_save) || 0;
+      const startedAt     = match.timer_started_at ? new Date(match.timer_started_at) : null;
+      const minute        = match.minute;
+      const isRecovery    = typeof minute === 'number' && minute < 0;
+
+      specIsRecovery   = isRecovery;
+      specElapsedAtSave = elapsedAtSave;
+      specStartedAt    = timerRunning ? startedAt : null;
+      specTimerRunning = timerRunning;
+
+      if (timerRunning) {
+        startSpecTimer();
+      } else {
+        stopSpecTimer();
+      }
+    }
+
+    // ── OVERLAY SPETTATORE ──
     function updateSpectatorOverlay(match) {
       const overlay = document.getElementById('spectatorOverlay');
       if (!overlay) return;
+
       const isLive = match && match.status === 'live';
-      const visible = isLive && match?.overlay_visible !== false;
-      overlay.style.display = visible ? 'flex' : 'none';
-      overlay.classList.toggle('visible', visible);
+
+      // Visibilità globale overlay
+      const overlayVisible = match?.overlay_visible !== false;
+      const scoreboardVisible = match?.overlay_scoreboard_visible !== false;
+      overlay.classList.toggle('visible', isLive && overlayVisible);
+
       if (!isLive) return;
 
+      // Testi
       const home  = match.home_team || 'Casa';
       const away  = match.away_team || 'Ospite';
       const score = match.score ? String(match.score).replace('-', ' - ') : '0 - 0';
-      const isRecovery = typeof match.minute === 'number' && match.minute < 0;
-      const min = isRecovery ? `REC +${Math.abs(match.minute)}'` : (match.minute ? `${match.minute}'` : 'LIVE');
+      const min   = match.minute ? `${match.minute}'` : 'LIVE';
 
-      const get = id => document.getElementById(id);
-      const elHome  = get('specHomeTeam');
-      const elAway  = get('specAwayTeam');
-      const elScore = get('specScore');
-      const elTime  = get('specTime');
-      const elRec   = get('specRec');
-      const elBoard = get('specScoreboard');
+      const elHome  = document.getElementById('specHomeTeam');
+      const elAway  = document.getElementById('specAwayTeam');
+      const elScore = document.getElementById('specScore');
+      const elTime  = document.getElementById('specTime');
+      const elRec   = document.getElementById('specRec');
+      const elBoard = document.getElementById('specScoreboard');
 
       if (elHome)  elHome.textContent  = home;
       if (elAway)  elAway.textContent  = away;
       if (elScore) elScore.textContent = score;
-      if (elTime)  { elTime.textContent = min; elTime.style.color = isRecovery ? '#ff3311' : ''; }
+      if (elTime)  elTime.textContent  = min;
       if (elRec)   elRec.style.display = 'inline-flex';
-      if (elBoard) elBoard.style.display = match?.overlay_scoreboard_visible === false ? 'none' : '';
+      if (elBoard) elBoard.style.display = scoreboardVisible ? '' : 'none';
+
+      // Impostazioni grafiche dallo streamer
+      const primary  = match.overlay_primary  || '#ff4422';
+      const accent   = match.overlay_accent   || '#ff6600';
+      const font     = match.overlay_font     || 'Barlow Condensed';
+      const scale    = match.overlay_scale    || 1;
+      const position = match.overlay_position || 'top';
 
       const root = document.documentElement;
-      if (match.overlay_primary) root.style.setProperty('--spec-primary', match.overlay_primary);
-      if (match.overlay_accent)  root.style.setProperty('--spec-accent',  match.overlay_accent);
-      if (match.overlay_font)    root.style.setProperty('--spec-font', `'${match.overlay_font}', sans-serif`);
-      if (match.overlay_scale)   root.style.setProperty('--spec-scale',   String(match.overlay_scale));
-      overlay.classList.toggle('pos-bottom', match.overlay_position === 'bottom');
+      root.style.setProperty('--spec-primary', primary);
+      root.style.setProperty('--spec-accent',  accent);
+      root.style.setProperty('--spec-font',    `'${font}', sans-serif`);
+      root.style.setProperty('--spec-scale',   String(scale));
+
+      overlay.classList.toggle('pos-bottom', position === 'bottom');
+
+      // Applica timer in tempo reale
+      applySpecTimerFromMatch(match);
     }
 
-    function renderMatch(match) {
+    function renderMatch(match, options = { subscribe: true }) {
+      currentMatch = match;
+
       const home = safe(match.home_team, 'Squadra Casa');
       const away = safe(match.away_team, 'Squadra Ospite');
       const score = formatScore(match.score);
@@ -861,14 +907,15 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
       const category = safe(match.category, 'Non specificata');
       const field = safe(match.field, 'Non specificato');
       const status = safe(match.status, 'soon');
-      const extra = match.detailRows && match.detailRows.length ? ` · ${match.detailRows.join(' · ')}` : '';
+      const extra = match.detailRows && match.detailRows.length ? ` - ${match.detailRows.join(' - ')}` : '';
 
       document.title = `${home} vs ${away} - LiveFut TV`;
 
       setText('matchTitle', `${home} vs ${away}`);
-      setText('matchSubtitle', `${region} · ${discipline} · ${category} · ${field}${extra}`);
+      setText('matchSubtitle', `${region} - ${discipline} - ${category} - ${field}${extra}`);
       setText('matchScore', score);
       setText('matchMinute', minuteLabel(match));
+      updateSpectatorOverlay(match);
       setText('matchRegion', region);
       setText('matchDiscipline', discipline);
       setText('matchCategory', category);
@@ -879,7 +926,14 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
       setText('eventMinute', minuteLabel(match));
 
       applyMode(match);
-      updateSpectatorOverlay(match);
+      renderLivePlayer(match);
+      updateCoinsPanel();
+      loadBroadcastDestinations(match);
+      loadMatchEvents(match);
+      if (options.subscribe) {
+        subscribeMatchEvents(match);
+        subscribeMatchUpdates(match);
+      }
     }
 
     async function loadSupabaseMatch(id) {
@@ -916,20 +970,40 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
       return officialMatchToPage(match);
     }
 
+    async function findSupabaseMatchByOfficialId(matchId) {
+      const { data } = await supabaseClient
+        .from('matches')
+        .select('*')
+        .eq('match_id', matchId)
+        .maybeSingle();
+
+      return data || null;
+    }
+
     async function loadMatch() {
       try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        currentSession = session;
+        document.querySelectorAll('.auth-login').forEach(el => el.style.display = session ? 'none' : '');
+        document.querySelectorAll('.auth-logged').forEach(el => el.style.display = session ? '' : 'none');
+        if (session) await loadCoinWallet();
+
         if (isUuid(supabaseMatchId)) {
           renderMatch(await loadSupabaseMatch(supabaseMatchId));
           return;
         }
 
         if (officialMatchId) {
-          renderMatch(await loadOfficialMatch(officialMatchId));
+          const officialMatch = await loadOfficialMatch(officialMatchId);
+          const liveMatch = await findSupabaseMatchByOfficialId(officialMatchId);
+          renderMatch(liveMatch ? { ...officialMatch, ...normalizeSupabaseMatch(liveMatch), match_id: officialMatch.match_id } : officialMatch);
           return;
         }
 
         if (supabaseMatchId && !isUuid(supabaseMatchId)) {
-          renderMatch(await loadOfficialMatch(supabaseMatchId));
+          const officialMatch = await loadOfficialMatch(supabaseMatchId);
+          const liveMatch = await findSupabaseMatchByOfficialId(supabaseMatchId);
+          renderMatch(liveMatch ? { ...officialMatch, ...normalizeSupabaseMatch(liveMatch), match_id: officialMatch.match_id } : officialMatch);
           return;
         }
 
@@ -939,9 +1013,15 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
       }
     }
 
-    loadMatch();
-  </script>
+    window.addEventListener('pagehide', () => {
+      if (eventsChannel) supabaseClient.removeChannel(eventsChannel);
+      if (matchChannel) supabaseClient.removeChannel(matchChannel);
+    });
 
-  <script src="https://cdn.iubenda.com/iubenda.js"></script>
-</body>
-</html>
+    document.addEventListener('click', event => {
+      const button = event.target.closest('[data-coins]');
+      if (!button) return;
+      donateCoins(Number(button.dataset.coins));
+    });
+
+    loadMatch();</script><script src="https://cdn.iubenda.com/iubenda.js"></script></body></html>
