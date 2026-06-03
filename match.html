@@ -73,6 +73,12 @@
     .player{position:relative;}
     
     /* ── OVERLAY SPETTATORE — scoreboard sopra il player ── */
+    :root{
+      --spec-primary: #ff4422;
+      --spec-accent:  #ff6600;
+      --spec-font:    'Barlow Condensed', sans-serif;
+      --spec-scale:   1;
+    }
     .spectator-overlay{
       position:absolute;
       top:0;left:0;right:0;
@@ -84,6 +90,19 @@
       opacity:0;transition:opacity 0.4s ease;
     }
     .spectator-overlay.visible{opacity:1;}
+    .spectator-overlay.pos-bottom{
+      flex-direction:column-reverse;
+    }
+    .spec-scoreboard{
+      font-family: var(--spec-font);
+      font-size: calc(14px * var(--spec-scale));
+    }
+    .spec-score{
+      background: var(--spec-primary) !important;
+    }
+    .spec-time{
+      color: var(--spec-accent) !important;
+    }
 
     /* Scoreboard */
     .spec-scoreboard{
@@ -130,6 +149,10 @@
       width:7px;height:7px;background:#ff3311;border-radius:50%;
       animation:rec-blink 1.4s infinite;flex-shrink:0;
     }
+
+
+    /* timer recupero — colore gestito via JS */
+    #specTime { transition: color 0.3s ease; }
 
     @media(max-width:820px){.layout{grid-template-columns:1fr;}.match-header{flex-direction:column;gap:12px;}}
   </style>
@@ -752,19 +775,91 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     }
 
 
+
+    // ── TIMER SPETTATORE ──
+    let specTimerInterval  = null;
+    let specTimerRunning   = false;
+    let specElapsedAtSave  = 0;
+    let specStartedAt      = null; // Date object
+    let specIsRecovery     = false;
+
+    function formatSpecClock(totalSeconds) {
+      const abs = Math.abs(totalSeconds);
+      const m = Math.floor(abs / 60);
+      const s = abs % 60;
+      return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+
+    function specCurrentSeconds() {
+      if (!specTimerRunning || !specStartedAt) return specElapsedAtSave;
+      const elapsed = Math.floor((Date.now() - specStartedAt.getTime()) / 1000);
+      return specElapsedAtSave + elapsed;
+    }
+
+    function updateSpecTimer() {
+      const elTime  = document.getElementById('specTime');
+      if (!elTime) return;
+      const secs = specCurrentSeconds();
+      if (specIsRecovery) {
+        elTime.textContent = `REC +${formatSpecClock(secs)}`;
+        elTime.style.color = '#ff3311'; // rosso per recupero
+      } else {
+        elTime.textContent = formatSpecClock(secs);
+        elTime.style.color = ''; // colore default (accent da CSS)
+      }
+    }
+
+    function startSpecTimer() {
+      if (specTimerInterval) clearInterval(specTimerInterval);
+      specTimerInterval = setInterval(updateSpecTimer, 1000);
+      updateSpecTimer(); // aggiorna subito
+    }
+
+    function stopSpecTimer() {
+      if (specTimerInterval) {
+        clearInterval(specTimerInterval);
+        specTimerInterval = null;
+      }
+      updateSpecTimer(); // mostra valore fermo
+    }
+
+    function applySpecTimerFromMatch(match) {
+      // Leggi stato timer dal match
+      const timerRunning  = Boolean(match.timer_running);
+      const elapsedAtSave = Number(match.elapsed_seconds_at_save) || 0;
+      const startedAt     = match.timer_started_at ? new Date(match.timer_started_at) : null;
+      const minute        = match.minute;
+      const isRecovery    = typeof minute === 'number' && minute < 0;
+
+      specIsRecovery   = isRecovery;
+      specElapsedAtSave = elapsedAtSave;
+      specStartedAt    = timerRunning ? startedAt : null;
+      specTimerRunning = timerRunning;
+
+      if (timerRunning) {
+        startSpecTimer();
+      } else {
+        stopSpecTimer();
+      }
+    }
+
     // ── OVERLAY SPETTATORE ──
     function updateSpectatorOverlay(match) {
       const overlay = document.getElementById('spectatorOverlay');
       if (!overlay) return;
 
-      // Mostra solo se la partita è live
       const isLive = match && match.status === 'live';
-      overlay.classList.toggle('visible', isLive);
+
+      // Visibilità globale overlay
+      const overlayVisible = match?.overlay_visible !== false;
+      const scoreboardVisible = match?.overlay_scoreboard_visible !== false;
+      overlay.classList.toggle('visible', isLive && overlayVisible);
 
       if (!isLive) return;
 
-      const home  = match.home_team  || 'Casa';
-      const away  = match.away_team  || 'Ospite';
+      // Testi
+      const home  = match.home_team || 'Casa';
+      const away  = match.away_team || 'Ospite';
       const score = match.score ? String(match.score).replace('-', ' - ') : '0 - 0';
       const min   = match.minute ? `${match.minute}'` : 'LIVE';
 
@@ -773,12 +868,32 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
       const elScore = document.getElementById('specScore');
       const elTime  = document.getElementById('specTime');
       const elRec   = document.getElementById('specRec');
+      const elBoard = document.getElementById('specScoreboard');
 
       if (elHome)  elHome.textContent  = home;
       if (elAway)  elAway.textContent  = away;
       if (elScore) elScore.textContent = score;
       if (elTime)  elTime.textContent  = min;
-      if (elRec)   elRec.style.display = isLive ? 'inline-flex' : 'none';
+      if (elRec)   elRec.style.display = 'inline-flex';
+      if (elBoard) elBoard.style.display = scoreboardVisible ? '' : 'none';
+
+      // Impostazioni grafiche dallo streamer
+      const primary  = match.overlay_primary  || '#ff4422';
+      const accent   = match.overlay_accent   || '#ff6600';
+      const font     = match.overlay_font     || 'Barlow Condensed';
+      const scale    = match.overlay_scale    || 1;
+      const position = match.overlay_position || 'top';
+
+      const root = document.documentElement;
+      root.style.setProperty('--spec-primary', primary);
+      root.style.setProperty('--spec-accent',  accent);
+      root.style.setProperty('--spec-font',    `'${font}', sans-serif`);
+      root.style.setProperty('--spec-scale',   String(scale));
+
+      overlay.classList.toggle('pos-bottom', position === 'bottom');
+
+      // Applica timer in tempo reale
+      applySpecTimerFromMatch(match);
     }
 
     function renderMatch(match, options = { subscribe: true }) {
