@@ -853,9 +853,15 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
       // Visibilità globale overlay
       const overlayVisible = match?.overlay_visible !== false;
       const scoreboardVisible = match?.overlay_scoreboard_visible !== false;
-      overlay.classList.toggle('visible', isLive && overlayVisible);
+      const overlayReady = Boolean(
+        match?.overlay_updated_at ||
+        match?.timer_started_at ||
+        match?.score ||
+        match?.minute
+      );
+      overlay.classList.toggle('visible', isLive && overlayVisible && overlayReady);
 
-      if (!isLive) return;
+      if (!isLive || !overlayReady) return;
 
       // Testi
       const home  = match.home_team || 'Casa';

@@ -74,6 +74,9 @@
     .video-card{background:#000;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
     .video-wrap{position:relative;width:100%;aspect-ratio:16/9;background:radial-gradient(circle at center,rgba(200,40,10,0.14),transparent 40%),#000;display:flex;align-items:center;justify-content:center;overflow:hidden;}
     .video-wrap video{width:100%;height:100%;object-fit:cover;display:none;background:#000;}
+    .video-wrap.active video{display:block;}
+    .video-wrap.active .preview-placeholder{display:none;}
+    .video-wrap.contain video{object-fit:contain;}
     .video-wrap .broadcast-frame{width:100%;height:100%;border:0;display:none;background:#000;position:absolute;inset:0;z-index:2;}
     .preview-placeholder{text-align:center;padding:24px;z-index:1;position:relative;}
     .preview-placeholder strong{font-family:'Barlow Condensed',sans-serif;font-size:22px;color:#fff;display:block;margin-bottom:6px;}
@@ -1504,12 +1507,35 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
         timer_running:           timerRunning,
         elapsed_seconds_at_save: recoveryMode ? recoverySeconds : elapsedSeconds,
         timer_started_at:        timerRunning ? new Date().toISOString() : null,
+        overlay_visible: Boolean(overlayToggle.checked),
+        overlay_scoreboard_visible: Boolean(scoreboardToggle.checked),
+        overlay_primary: primaryColorInput.value,
+        overlay_accent: accentColorInput.value,
+        overlay_font: fontSelect.value,
+        overlay_scale: Number(overlayFontSizeInput.value) / 100,
+        overlay_position: overlayPositionSelect.value,
+        overlay_updated_at: new Date().toISOString(),
         // salviamo anche se siamo in modalità recupero nel campo minute come stringa speciale
         // per permettere a match.html di capire che è recupero
       };
       // Se siamo in recupero, sovrascriviamo minute con valore negativo come segnale
       if (recoveryMode) payload.minute = -(recoverySeconds);
-      const { error } = await supabaseClient.from('matches').update(payload).eq('id', currentMatch.id);
+      let { error } = await supabaseClient.from('matches').update(payload).eq('id', currentMatch.id);
+      if (error && String(error.message || '').toLowerCase().includes('overlay_')) {
+        const {
+          overlay_visible,
+          overlay_scoreboard_visible,
+          overlay_primary,
+          overlay_accent,
+          overlay_font,
+          overlay_scale,
+          overlay_position,
+          overlay_updated_at,
+          ...fallbackPayload
+        } = payload;
+        ({ error } = await supabaseClient.from('matches').update(fallbackPayload).eq('id', currentMatch.id));
+        if (!error) showMessage('Dati partita salvati. Per mostrare gli overlay reali agli spettatori applica lo SQL overlay su Supabase.', 'warning');
+      }
       if (error) showMessage(`Errore durante il salvataggio dei dati partita: ${error.message}`, 'error');
     }
 
