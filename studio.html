@@ -1,293 +1,820 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-  <title>LiveFut TV - Studio diretta</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>LiveFut TV — Studio</title>
+
   <script src="https://app.termly.io/resource-blocker/ecfeb307-3d9a-4e26-a7de-4dab9c2345f9?autoBlock=on"></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
-    /* ── PALETTE BROADCASTER: rosso/arancio/nero ── */
     :root {
-      --bg:       #060103;
-      --bg2:      #0a0205;
-      --bg3:      #0e0308;
-      --accent:   #ff4422;
-      --accent2:  #cc2200;
-      --orange:   #ff6600;
-      --border:   rgba(200,40,10,0.18);
-      --border2:  rgba(200,40,10,0.32);
-      --text:     #f0e8e4;
-      --muted:    #8a5544;
-      --muted2:   #5a2a1a;
-      --radius:   8px;
-      --radius-lg:12px;
-      --max:      1180px;
-    }
-    *{box-sizing:border-box;margin:0;padding:0;}
-    html{scroll-behavior:smooth;}
-    body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
-    a{color:inherit;text-decoration:none;}
-    .container{width:min(var(--max),calc(100% - 24px));margin:0 auto;}
-
-    /* ── BG GEOMETRICO CALDO ── */
-    .page-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
-    .page-bg svg{width:100%;height:100%;}
-
-    /* ── TOPBAR ── */
-    .topbar{position:sticky;top:0;z-index:50;background:rgba(6,1,3,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
-    .topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;flex-wrap:wrap;}
-    .logo-live{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;color:#fff;}
-    .logo-fut{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;color:var(--accent);}
-    .logo-studio{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:var(--muted);font-style:normal;letter-spacing:3px;text-transform:uppercase;margin-left:6px;}
-    .rec-chip{display:flex;align-items:center;gap:7px;background:rgba(200,40,10,0.1);border:1px solid var(--border2);border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;letter-spacing:2px;color:var(--accent);text-transform:uppercase;}
-    .rec-dot{width:7px;height:7px;background:#ff3311;border-radius:50%;animation:rec-blink 1.4s infinite;flex-shrink:0;}
-    @keyframes rec-blink{0%,100%{opacity:1}50%{opacity:0.15}}
-    .top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;cursor:pointer;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;padding:7px 16px;border-radius:var(--radius);transition:all 0.2s;white-space:nowrap;}
-    .btn:hover{transform:translateY(-1px);}
-    .btn:disabled{opacity:0.45;cursor:not-allowed;transform:none;}
-    .btn-primary{background:var(--accent);color:#fff;}
-    .btn-primary:hover{background:#ff6644;}
-    .btn-secondary{background:transparent;color:var(--accent);border:1px solid var(--border2);}
-    .btn-secondary:hover{background:rgba(200,40,10,0.08);}
-    .btn-danger{background:rgba(200,40,10,0.15);color:var(--accent);border:1px solid var(--border2);}
-    .btn-warning{background:rgba(255,160,0,0.12);color:#ff9900;border:1px solid rgba(255,160,0,0.25);}
-    .btn-small{padding:6px 12px;font-size:12px;}
-
-    /* ── MAIN LAYOUT ── */
-    main{position:relative;z-index:1;padding:20px 0 40px;}
-
-    /* MATCH HEADER */
-    .match-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap;}
-    .status-badge{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent);border:1px solid var(--border2);padding:4px 10px;border-radius:20px;background:rgba(200,40,10,0.08);text-transform:uppercase;margin-bottom:8px;}
-    h1{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;color:#fff;text-transform:uppercase;margin:0 0 4px;letter-spacing:-0.5px;}
-    .match-sub{font-size:13px;color:var(--muted);}
-
-    /* ── MAIN STUDIO GRID ── */
-    .studio-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(220px,0.5fr);gap:14px;margin-bottom:14px;}
-
-    /* VIDEO AREA */
-    .video-card{background:#000;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
-    .video-wrap{position:relative;width:100%;aspect-ratio:16/9;background:radial-gradient(circle at center,rgba(200,40,10,0.14),transparent 40%),#000;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-    .video-wrap video{width:100%;height:100%;object-fit:cover;display:none;background:#000;}
-    .video-wrap .broadcast-frame{width:100%;height:100%;border:0;display:none;background:#000;position:absolute;inset:0;z-index:2;}
-    .preview-placeholder{text-align:center;padding:24px;z-index:1;position:relative;}
-    .preview-placeholder strong{font-family:'Barlow Condensed',sans-serif;font-size:22px;color:#fff;display:block;margin-bottom:6px;}
-    .preview-placeholder p{font-size:13px;color:var(--muted);}
-    .live-chip{position:absolute;top:12px;right:12px;z-index:9;display:none;align-items:center;gap:8px;border-radius:20px;padding:6px 12px;background:rgba(0,0,0,0.75);border:1px solid var(--border2);font-size:11px;font-weight:700;letter-spacing:2px;color:var(--accent);text-transform:uppercase;}
-    /* OVERLAY elements (funzionali, non cambio) */
-    .match-overlay{position:absolute;inset:0;z-index:3;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(8px,2.2%,18px);opacity:1;transition:opacity .2s ease;font-family:'Barlow Condensed',sans-serif;overflow:hidden;}
-    .scoreboard-overlay{display:grid;grid-template-columns:minmax(82px,max-content) auto minmax(82px,max-content) auto;align-items:stretch;justify-self:flex-start;align-self:flex-start;width:fit-content;min-width:min(420px,100%);max-width:min(760px,62%);min-height:42px;border-radius:8px;overflow:hidden;border:1px solid color-mix(in srgb,var(--overlay-primary,#ff4422) 55%,transparent);box-shadow:0 14px 34px rgba(0,0,0,.46);background:var(--overlay-bg,rgba(0,0,0,.82));}
-    .score-team,.score-value,.score-time{display:grid;place-items:center;padding:8px 10px;text-align:center;font-weight:900;font-size:calc(.78rem * var(--overlay-scale,1));min-width:0;}
-    .score-team{color:var(--overlay-text,#fff);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:clamp(110px,18vw,220px);}
-    .score-value{min-width:64px;background:var(--overlay-primary,#ff4422);color:#000;font-size:calc(.92rem * var(--overlay-scale,1));font-variant-numeric:tabular-nums;}
-    .score-time{min-width:86px;max-width:160px;color:var(--overlay-accent,#ff6600);border-left:1px solid color-mix(in srgb,var(--overlay-accent,#ff6600) 45%,transparent);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .sponsor-overlay{align-self:center;justify-self:center;max-width:min(420px,70%);max-height:34%;border-radius:18px;padding:12px;background:rgba(0,0,0,.78);border:1px solid color-mix(in srgb,var(--overlay-accent,#ff6600) 50%,transparent);box-shadow:0 18px 44px rgba(0,0,0,.5);display:none;place-items:center;}
-    .sponsor-overlay img{max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;}
-    .scene-overlay{position:absolute;inset:0;z-index:6;display:none;place-items:center;padding:clamp(14px,4%,34px);text-align:center;font-family:'Barlow Condensed',sans-serif;background:linear-gradient(115deg,rgba(0,0,0,.86),rgba(0,0,0,.62)),repeating-linear-gradient(135deg,rgba(200,40,10,.1) 0 2px,transparent 2px 22px);overflow:hidden;}
-    .scene-box{width:min(760px,100%);max-height:100%;border-radius:28px;padding:clamp(18px,5vw,46px);background:color-mix(in srgb,rgba(0,0,0,.82) 86%,transparent);border:1px solid color-mix(in srgb,var(--overlay-primary,#ff4422) 45%,transparent);box-shadow:0 24px 70px rgba(0,0,0,.55);overflow:hidden;}
-    .scene-kicker{color:var(--overlay-accent,#ff6600);font-weight:900;text-transform:uppercase;letter-spacing:.14em;margin-bottom:12px;font-size:calc(.9rem * var(--overlay-scale,1));}
-    .scene-title{color:var(--overlay-primary,#ff4422);font-size:clamp(1.55rem,8vw,calc(4rem * var(--overlay-scale,1)));line-height:1;font-weight:900;letter-spacing:0;margin-bottom:14px;overflow-wrap:anywhere;}
-    .scene-subtitle{color:var(--overlay-text,#fff);font-size:calc(1.2rem * var(--overlay-scale,1));font-weight:800;overflow-wrap:anywhere;}
-    .scene-score{margin-top:18px;color:var(--overlay-text,#fff);font-size:clamp(1.5rem,7vw,calc(3.2rem * var(--overlay-scale,1)));font-weight:900;font-variant-numeric:tabular-nums;}
-    .scene-countdown{margin-top:18px;color:var(--overlay-accent,#ff6600);font-size:clamp(1.4rem,6vw,calc(2.8rem * var(--overlay-scale,1)));font-weight:900;font-variant-numeric:tabular-nums;}
-
-    /* VIDEO CONTROLS */
-    .video-controls{padding:14px 16px;background:rgba(0,0,0,0.6);border-top:1px solid var(--border);}
-    .video-controls h2{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;color:#fff;text-transform:uppercase;margin:0 0 4px;}
-    .video-controls p{font-size:12px;color:var(--muted);margin-bottom:10px;}
-    .ctrl-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
-    .status-message{font-size:12px;padding:6px 10px;border-radius:var(--radius);margin-top:8px;display:none;}
-    .status-message.show{display:block;}
-    .status-message.ok{background:rgba(0,200,100,0.1);color:#00cc66;border:1px solid rgba(0,200,100,0.2);}
-    .status-message.error{background:rgba(200,40,10,0.1);color:var(--accent);border:1px solid var(--border2);}
-
-    /* SIDE PANEL */
-    .side-panel{display:flex;flex-direction:column;gap:12px;}
-    .info-card,.score-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;}
-    .info-card h2,.score-card h2{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;color:#fff;text-transform:uppercase;margin:0 0 10px;}
-    .info-list{display:grid;gap:0;}
-    .info-item{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px;}
-    .info-item:last-child{border-bottom:none;}
-    .info-item strong{color:var(--muted);font-weight:600;}
-    .score-big{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:var(--accent);margin-bottom:4px;}
-    .score-minute{font-size:12px;color:var(--orange);font-weight:700;letter-spacing:1px;}
-
-    /* ── CONSOLE / REGIA DRAWER ── */
-    /* Pensata per diventare bottom sheet in app mobile Prism-style */
-    .console-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:14px;}
-    .console-drawer-toggle{width:100%;background:rgba(0,0,0,0.4);border:none;border-bottom:1px solid var(--border);padding:12px 18px;color:var(--muted);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-family:'Barlow',sans-serif;transition:background 0.2s;}
-    .console-drawer-toggle:hover{background:rgba(200,40,10,0.08);}
-    .console-body{padding:18px;}
-    .console-body.hidden{display:none;}
-    .console-body h2{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;color:#fff;text-transform:uppercase;margin:0 0 4px;}
-    .console-body>p{font-size:13px;color:var(--muted);margin-bottom:16px;}
-
-    /* CONSOLE GRID — 3 col desktop, 2 col tablet, 1 col mobile */
-    .console-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
-    .console-panel{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;overflow:hidden;min-width:0;}
-    .console-panel h3{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-
-    /* TIMER */
-    .timer-readout{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:var(--accent);letter-spacing:1px;margin-bottom:10px;font-variant-numeric:tabular-nums;}
-    .button-row{display:flex;gap:6px;flex-wrap:wrap;}
-
-    /* SCORE CONTROLS */
-    .score-controls{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:center;text-align:center;min-width:0;}
-    .score-control-team strong{font-size:11px;color:var(--muted);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;}
-    .score-control-team span{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:#fff;display:block;margin-bottom:8px;line-height:1;}
-    .score-buttons{display:flex;gap:6px;justify-content:center;}
-    .score-controls>strong{font-size:14px;color:var(--muted2);}
-
-    /* FORM FIELDS INSIDE CONSOLE */
-    .field-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;}
-    .field-grid>div{display:flex;flex-direction:column;gap:4px;}
-    .field-grid label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;}
-    .field-grid input,.field-grid select{background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);font-family:'Barlow',sans-serif;font-size:13px;padding:7px 10px;outline:none;transition:border-color 0.2s;}
-    .field-grid input:focus,.field-grid select:focus{border-color:var(--accent);}
-    .field-grid select option{background:var(--bg);}
-    .field-grid input[type=color]{padding:3px 6px;height:32px;cursor:pointer;}
-    .field-grid input[type=range]{accent-color:var(--accent);}
-
-    /* TOGGLE ROWS */
-    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text);cursor:pointer;}
-    .toggle-row:last-child{border-bottom:none;}
-    .toggle-row input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px;cursor:pointer;}
-
-    /* DESTINATIONS */
-    .destination-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;}
-    .destination-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:10px;}
-    .destination-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-    .destination-name strong{font-size:13px;color:#fff;display:block;}
-    .destination-name span{font-size:11px;color:var(--muted);}
-    .destination-status{font-size:10px;color:var(--muted2);letter-spacing:0.5px;}
-
-    /* EVENT LIST / COMMENTARY */
-    .event-list{display:grid;gap:6px;max-height:160px;overflow-y:auto;}
-    .event-item{font-size:12px;color:var(--muted);background:var(--bg);border-left:2px solid var(--border2);padding:6px 10px;border-radius:0 var(--radius) var(--radius) 0;}
-    .event-item strong{color:var(--accent);display:block;}
-
-    footer{position:relative;z-index:1;text-align:center;padding:18px;font-size:12px;color:var(--muted2);border-top:1px solid var(--border);}
-    footer a{color:var(--muted);}
-
-    /* ── RESPONSIVE ── */
-    @media(max-width:1100px){
-      .console-grid{grid-template-columns:repeat(2,1fr);}
-    }
-    @media(max-width:960px){
-      .studio-grid{grid-template-columns:1fr;}
-      .console-grid{grid-template-columns:repeat(2,1fr);}
-    }
-    @media(max-width:600px){
-      .console-grid{grid-template-columns:1fr;}
-      .destination-grid{grid-template-columns:1fr;}
-      .field-grid{grid-template-columns:1fr;}
-      .topbar-inner{min-height:50px;}
+      --black: #000000;
+      --green: #31d158;
+      --orange: #ff7a18;
+      --text: #ffffff;
+      --muted: #cfd6cf;
+      --border: rgba(49, 209, 88, 0.18);
+      --orange-border: rgba(255, 122, 24, 0.28);
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+      --overlay-bg: rgba(0, 0, 0, 0.82);
+      --overlay-text: #ffffff;
+      --overlay-primary: #31d158;
+      --overlay-accent: #ff7a18;
+      --overlay-radius: 10px;
+      --overlay-font: "Space Grotesk", sans-serif;
     }
 
-    /* ── LANDSCAPE MOBILE — già pronto per app Prism-style ── */
-    @media(max-height:500px) and (orientation:landscape){
-      .topbar{display:none;}
-      main{padding:0;}
-      .studio-grid{grid-template-columns:1.6fr 0.4fr;height:100vh;gap:0;}
-      .video-card{border-radius:0;border:none;}
-      .video-wrap{aspect-ratio:unset;height:100vh;}
-      .side-panel{overflow-y:auto;height:100vh;border-radius:0;padding:10px 8px;gap:8px;}
-      .console-card{display:none;}
-      footer{display:none;}
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Space Grotesk", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(49, 209, 88, 0.12), transparent 24%),
+        radial-gradient(circle at top right, rgba(255, 122, 24, 0.08), transparent 24%),
+        linear-gradient(180deg, #020202 0%, #080808 100%);
+      color: var(--text);
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(14px);
+      background: rgba(0, 0, 0, 0.84);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topbar-inner {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .site-logo {
+      height: 42px;
+      width: auto;
+      max-height: 42px;
+      display: block;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .brand-text strong {
+      display: block;
+      font-size: 1.12rem;
+      line-height: 1.1;
+    }
+
+    .brand-text span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .top-actions,
+    .button-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 0;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-weight: 800;
+      font-family: inherit;
+      font-size: 0.94rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn:disabled { cursor: not-allowed; opacity: 0.58; transform: none; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #19a83f, var(--green));
+      color: var(--black);
+      box-shadow: 0 12px 28px rgba(49, 209, 88, 0.28);
+    }
+
+    .btn-secondary {
+      background: rgba(49, 209, 88, 0.06);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-danger {
+      background: rgba(255, 122, 24, 0.1);
+      color: var(--text);
+      border: 1px solid var(--orange-border);
+      box-shadow: 0 12px 28px rgba(255, 122, 24, 0.12);
+    }
+
+    .btn-small {
+      padding: 10px 14px;
+      font-size: 0.86rem;
+    }
+
+    .hero { padding: 28px 0 18px; }
+
+    .studio-header,
+    .studio-card,
+    .info-card,
+    .status-card,
+    .console-card {
+      background: linear-gradient(180deg, rgba(49, 209, 88, 0.03), rgba(255, 255, 255, 0.01));
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: 24px;
+      overflow: hidden;
+    }
+
+    .studio-header {
+      border-radius: 32px;
+      padding: 28px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      width: max-content;
+      max-width: 100%;
+      background: rgba(49, 209, 88, 0.08);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 10px 14px;
+      color: var(--green);
+      font-weight: 800;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--green);
+      box-shadow: 0 0 0 8px rgba(49, 209, 88, 0.12);
+      flex-shrink: 0;
+    }
+
+    .badge.live {
+      background: rgba(255, 122, 24, 0.12);
+      border-color: var(--orange-border);
+      color: var(--text);
+    }
+
+    .badge.live .dot,
+    .live-chip .dot {
+      background: var(--orange);
+      box-shadow: 0 0 0 8px rgba(255, 122, 24, 0.14);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.18); opacity: 0.82; }
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--green);
+      font-size: clamp(2rem, 9vw, 3.4rem);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      overflow-wrap: anywhere;
+    }
+
+    h2, h3 {
+      color: var(--green);
+      margin: 0 0 10px;
+      letter-spacing: -0.02em;
+    }
+
+    p {
+      margin: 0;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+      gap: 18px;
+      padding: 0 0 34px;
+    }
+
+    .video-wrap {
+      position: relative;
+      width: 100%;
+      background:
+        radial-gradient(circle at center, rgba(255, 122, 24, 0.18), transparent 30%),
+        radial-gradient(circle at 30% 20%, rgba(49, 209, 88, 0.16), transparent 34%),
+        linear-gradient(135deg, #050505, #000000);
+      aspect-ratio: 16 / 9;
+      min-height: 260px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .video-wrap::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border: 1px solid rgba(255, 122, 24, 0.08);
+      box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.36);
+      z-index: 8;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+      background: var(--black);
+    }
+
+    .video-wrap.active video { display: block; }
+
+    .preview-placeholder {
+      padding: 24px;
+      text-align: center;
+      max-width: 420px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .video-wrap.active .preview-placeholder { display: none; }
+
+    .preview-placeholder strong {
+      display: block;
+      color: var(--green);
+      font-size: 1.55rem;
+      line-height: 1.15;
+      margin-bottom: 10px;
+      letter-spacing: -0.03em;
+    }
+
+    .live-chip {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 9;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 9px 12px;
+      background: rgba(0, 0, 0, 0.72);
+      border: 1px solid var(--orange-border);
+      color: var(--text);
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      box-shadow: 0 12px 28px rgba(255, 122, 24, 0.14);
+    }
+
+    .video-wrap.active .live-chip { display: inline-flex; }
+
+    .match-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 14px;
+      opacity: 1;
+      transition: opacity 0.2s ease;
+      font-family: var(--overlay-font);
+    }
+
+    .match-overlay.is-hidden { opacity: 0; }
+
+    .scoreboard-overlay {
+      display: flex;
+      align-items: stretch;
+      width: max-content;
+      max-width: min(560px, 86%);
+      min-height: 38px;
+      border-radius: var(--overlay-radius);
+      overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--overlay-primary) 55%, transparent);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.46);
+      background: var(--overlay-bg);
+    }
+
+    .score-team,
+    .score-value,
+    .score-time {
+      display: grid;
+      place-items: center;
+      padding: 8px 10px;
+      text-align: center;
+      font-weight: 900;
+      font-size: 0.78rem;
+    }
+
+    .score-team {
+      min-width: 74px;
+      max-width: 130px;
+      color: var(--overlay-text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .score-value {
+      min-width: 64px;
+      background: var(--overlay-primary);
+      color: var(--black);
+      font-size: 0.92rem;
+    }
+
+    .score-time {
+      min-width: 88px;
+      color: var(--overlay-accent);
+      border-left: 1px solid color-mix(in srgb, var(--overlay-accent) 45%, transparent);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .sponsor-overlay {
+      align-self: center;
+      justify-self: center;
+      max-width: min(420px, 70%);
+      max-height: 34%;
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.78);
+      border: 1px solid color-mix(in srgb, var(--overlay-accent) 50%, transparent);
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5);
+      display: none;
+      place-items: center;
+    }
+
+    .sponsor-overlay.show { display: grid; }
+
+    .sponsor-overlay img {
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+      object-fit: contain;
+      border-radius: 12px;
+    }
+
+    .scene-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 6;
+      display: none;
+      place-items: center;
+      padding: 28px;
+      text-align: center;
+      font-family: var(--overlay-font);
+      background:
+        linear-gradient(115deg, rgba(0, 0, 0, 0.86), rgba(0, 0, 0, 0.62)),
+        repeating-linear-gradient(135deg, rgba(49, 209, 88, 0.12) 0 2px, transparent 2px 22px),
+        radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--overlay-primary) 24%, transparent), transparent 32%),
+        radial-gradient(circle at 80% 70%, color-mix(in srgb, var(--overlay-accent) 22%, transparent), transparent 34%),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: auto, auto, auto, auto, 54px 54px, 54px 54px;
+    }
+
+    .scene-overlay.show { display: grid; }
+
+    .scene-box {
+      width: min(760px, 100%);
+      border-radius: 28px;
+      padding: clamp(22px, 5vw, 46px);
+      background: color-mix(in srgb, var(--overlay-bg) 86%, transparent);
+      border: 1px solid color-mix(in srgb, var(--overlay-primary) 45%, transparent);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+    }
+
+    .scene-kicker {
+      color: var(--overlay-accent);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      margin-bottom: 12px;
+      font-size: clamp(0.78rem, 2vw, 1rem);
+    }
+
+    .scene-title {
+      color: var(--overlay-primary);
+      font-size: clamp(2rem, 7vw, 4.4rem);
+      line-height: 0.98;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      margin-bottom: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .scene-subtitle {
+      color: var(--overlay-text);
+      font-size: clamp(1rem, 3vw, 1.45rem);
+      font-weight: 800;
+    }
+
+    .scene-score {
+      margin-top: 18px;
+      color: var(--overlay-text);
+      font-size: clamp(1.7rem, 6vw, 3.4rem);
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .scene-countdown {
+      margin-top: 18px;
+      color: var(--overlay-accent);
+      font-size: clamp(1.5rem, 5vw, 2.8rem);
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .scoreboard-overlay.is-hidden { display: none; }
+
+    .studio-body,
+    .card-body,
+    .console-body {
+      padding: 22px;
+    }
+
+    .controls,
+    .console-grid,
+    .info-list,
+    .event-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .console-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .console-panel {
+      background: rgba(49, 209, 88, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      min-width: 0;
+    }
+
+    .console-panel h3 {
+      font-size: 1rem;
+      margin-bottom: 12px;
+    }
+
+    .score-controls {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .score-control-team {
+      min-width: 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .score-control-team strong {
+      color: var(--text);
+      overflow-wrap: anywhere;
+      line-height: 1.25;
+    }
+
+    .score-control-team span {
+      color: var(--green);
+      font-size: 1.7rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .score-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .timer-readout {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 54px;
+      border-radius: 16px;
+      background: rgba(0, 0, 0, 0.34);
+      border: 1px solid rgba(255, 122, 24, 0.22);
+      color: var(--orange);
+      font-size: 1.7rem;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text);
+      font-weight: 800;
+      font-size: 0.92rem;
+    }
+
+    input,
+    select {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      border-radius: 16px;
+      padding: 13px 14px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    input[type="color"] {
+      height: 48px;
+      padding: 6px;
+      cursor: pointer;
+    }
+
+    input[type="file"] {
+      padding: 11px;
+    }
+
+    select option {
+      color: #000000;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: rgba(49, 209, 88, 0.48);
+      box-shadow: 0 0 0 4px rgba(49, 209, 88, 0.1);
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .toggle-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(49, 209, 88, 0.1);
+    }
+
+    .toggle-row:last-child { border-bottom: 0; }
+
+    .toggle-row input {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--green);
+    }
+
+    .info-item,
+    .commentary-item {
+      background: rgba(49, 209, 88, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      min-width: 0;
+    }
+
+    .info-item strong,
+    .commentary-item strong {
+      color: var(--green);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .info-item span,
+    .commentary-item span {
+      color: var(--text);
+      overflow-wrap: anywhere;
+      line-height: 1.55;
+    }
+
+    .status-message {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(49, 209, 88, 0.24);
+      background: linear-gradient(135deg, rgba(49, 209, 88, 0.08), rgba(255, 122, 24, 0.05));
+      color: var(--text);
+      line-height: 1.6;
+      display: none;
+    }
+
+    .status-message.show { display: block; }
+
+    .status-message.error {
+      border-color: rgba(255, 107, 107, 0.28);
+      background: rgba(255, 107, 107, 0.1);
+      color: #ffd4d4;
+    }
+
+    .error-box {
+      padding: 28px;
+      margin: 34px 0;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 107, 107, 0.28);
+      background: rgba(255, 107, 107, 0.08);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    footer a {
+      color: var(--green);
+      text-decoration: underline;
+    }
+
+    @media (max-width: 980px) {
+      .layout,
+      .console-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .video-wrap {
+        min-height: 220px;
+        max-height: none;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .container {
+        width: min(100% - 24px, 1180px);
+      }
+
+      .topbar-inner,
+      .top-actions,
+      .button-row,
+      .field-grid {
+        flex-direction: column;
+        align-items: stretch;
+        grid-template-columns: 1fr;
+      }
+
+      .brand { justify-content: flex-start; }
+      .btn { width: 100%; }
+
+      .studio-header {
+        padding: 22px;
+        border-radius: 24px;
+      }
+
+      .hero { padding-top: 18px; }
+
+      .studio-body,
+      .card-body,
+      .console-body {
+        padding: 18px;
+      }
+
+      .video-wrap {
+        aspect-ratio: 16 / 9;
+        min-height: 190px;
+      }
+
+      .match-overlay { padding: 10px; }
+
+      .scoreboard-overlay {
+        min-height: 34px;
+        border-radius: 8px;
+        max-width: 94%;
+      }
+
+      .score-team,
+      .score-value,
+      .score-time {
+        padding: 7px 6px;
+        font-size: 0.66rem;
+      }
+
+      .score-team {
+        min-width: 50px;
+        max-width: 86px;
+      }
+
+      .score-value {
+        min-width: 48px;
+        font-size: 0.78rem;
+      }
+
+      .score-time {
+        min-width: 66px;
+      }
+
+      .scene-overlay {
+        padding: 16px;
+      }
+
+      .sponsor-overlay {
+        max-width: 74%;
+        max-height: 42%;
+      }
     }
   </style>
 </head>
+
 <body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="index.html" class="brand">
+        <img src="livefut-logo.png" alt="LiveFut TV logo" class="site-logo" />
+        <div class="brand-text">
+          <strong>LiveFut</strong>
+          <span>Football United Team</span>
+        </div>
+      </a>
 
-<!-- SFONDO GEOMETRICO BROADCASTER: rosso/arancio su nero -->
-<div class="page-bg">
-  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <!-- Glow angoli -->
-    <ellipse cx="120" cy="100" rx="240" ry="160" fill="#cc2200" opacity="0.09"/>
-    <ellipse cx="1360" cy="800" rx="220" ry="140" fill="#ff5500" opacity="0.08"/>
-    <ellipse cx="720" cy="900" rx="400" ry="120" fill="#bb1100" opacity="0.07"/>
-
-    <!-- Linee diagonali top-left -->
-    <line x1="-20" y1="200" x2="380" y2="-20" stroke="#cc2200" stroke-width="1.2" opacity="0.2"/>
-    <line x1="-20" y1="270" x2="440" y2="-20" stroke="#cc2200" stroke-width="0.7" opacity="0.12"/>
-    <line x1="-20" y1="340" x2="500" y2="-20" stroke="#ff4400" stroke-width="0.5" opacity="0.08"/>
-
-    <!-- Linee diagonali bottom-right -->
-    <line x1="1460" y1="680" x2="1060" y2="920" stroke="#cc2200" stroke-width="1.2" opacity="0.18"/>
-    <line x1="1460" y1="620" x2="1000" y2="920" stroke="#cc3300" stroke-width="0.7" opacity="0.1"/>
-    <line x1="1460" y1="740" x2="1120" y2="920" stroke="#ff4400" stroke-width="0.5" opacity="0.07"/>
-
-    <!-- Losanga grande a sinistra -->
-    <polygon points="0,220 90,140 180,220 90,300" stroke="#cc2200" stroke-width="1" opacity="0.16" fill="none"/>
-    <polygon points="12,220 90,155 168,220 90,285" stroke="#ff3300" stroke-width="0.5" opacity="0.08" fill="none"/>
-
-    <!-- Forma angolata destra -->
-    <polygon points="1440,320 1360,250 1360,390" stroke="#cc3300" stroke-width="1" opacity="0.14" fill="none"/>
-
-    <!-- Angolo grafico basso-sinistra -->
-    <polyline points="0,700 70,660 70,900" stroke="#ff4400" stroke-width="1.2" opacity="0.14" fill="none"/>
-    <polyline points="0,730 100,685 100,900" stroke="#cc2200" stroke-width="0.6" opacity="0.08" fill="none"/>
-
-    <!-- Angolo grafico alto-destra -->
-    <polyline points="1440,100 1370,140 1370,0" stroke="#cc3300" stroke-width="1.2" opacity="0.14" fill="none"/>
-    <polyline points="1440,70 1340,120 1340,0" stroke="#ff4400" stroke-width="0.6" opacity="0.08" fill="none"/>
-
-    <!-- Linee verticali sottili -->
-    <line x1="220" y1="0" x2="220" y2="900" stroke="#cc2200" stroke-width="0.4" opacity="0.06"/>
-    <line x1="1220" y1="0" x2="1220" y2="900" stroke="#cc2200" stroke-width="0.4" opacity="0.06"/>
-
-    <!-- Linea orizzontale centrale -->
-    <line x1="0" y1="450" x2="1440" y2="450" stroke="#cc2200" stroke-width="0.4" opacity="0.05"/>
-  </svg>
-</div>
-
-<!-- TOPBAR -->
-<header class="topbar">
-  <div class="container topbar-inner">
-    <div style="display:flex;align-items:center;gap:6px">
-      <a href="index.html"><span class="logo-live">LIVE</span><span class="logo-fut">FUT</span></a>
-      <span class="logo-studio">Studio</span>
-    </div>
-    <div class="rec-chip" id="recChip"><span class="rec-dot"></span><span id="recChipText">In attesa</span></div>
-    <div class="top-actions">
-      <a class="btn btn-secondary" id="matchLink" href="live.html">Partita</a>
-      <a class="btn btn-secondary" href="dashboard.html">Dashboard</a>
-    </div>
-  </div>
-</header>
-
-<!-- MAIN -->
-<main id="pageContent">
-  <div class="container">
-
-    <!-- HEADER PARTITA -->
-    <div class="match-top">
-      <div>
-        <div class="status-badge" id="statusBadge"><span class="rec-dot"></span><span id="statusBadgeText">Caricamento</span></div>
-        <h1 id="matchTitle">Studio LiveFut TV</h1>
-        <p class="match-sub" id="matchSubtitle">Caricamento informazioni partita...</p>
+      <div class="top-actions">
+        <a class="btn btn-secondary" id="matchLink" href="live.html">Partita</a>
+        <a class="btn btn-secondary" href="live.html">Live</a>
+        <a class="btn btn-primary" href="dashboard.html">Dashboard</a>
       </div>
     </div>
+  </header>
 
-    <!-- GRIGLIA STUDIO: video + side -->
-    <div class="studio-grid">
+  <main class="container" id="pageContent">
+    <section class="hero">
+      <div class="studio-header">
+        <div class="badge" id="statusBadge">
+          <span class="dot"></span>
+          <span id="statusBadgeText">Caricamento</span>
+        </div>
 
-      <!-- VIDEO + CONTROLLI -->
-      <div class="video-card">
+        <div>
+          <h1 id="matchTitle">Studio LiveFut TV</h1>
+          <p id="matchSubtitle">Caricamento informazioni partita...</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <article class="studio-card">
         <div class="video-wrap" id="previewWrap">
           <video id="previewVideo" autoplay playsinline muted></video>
-          <iframe class="broadcast-frame" id="broadcastFrame" title="Broadcast LiveFut TV"
-            allow="autoplay; encrypted-media; fullscreen; picture-in-picture; display-capture; camera; microphone"
-            allowfullscreen></iframe>
 
-          <div class="live-chip" id="liveChip"><span class="rec-dot"></span>Live</div>
+          <div class="live-chip">
+            <span class="dot"></span>
+            Live
+          </div>
 
-          <!-- OVERLAY FUNZIONALE (JS invariato) -->
           <div class="match-overlay" id="matchOverlay">
             <div class="scoreboard-overlay" id="scoreboardOverlay">
               <div class="score-team" id="overlayHomeTeam">Casa</div>
@@ -296,7 +823,11 @@
               <div class="score-time" id="overlayTime">00:00</div>
             </div>
           </div>
-          <div class="sponsor-overlay" id="sponsorOverlay"><img id="sponsorImage" alt="Sponsor"></div>
+
+          <div class="sponsor-overlay" id="sponsorOverlay">
+            <img id="sponsorImage" alt="Sponsor">
+          </div>
+
           <div class="scene-overlay" id="sceneOverlay">
             <div class="scene-box">
               <div class="scene-kicker" id="sceneKicker">LiveFut TV</div>
@@ -307,79 +838,88 @@
             </div>
           </div>
 
-          <div class="preview-placeholder" id="previewPlaceholder">
+          <div class="preview-placeholder">
             <strong>Studio diretta</strong>
             <p>Premi Avvia diretta per attivare camera e microfono.</p>
           </div>
         </div>
 
-        <div class="video-controls">
+        <div class="studio-body">
           <h2>Controllo diretta</h2>
           <p id="studioText">Gestisci la trasmissione della partita selezionata.</p>
-          <div class="ctrl-row">
+
+          <div class="controls">
             <button class="btn btn-primary" id="startBtn">Avvia diretta</button>
             <button class="btn btn-danger" id="stopBtn" disabled>Termina</button>
           </div>
-          <div class="ctrl-row">
-            <button class="btn btn-secondary btn-small" id="landscapeBtn">16:9</button>
-            <button class="btn btn-secondary btn-small" id="portraitBtn">9:16</button>
-            <button class="btn btn-secondary btn-small" id="fitVideoBtn">Adatta</button>
-            <button class="btn btn-secondary btn-small" id="fullscreenBtn">Schermo intero</button>
-          </div>
+
           <div class="status-message" id="statusMessage"></div>
         </div>
-      </div>
+      </article>
 
-      <!-- SIDE: info + score -->
-      <div class="side-panel">
+      <aside>
         <div class="info-card">
-          <h2>Info partita</h2>
-          <div class="info-list">
-            <div class="info-item"><strong>Campo</strong><span id="matchField">—</span></div>
-            <div class="info-item"><strong>Categoria</strong><span id="matchCategory">—</span></div>
-            <div class="info-item"><strong>Regione</strong><span id="matchRegion">—</span></div>
-            <div class="info-item"><strong>Disciplina</strong><span id="matchDiscipline">—</span></div>
-            <div class="info-item"><strong>Stato</strong><span id="matchStatus">—</span></div>
+          <div class="card-body">
+            <h2>Info partita</h2>
+            <p>Dati principali della partita selezionata.</p>
+
+            <div class="info-list">
+              <div class="info-item">
+                <strong>Campo</strong>
+                <span id="matchField">—</span>
+              </div>
+
+              <div class="info-item">
+                <strong>Categoria</strong>
+                <span id="matchCategory">—</span>
+              </div>
+
+              <div class="info-item">
+                <strong>Regione</strong>
+                <span id="matchRegion">—</span>
+              </div>
+
+              <div class="info-item">
+                <strong>Disciplina</strong>
+                <span id="matchDiscipline">—</span>
+              </div>
+
+              <div class="info-item">
+                <strong>Stato</strong>
+                <span id="matchStatus">—</span>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="score-card">
-          <h2>Partita</h2>
-          <div class="score-big" id="scoreLine">0 – 0</div>
-          <div class="score-minute" id="minuteLine">Minuto: —</div>
+
+        <div class="status-card" style="margin-top:18px;">
+          <div class="card-body">
+            <h2>Partita</h2>
+            <p id="scoreLine">Risultato: —</p>
+            <p id="minuteLine" style="margin-top:8px;">Minuto: —</p>
+          </div>
         </div>
-      </div>
-    </div>
+      </aside>
+    </section>
 
-    <!-- ══════════════════════════════════════════════
-         CONSOLE / PANNELLO REGIA
-         Pensata per diventare bottom-sheet in app mobile
-         In landscape su telefono: drawer a tutta altezza
-         ══════════════════════════════════════════════ -->
-    <div class="console-card" id="consoleCard">
-      <button class="console-drawer-toggle" id="consoleDrawerToggle" aria-expanded="true">
-        <span style="color:var(--accent);font-weight:900;letter-spacing:1px">▲ PANNELLO REGIA</span>
-        <span id="consoleDrawerText" style="color:var(--muted2)">Chiudi</span>
-      </button>
-
-      <div class="console-body" id="consoleBody">
+    <section class="console-card" style="margin-bottom:34px;">
+      <div class="console-body">
         <h2>Console overlay</h2>
         <p>Comandi grafici, scene e dati partita mostrati sopra la preview.</p>
 
         <div class="console-grid">
-
-          <!-- TEMPO DI GIOCO -->
           <div class="console-panel">
             <h3>Tempo di gioco</h3>
             <div class="timer-readout" id="timerReadout">00:00</div>
+
             <div class="button-row">
-              <button class="btn btn-primary btn-small" id="timerStartBtn">Avvia</button>
+              <button class="btn btn-primary btn-small" id="timerStartBtn">Avvia tempo</button>
               <button class="btn btn-secondary btn-small" id="timerPauseBtn">Pausa</button>
               <button class="btn btn-secondary btn-small" id="timerResetBtn">Reset</button>
               <button class="btn btn-danger btn-small" id="recoveryBtn">Recupero</button>
             </div>
           </div>
 
-          <!-- RISULTATO -->
           <div class="console-panel">
             <h3>Risultato</h3>
             <div class="score-controls">
@@ -387,38 +927,41 @@
                 <strong id="homeScoreLabel">Casa</strong>
                 <span id="homeScoreValue">0</span>
                 <div class="score-buttons">
-                  <button class="btn btn-secondary btn-small" id="homeMinusBtn">−</button>
+                  <button class="btn btn-secondary btn-small" id="homeMinusBtn">-</button>
                   <button class="btn btn-primary btn-small" id="homePlusBtn">+</button>
                 </div>
               </div>
+
               <strong>VS</strong>
+
               <div class="score-control-team">
                 <strong id="awayScoreLabel">Ospite</strong>
                 <span id="awayScoreValue">0</span>
                 <div class="score-buttons">
-                  <button class="btn btn-secondary btn-small" id="awayMinusBtn">−</button>
+                  <button class="btn btn-secondary btn-small" id="awayMinusBtn">-</button>
                   <button class="btn btn-primary btn-small" id="awayPlusBtn">+</button>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- GRAFICA OVERLAY -->
           <div class="console-panel">
             <h3>Grafica overlay</h3>
+
             <div class="field-grid">
               <div>
-                <label>Preset grafico</label>
+                <label for="themeSelect">Preset grafico</label>
                 <select id="themeSelect">
-                  <option value="metalBlue">Metal blu</option>
-                  <option value="basketArena">Basket arena</option>
-                  <option value="broadcastPro">Broadcast pro</option>
-                  <option value="neonPitch">Neon pitch</option>
-                  <option value="livefutClassic">LiveFut classico</option>
+                  <option value="livefutClassic">LiveFut Classic</option>
+                  <option value="orangeMatch">Orange Match</option>
+                  <option value="cleanWhite">Clean White</option>
+                  <option value="stadiumDark">Stadium Dark</option>
+                  <option value="italianStyle">Italian Style</option>
                 </select>
               </div>
+
               <div>
-                <label>Font overlay</label>
+                <label for="fontSelect">Font overlay</label>
                 <select id="fontSelect">
                   <option value="Space Grotesk">Space Grotesk</option>
                   <option value="Arial">Arial</option>
@@ -427,87 +970,76 @@
                   <option value="Trebuchet MS">Trebuchet MS</option>
                 </select>
               </div>
-              <div><label>Colore principale</label><input id="primaryColorInput" type="color" value="#ff4422"/></div>
-              <div><label>Colore accento</label><input id="accentColorInput" type="color" value="#ff6600"/></div>
-              <div><label>Dimensione testo</label><input id="overlayFontSizeInput" type="range" min="75" max="150" value="100"/></div>
+
               <div>
-                <label>Posizione scoreboard</label>
-                <select id="overlayPositionSelect">
-                  <option value="top">Alto</option>
-                  <option value="bottom">Basso</option>
-                </select>
+                <label for="primaryColorInput">Colore principale</label>
+                <input id="primaryColorInput" type="color" value="#31d158">
+              </div>
+
+              <div>
+                <label for="accentColorInput">Colore accento</label>
+                <input id="accentColorInput" type="color" value="#ff7a18">
               </div>
             </div>
-            <div class="button-row" style="margin-top:10px">
+
+            <div class="button-row" style="margin-top:12px;">
               <button class="btn btn-primary btn-small" id="applyGraphicsBtn">Applica grafica</button>
             </div>
           </div>
 
-          <!-- VISIBILITÀ OVERLAY -->
           <div class="console-panel">
             <h3>Visibilità overlay</h3>
-            <label class="toggle-row"><span>Scoreboard</span><input id="scoreboardToggle" type="checkbox" checked/></label>
-            <label class="toggle-row"><span>Tutti gli overlay</span><input id="overlayToggle" type="checkbox" checked/></label>
-            <label class="toggle-row"><span>Sponsor automatici</span><input id="sponsorAutoToggle" type="checkbox" checked/></label>
+            <label class="toggle-row">
+              <span>Scoreboard</span>
+              <input id="scoreboardToggle" type="checkbox" checked>
+            </label>
+            <label class="toggle-row">
+              <span>Tutti gli overlay</span>
+              <input id="overlayToggle" type="checkbox" checked>
+            </label>
+            <label class="toggle-row">
+              <span>Sponsor automatici</span>
+              <input id="sponsorAutoToggle" type="checkbox" checked>
+            </label>
           </div>
 
-          <!-- DESTINAZIONI -->
-          <div class="console-panel">
-            <h3>Destinazioni diretta</h3>
-            <div class="destination-grid">
-              <div class="destination-card" data-destination="livefut">
-                <div class="destination-top">
-                  <div class="destination-name"><strong>LiveFut</strong><span>Canale principale</span></div>
-                  <input id="destinationLivefut" type="checkbox" checked disabled/>
-                </div>
-                <span class="destination-status">Sempre attivo</span>
-              </div>
-              <div class="destination-card" data-destination="youtube">
-                <div class="destination-top">
-                  <div class="destination-name"><strong>YouTube</strong><span id="youtubeAccountLabel">Collega account</span></div>
-                  <input id="destinationYoutube" type="checkbox" data-destination-toggle="youtube" disabled/>
-                </div>
-                <button class="btn btn-secondary btn-small" type="button" data-social-connect="youtube">Collega</button>
-              </div>
-              <div class="destination-card" data-destination="facebook">
-                <div class="destination-top">
-                  <div class="destination-name"><strong>Facebook</strong><span id="facebookAccountLabel">Collega account</span></div>
-                  <input id="destinationFacebook" type="checkbox" data-destination-toggle="facebook" disabled/>
-                </div>
-                <button class="btn btn-secondary btn-small" type="button" data-social-connect="facebook">Collega</button>
-              </div>
-              <div class="destination-card" data-destination="twitch">
-                <div class="destination-top">
-                  <div class="destination-name"><strong>Twitch</strong><span id="twitchAccountLabel">Collega account</span></div>
-                  <input id="destinationTwitch" type="checkbox" data-destination-toggle="twitch" disabled/>
-                </div>
-                <button class="btn btn-secondary btn-small" type="button" data-social-connect="twitch">Collega</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- SPONSOR -->
           <div class="console-panel">
             <h3>Sponsor overlay</h3>
             <div class="field-grid">
-              <div><label>Sponsor 1</label><input id="sponsorInput1" type="file" accept="image/*"/></div>
-              <div><label>Sponsor 2</label><input id="sponsorInput2" type="file" accept="image/*"/></div>
-              <div><label>Sponsor 3</label><input id="sponsorInput3" type="file" accept="image/*"/></div>
+              <div>
+                <label for="sponsorInput1">Sponsor 1</label>
+                <input id="sponsorInput1" type="file" accept="image/*">
+              </div>
+              <div>
+                <label for="sponsorInput2">Sponsor 2</label>
+                <input id="sponsorInput2" type="file" accept="image/*">
+              </div>
+              <div>
+                <label for="sponsorInput3">Sponsor 3</label>
+                <input id="sponsorInput3" type="file" accept="image/*">
+              </div>
             </div>
-            <div class="button-row" style="margin-top:10px">
+
+            <div class="button-row" style="margin-top:12px;">
               <button class="btn btn-primary btn-small" id="showSponsorBtn">Mostra sponsor ora</button>
-              <button class="btn btn-secondary btn-small" id="hideSponsorBtn">Nascondi</button>
+              <button class="btn btn-secondary btn-small" id="hideSponsorBtn">Nascondi sponsor</button>
             </div>
           </div>
 
-          <!-- SCENE -->
           <div class="console-panel">
             <h3>Scene diretta</h3>
             <div class="field-grid">
-              <div><label>Attesa minuti</label><input id="waitingMinutesInput" type="text" value="10"/></div>
-              <div><label>Testo scena</label><input id="sceneCustomTextInput" type="text" value="Torniamo tra poco"/></div>
+              <div>
+                <label for="waitingMinutesInput">Attesa minuti</label>
+                <input id="waitingMinutesInput" type="text" value="10">
+              </div>
+              <div>
+                <label for="sceneCustomTextInput">Testo scena</label>
+                <input id="sceneCustomTextInput" type="text" value="Torniamo tra poco">
+              </div>
             </div>
-            <div class="button-row" style="margin-top:10px">
+
+            <div class="button-row" style="margin-top:12px;">
               <button class="btn btn-secondary btn-small" id="waitingSceneBtn">Attesa</button>
               <button class="btn btn-secondary btn-small" id="halftimeSceneBtn">Intervallo</button>
               <button class="btn btn-danger btn-small" id="finalSceneBtn">Fine partita</button>
@@ -515,81 +1047,124 @@
             </div>
           </div>
 
-          <!-- EVENTI -->
           <div class="console-panel">
             <h3>Eventi partita</h3>
+
             <div class="field-grid">
-              <div><label>Squadra</label><select id="eventTeamSelect"></select></div>
-              <div><label>Cartellino</label><select id="cardTypeSelect"><option value="giallo">Giallo</option><option value="rosso">Rosso</option></select></div>
-              <div><label>Marcatore</label><input id="scorerInput" type="text" placeholder="Nome marcatore"/></div>
-              <div><label>Assist man</label><input id="assistInput" type="text" placeholder="Nome assist man"/></div>
-              <div><label>Ammonito/espulso</label><input id="cardPlayerInput" type="text" placeholder="Nome giocatore"/></div>
+              <div>
+                <label for="eventTeamSelect">Squadra</label>
+                <select id="eventTeamSelect"></select>
+              </div>
+              <div>
+                <label for="cardTypeSelect">Cartellino</label>
+                <select id="cardTypeSelect">
+                  <option value="giallo">Giallo</option>
+                  <option value="rosso">Rosso</option>
+                </select>
+              </div>
+              <div>
+                <label for="scorerInput">Marcatore</label>
+                <input id="scorerInput" type="text" placeholder="Nome marcatore">
+              </div>
+              <div>
+                <label for="assistInput">Assist man</label>
+                <input id="assistInput" type="text" placeholder="Nome assist man">
+              </div>
+              <div>
+                <label for="cardPlayerInput">Giocatore ammonito/espulso</label>
+                <input id="cardPlayerInput" type="text" placeholder="Nome giocatore">
+              </div>
             </div>
-            <div class="button-row" style="margin-top:10px">
-              <button class="btn btn-primary btn-small" id="goalEventBtn">⚽ Gol</button>
+
+            <div class="button-row" style="margin-top:12px;">
+              <button class="btn btn-primary btn-small" id="goalEventBtn">Gol</button>
               <button class="btn btn-secondary btn-small" id="chanceEventBtn">Occasione</button>
               <button class="btn btn-danger btn-small" id="cardEventBtn">Cartellino</button>
             </div>
           </div>
 
-          <!-- TELECRONACA -->
           <div class="console-panel">
             <h3>Telecronaca</h3>
-            <p style="font-size:12px;color:var(--muted2);margin-bottom:10px">Frasi generate dagli input del broadcaster.</p>
+            <p>Frasi generate dagli input del broadcaster.</p>
             <div class="event-list" id="commentaryList"></div>
           </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
-        </div><!-- /console-grid -->
-      </div><!-- /console-body -->
-    </div><!-- /console-card -->
+  <footer style="text-align:center; padding:20px; font-size:0.85rem; color:#aaa;">
+    © 2026 LiveFut TV — Football United Team. Tutti i diritti riservati.<br><br>
 
-  </div><!-- /container -->
-</main>
+    <a href="https://www.iubenda.com/privacy-policy/71949704"
+       class="iubenda-white iubenda-noiframe iubenda-embed">
+       Privacy Policy
+    </a> |
 
-<footer>
-  &copy; 2026 LiveFut TV &mdash; Football United Team.&nbsp;&nbsp;
-  <a href="https://www.iubenda.com/privacy-policy/71949704">Privacy</a> |
-  <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy">Cookie</a> |
-  <a href="terms.html">Termini</a>
-</footer>
+    <a href="https://www.iubenda.com/privacy-policy/71949704/cookie-policy"
+       class="iubenda-white iubenda-noiframe iubenda-embed">
+       Cookie Policy
+    </a> |
 
-<script>
-// Drawer toggle
-document.getElementById('consoleDrawerToggle').addEventListener('click',function(){
-  const body=document.getElementById('consoleBody');
-  const txt=document.getElementById('consoleDrawerText');
-  const isHidden=body.classList.toggle('hidden');
-  txt.textContent=isHidden?'Apri':'Chiudi';
-  this.setAttribute('aria-expanded',String(!isHidden));
-});
-const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
+    <a href="terms.html">
+       Termini e Condizioni
+    </a>
+  </footer>
+
+  <script>
+    const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
-    const OFFICIAL_DATA_URL = 'data/italia_2025_26_api.json';
 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const params = new URLSearchParams(window.location.search);
-    const supabaseMatchId = params.get('id');
-    const officialMatchId = params.get('match_id');
-    const initialWaitMinutes = Math.max(0, Number(params.get('wait') || 0));
-    const shouldAutostart = params.get('autostart') === '1';
-    const socialConnected = params.get('social_connected');
-    const socialError = params.get('social_error');
+    const matchId = params.get('id');
 
     const overlayThemes = {
-      metalBlue:{ primary:'#7cc8ff', accent:'#d7ecff', background:'rgba(9, 22, 38, 0.9)', text:'#ffffff', radius:'12px', font:'Space Grotesk', className:'theme-metal' },
-      basketArena:{ primary:'#f6c34a', accent:'#ff7a18', background:'rgba(14, 8, 4, 0.92)', text:'#ffffff', radius:'18px', font:'Trebuchet MS', className:'theme-basket' },
-      broadcastPro:{ primary:'#ff7a18', accent:'#ffd166', background:'rgba(0, 0, 0, 0.88)', text:'#ffffff', radius:'6px', font:'Arial', className:'theme-broadcast' },
-      neonPitch:{ primary:'#00f5d4', accent:'#38bdf8', background:'rgba(2, 4, 12, 0.76)', text:'#ffffff', radius:'999px', font:'Space Grotesk', className:'theme-neon' },
-      livefutClassic:{ primary:'#ff7a18', accent:'#ffd166', background:'rgba(0, 0, 0, 0.82)', text:'#ffffff', radius:'10px', font:'Space Grotesk', className:'theme-classic' }
+      livefutClassic: {
+        primary: '#31d158',
+        accent: '#ff7a18',
+        background: 'rgba(0, 0, 0, 0.82)',
+        text: '#ffffff',
+        radius: '10px',
+        font: 'Space Grotesk'
+      },
+      orangeMatch: {
+        primary: '#31d158',
+        accent: '#ff7a18',
+        background: 'rgba(12, 8, 4, 0.88)',
+        text: '#ffffff',
+        radius: '999px',
+        font: 'Trebuchet MS'
+      },
+      cleanWhite: {
+        primary: '#ffffff',
+        accent: '#31d158',
+        background: 'rgba(255, 255, 255, 0.94)',
+        text: '#050505',
+        radius: '10px',
+        font: 'Arial'
+      },
+      stadiumDark: {
+        primary: '#31d158',
+        accent: '#ff7a18',
+        background: 'rgba(0, 10, 6, 0.9)',
+        text: '#ffffff',
+        radius: '4px',
+        font: 'Impact'
+      },
+      italianStyle: {
+        primary: '#ffffff',
+        accent: '#31d158',
+        background: 'rgba(245, 247, 250, 0.94)',
+        text: '#07111f',
+        radius: '8px',
+        font: 'Arial'
+      }
     };
 
     const pageContent = document.getElementById('pageContent');
     const previewVideo = document.getElementById('previewVideo');
-    const broadcastFrame = document.getElementById('broadcastFrame');
     const previewWrap = document.getElementById('previewWrap');
-    const consoleCard = document.getElementById('consoleCard');
-    const consoleDrawerToggle = document.getElementById('consoleDrawerToggle');
-    const consoleDrawerText = document.getElementById('consoleDrawerText');
     const startBtn = document.getElementById('startBtn');
     const stopBtn = document.getElementById('stopBtn');
     const statusMessage = document.getElementById('statusMessage');
@@ -613,12 +1188,6 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     const fontSelect = document.getElementById('fontSelect');
     const primaryColorInput = document.getElementById('primaryColorInput');
     const accentColorInput = document.getElementById('accentColorInput');
-    const overlayFontSizeInput = document.getElementById('overlayFontSizeInput');
-    const overlayPositionSelect = document.getElementById('overlayPositionSelect');
-    const landscapeBtn = document.getElementById('landscapeBtn');
-    const portraitBtn = document.getElementById('portraitBtn');
-    const fitVideoBtn = document.getElementById('fitVideoBtn');
-    const fullscreenBtn = document.getElementById('fullscreenBtn');
     const sponsorOverlay = document.getElementById('sponsorOverlay');
     const sponsorImage = document.getElementById('sponsorImage');
     const sceneOverlay = document.getElementById('sceneOverlay');
@@ -629,16 +1198,6 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     const sceneCountdown = document.getElementById('sceneCountdown');
     const eventTeamSelect = document.getElementById('eventTeamSelect');
     const commentaryList = document.getElementById('commentaryList');
-    const destinationToggles = {
-      youtube: document.getElementById('destinationYoutube'),
-      facebook: document.getElementById('destinationFacebook'),
-      twitch: document.getElementById('destinationTwitch')
-    };
-    const destinationAccountLabels = {
-      youtube: document.getElementById('youtubeAccountLabel'),
-      facebook: document.getElementById('facebookAccountLabel'),
-      twitch: document.getElementById('twitchAccountLabel')
-    };
 
     let mediaStream = null;
     let currentMatch = null;
@@ -656,32 +1215,9 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     let waitingCountdownInterval = null;
     let currentHomeTeam = 'Casa';
     let currentAwayTeam = 'Ospite';
-    let currentUser = null;
-    let currentProfile = null;
-    let currentLockId = null;
-    let livepeerPeerConnection = null;
-    let activeLivepeerStream = null;
-    let livepeerStatusInterval = null;
-    let currentVideoFormat = 'landscape';
-    let initialStudioSetupDone = false;
-    let socialAccounts = new Map();
-    let broadcastDestinations = new Map([['livefut', true]]);
 
-    function isUuid(value) {
-      return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value || '');
-    }
-
-    function safe(value, fallback = '-') {
+    function safe(value, fallback = '—') {
       return value === null || value === undefined || value === '' ? fallback : value;
-    }
-
-    function escapeHtml(value) {
-      return String(value)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
     }
 
     function statusLabel(status) {
@@ -693,18 +1229,21 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
 
     function parseScore(score) {
       const parts = String(safe(score, '0-0')).split('-').map(value => Number(value.trim()));
-      return { home:Number.isFinite(parts[0]) ? parts[0] : 0, away:Number.isFinite(parts[1]) ? parts[1] : 0 };
+      return {
+        home: Number.isFinite(parts[0]) ? parts[0] : 0,
+        away: Number.isFinite(parts[1]) ? parts[1] : 0
+      };
     }
 
     function formatClock(totalSeconds) {
       const minutes = Math.floor(totalSeconds / 60);
       const seconds = totalSeconds % 60;
-      return `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     }
 
     function minuteLabel(match) {
       if (match.status === 'finished') return 'FT';
-      if (match.minute === null || match.minute === undefined || match.minute === '') return '-';
+      if (match.minute === null || match.minute === undefined) return '—';
       return `${match.minute}'`;
     }
 
@@ -732,95 +1271,26 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
       `;
     }
 
-    async function requireUser() {
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (!session?.user) {
-        const redirect = encodeURIComponent(window.location.pathname.split('/').pop() + window.location.search);
-        window.location.href = `login.html?redirect=${redirect}`;
-        return null;
-      }
-
-      currentUser = session.user;
-
-      const { data: profile } = await supabaseClient
-        .from('profiles')
-        .select('*')
-        .eq('id', currentUser.id)
-        .maybeSingle();
-
-      currentProfile = profile || null;
-      return currentUser;
-    }
-
-    function formatDiscipline(value) {
-      if (value === 'calcio_a_11') return 'Calcio a 11';
-      if (value === 'calcio_a_5') return 'Calcio a 5';
-      return safe(value, 'Non specificata');
-    }
-
-    function parseLocalDate(dateValue) {
-      if (!dateValue) return null;
-      const [year, month, day] = String(dateValue).split('-').map(Number);
-      if (!year || !month || !day) return null;
-      return new Date(year, month - 1, day);
-    }
-
-    function formatDate(dateValue) {
-      const date = parseLocalDate(dateValue);
-      if (!date) return 'Data da definire';
-      return date.toLocaleDateString('it-IT', { weekday:'short', day:'2-digit', month:'2-digit', year:'numeric' });
-    }
-
-    function inferStatus(matchDate) {
-      const date = parseLocalDate(matchDate);
-      if (!date) return 'soon';
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      date.setHours(0, 0, 0, 0);
-      return date < today ? 'finished' : 'soon';
-    }
-
-    function officialMatchToStudio(match) {
-      return {
-        id: match.match_id,
-        match_id: match.match_id,
-        competition_id: match.competition_id,
-        home_team: match.home_team,
-        away_team: match.away_team,
-        region: match.region,
-        discipline: formatDiscipline(match.sport),
-        category: match.category,
-        field: formatDate(match.match_date),
-        status: inferStatus(match.match_date),
-        score: '',
-        minute: '',
-        source: 'lnd',
-        source_url: match.source_url,
-        match_date: match.match_date,
-        group_name: match.group_name,
-        age_group: match.age_group,
-        gender: match.gender,
-        competition_type: match.competition_type,
-        official_fixture_text: match.official_fixture_text
-      };
-    }
-
     function updateStatusUi(status) {
       const label = statusLabel(status);
       setText('statusBadgeText', label);
       setText('matchStatus', label);
-      statusBadge.classList.toggle('live', status === 'live');
+
+      if (status === 'live') {
+        statusBadge.classList.add('live');
+      } else {
+        statusBadge.classList.remove('live');
+      }
     }
 
     function applyOverlayTheme(theme) {
-      previewWrap.classList.remove('theme-metal', 'theme-basket', 'theme-broadcast', 'theme-neon', 'theme-classic');
-      if (theme.className) previewWrap.classList.add(theme.className);
       document.documentElement.style.setProperty('--overlay-bg', theme.background);
       document.documentElement.style.setProperty('--overlay-text', theme.text);
       document.documentElement.style.setProperty('--overlay-primary', theme.primary);
       document.documentElement.style.setProperty('--overlay-accent', theme.accent);
       document.documentElement.style.setProperty('--overlay-radius', theme.radius);
       document.documentElement.style.setProperty('--overlay-font', `"${theme.font}", sans-serif`);
+
       primaryColorInput.value = theme.primary;
       accentColorInput.value = theme.accent;
       fontSelect.value = theme.font;
@@ -830,742 +1300,174 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
       document.documentElement.style.setProperty('--overlay-primary', primaryColorInput.value);
       document.documentElement.style.setProperty('--overlay-accent', accentColorInput.value);
       document.documentElement.style.setProperty('--overlay-font', `"${fontSelect.value}", sans-serif`);
-      document.documentElement.style.setProperty('--overlay-scale', String(Number(overlayFontSizeInput.value) / 100));
-      matchOverlay.classList.toggle('score-bottom', overlayPositionSelect.value === 'bottom');
       updateOverlay();
+      saveOverlaySettings();
     }
 
-    function setVideoFormat(format) {
-      currentVideoFormat = format;
-      previewWrap.classList.toggle('portrait', format === 'portrait');
-      landscapeBtn.classList.toggle('is-active', format === 'landscape');
-      portraitBtn.classList.toggle('is-active', format === 'portrait');
-      showMessage(format === 'portrait'
-        ? 'Formato verticale 9:16 attivo. Utile per pubblico da smartphone.'
-        : 'Formato orizzontale 16:9 attivo. Consigliato per trasmettere la partita.');
-    }
-
-    function mediaConstraints() {
-      const videoSize = currentVideoFormat === 'portrait'
-        ? { width:{ ideal:720 }, height:{ ideal:1280 }, aspectRatio:{ ideal:9 / 16 } }
-        : { width:{ ideal:1280 }, height:{ ideal:720 }, aspectRatio:{ ideal:16 / 9 } };
-
-      return {
-        video:{
-          facingMode:{ ideal:'environment' },
-          ...videoSize
-        },
-        audio:{
-          echoCancellation:true,
-          noiseSuppression:true,
-          autoGainControl:true
-        }
-      };
-    }
-
-    async function requestCameraStream() {
-      try {
-        return await navigator.mediaDevices.getUserMedia(mediaConstraints());
-      } catch (error) {
-        return navigator.mediaDevices.getUserMedia({ video:true, audio:true });
-      }
-    }
-
-    function waitForIceGathering(peerConnection) {
-      if (peerConnection.iceGatheringState === 'complete') return Promise.resolve();
-
-      return new Promise(resolve => {
-        const timeout = window.setTimeout(resolve, 5000);
-        peerConnection.addEventListener('icegatheringstatechange', () => {
-          if (peerConnection.iceGatheringState === 'complete') {
-            window.clearTimeout(timeout);
-            resolve();
-          }
-        });
-      });
-    }
-
-    async function resolveLivepeerIngestUrl(streamInfo) {
-      const streamKey = streamInfo?.stream_key || activeLivepeerStream?.stream_key;
-      const fallbackUrl = streamInfo?.ingest_url || (streamKey ? `https://playback.livepeer.studio/webrtc/${streamKey}` : '');
-      const redirectUrl = streamKey ? `https://livepeer.studio/webrtc/${streamKey}` : fallbackUrl;
-
-      if (!fallbackUrl) {
-        throw new Error('Endpoint Livepeer non disponibile.');
-      }
-
-      try {
-        const response = await fetch(redirectUrl, {
-          method:'HEAD',
-          mode:'cors'
-        });
-
-        return response.url || fallbackUrl;
-      } catch (error) {
-        return fallbackUrl;
-      }
-    }
-
-    function livepeerIceServers(ingestUrl) {
-      const host = new URL(ingestUrl).host;
-
-      return [
-        { urls:`stun:${host}` },
-        {
-          urls:`turn:${host}`,
-          username:'livepeer',
-          credential:'livepeer'
-        }
-      ];
-    }
-
-    function waitForPeerConnection(peerConnection, timeoutMs = 15000) {
-      if (['connected', 'completed'].includes(peerConnection.iceConnectionState)) {
-        return Promise.resolve();
-      }
-
-      return new Promise((resolve, reject) => {
-        const timeout = window.setTimeout(() => {
-          cleanup();
-          reject(new Error(`Connessione Livepeer non completata: ${peerConnection.iceConnectionState}`));
-        }, timeoutMs);
-
-        const cleanup = () => {
-          window.clearTimeout(timeout);
-          peerConnection.removeEventListener('iceconnectionstatechange', onStateChange);
-          peerConnection.removeEventListener('connectionstatechange', onStateChange);
-        };
-
-        const onStateChange = () => {
-          showMessage(`Connessione LiveFut: ${peerConnection.iceConnectionState}`);
-
-          if (['connected', 'completed'].includes(peerConnection.iceConnectionState)) {
-            cleanup();
-            resolve();
-          }
-
-          if (['failed', 'closed', 'disconnected'].includes(peerConnection.iceConnectionState)) {
-            cleanup();
-            reject(new Error(`Connessione Livepeer interrotta: ${peerConnection.iceConnectionState}`));
-          }
-        };
-
-        peerConnection.addEventListener('iceconnectionstatechange', onStateChange);
-        peerConnection.addEventListener('connectionstatechange', onStateChange);
-      });
-    }
-
-    async function waitForOutgoingMedia(peerConnection, timeoutMs = 15000) {
-      const startedAt = Date.now();
-      let lastVideoBytes = 0;
-      let lastAudioBytes = 0;
-
-      while (Date.now() - startedAt < timeoutMs) {
-        const stats = await peerConnection.getStats();
-        let videoBytes = 0;
-        let audioBytes = 0;
-        let totalBytes = 0;
-        let totalPackets = 0;
-
-        stats.forEach(report => {
-          if (report.type === 'outbound-rtp' && !report.isRemote) {
-            const bytesSent = Number(report.bytesSent || 0);
-            const packetsSent = Number(report.packetsSent || 0);
-            totalBytes += bytesSent;
-            totalPackets += packetsSent;
-
-            if (report.kind === 'video' || report.mediaType === 'video') {
-              videoBytes += bytesSent;
-            }
-
-            if (report.kind === 'audio' || report.mediaType === 'audio') {
-              audioBytes += bytesSent;
-            }
-          }
-        });
-
-        lastVideoBytes = videoBytes || totalBytes;
-        lastAudioBytes = audioBytes;
-
-        if (totalBytes > 0 || totalPackets > 0) {
-          return { videoBytes:lastVideoBytes, audioBytes:lastAudioBytes, totalBytes, totalPackets };
-        }
-
-        showMessage('Invio flusso LiveFut in corso. Attendi la conferma di Livepeer.');
-        await new Promise(resolve => window.setTimeout(resolve, 1000));
-      }
-
-      return { videoBytes:lastVideoBytes, audioBytes:lastAudioBytes, totalBytes:0, totalPackets:0 };
-    }
-
-    async function prepareLivepeerStream() {
-      if (!currentMatch || !isUuid(currentMatch.id)) {
-        throw new Error('Partita non pronta per la diretta LiveFut.');
-      }
-
-      const { data, error } = await supabaseClient.functions.invoke('livepeer-stream', {
-        body: {
-          action: 'prepare',
-          matchId: currentMatch.id
-        }
-      });
-
-      if (error || !data?.ingest_url || !data?.playback_id) {
-        throw new Error(error?.message || data?.error || 'Stream LiveFut non disponibile.');
-      }
-
-      currentMatch = {
-        ...currentMatch,
-        livepeer_stream_id: data.stream_id,
-        livepeer_playback_id: data.playback_id,
-        livepeer_status: 'preparing'
-      };
-
-      return data;
-    }
-
-    async function startLivepeerStream(streamInfo, stream) {
-      const ingestUrl = await resolveLivepeerIngestUrl(streamInfo);
-      const peerConnection = new RTCPeerConnection({
-        iceServers: livepeerIceServers(ingestUrl)
-      });
-
-      peerConnection.addEventListener('icecandidateerror', event => {
-        showMessage(`Errore rete Livepeer: ${event.errorText || event.errorCode}`, 'error');
-      });
-
-      peerConnection.addEventListener('icegatheringstatechange', () => {
-        showMessage(`Preparazione rete LiveFut: ${peerConnection.iceGatheringState}`);
-      });
-
-      const videoTrack = stream.getVideoTracks()[0] || null;
-      const audioTrack = stream.getAudioTracks()[0] || null;
-
-      previewVideo.srcObject = stream;
-      previewWrap.classList.add('active');
-      await previewVideo.play().catch(() => {});
-
-      if (videoTrack) {
-        peerConnection.addTransceiver(videoTrack, { direction:'sendonly' });
-      }
-
-      if (audioTrack) {
-        peerConnection.addTransceiver(audioTrack, { direction:'sendonly' });
-      }
-
-      if (!videoTrack && !audioTrack) {
-        throw new Error('Nessuna traccia audio o video disponibile.');
-      }
-
-      const offer = await peerConnection.createOffer();
-      await peerConnection.setLocalDescription(offer);
-      await waitForIceGathering(peerConnection);
-
-      const response = await fetch(ingestUrl, {
-        method:'POST',
-        mode:'cors',
-        headers:{
-          'Content-Type':'application/sdp'
-        },
-        body:peerConnection.localDescription.sdp
-      });
-
-      if (!response.ok) {
-        const details = await response.text().catch(() => '');
-        peerConnection.close();
-        throw new Error(`Livepeer non ha accettato il flusso video${details ? `: ${details}` : ` (HTTP ${response.status})`}`);
-      }
-
-      const answer = await response.text();
-      await peerConnection.setRemoteDescription({ type:'answer', sdp:answer });
-      livepeerPeerConnection = peerConnection;
-      await waitForPeerConnection(peerConnection);
-      await waitForOutgoingMedia(peerConnection);
-    }
-
-    async function stopLivepeerStream() {
-      if (livepeerPeerConnection) {
-        livepeerPeerConnection.getSenders().forEach(sender => {
-          if (sender.track) sender.track.stop();
-        });
-        livepeerPeerConnection.close();
-        livepeerPeerConnection = null;
-      }
-
-      if (!currentMatch || !isUuid(currentMatch.id)) return;
-
-      await supabaseClient.functions.invoke('livepeer-stream', {
-        body: {
-          action: 'stop',
-          matchId: currentMatch.id
-        }
-      }).catch(() => {});
-    }
-
-    function showLivepeerBroadcastFrame(streamInfo) {
-      if (!streamInfo?.stream_key) {
-        throw new Error('Stream key Livepeer non disponibile.');
-      }
-
-      activeLivepeerStream = streamInfo;
-      previewWrap.classList.add('active');
-    }
-
-    function hideLivepeerBroadcastFrame() {
-      activeLivepeerStream = null;
-      broadcastFrame.removeAttribute('src');
-      previewWrap.classList.remove('broadcast-active');
-    }
-
-    function stopLivepeerStatusPolling() {
-      clearInterval(livepeerStatusInterval);
-      livepeerStatusInterval = null;
-    }
-
-    async function checkLivepeerStatus() {
-      if (!currentMatch || !isUuid(currentMatch.id)) return null;
-
-      const { data, error } = await supabaseClient.functions.invoke('livepeer-status', {
-        body: {
-          matchId: currentMatch.id
-        }
-      });
-
-      if (error || data?.error) {
-        showMessage(`Controllo Livepeer non riuscito: ${error?.message || data?.error}`, 'error');
-        return null;
-      }
-
-      if (data?.match) {
-        currentMatch = { ...currentMatch, ...data.match };
-        renderMatch(currentMatch);
-      }
-
-      if (data?.livepeer_status === 'active') {
-        stopLivepeerStatusPolling();
-        await saveBroadcastDestinations('active');
-        startSponsorCycle();
-        showMessage('Diretta LiveFut attiva. Il player spettatore è disponibile su match.html.');
-        return data;
-      }
-
-      const diagnostics = data?.diagnostics;
-      if (diagnostics) {
-        const playback = data?.playback_diagnostics;
-        const details = [
-          `stream: ${data?.stream_active ? 'ok' : 'no'}`,
-          `playback: ${data?.playback_ready ? 'ok' : 'no'}`,
-          `segments: ${diagnostics.transcodedSegments ?? diagnostics.sourceSegments ?? 0}`,
-          `bytes: ${diagnostics.transcodedBytes ?? diagnostics.sourceBytes ?? 0}`,
-          `sources: ${playback?.sourceCount ?? 0}`
-        ].join(' | ');
-        showMessage(`Diretta in preparazione. Livepeer: ${details}`);
-      } else {
-        showMessage('Diretta in preparazione. Attendi l’attivazione del player.');
-      }
-      return data;
-    }
-
-    function startLivepeerStatusPolling() {
-      stopLivepeerStatusPolling();
-      livepeerStatusInterval = setInterval(checkLivepeerStatus, 5000);
-      window.setTimeout(checkLivepeerStatus, 3000);
-    }
-
-    function setupConsoleSections() {
-      const panels = [...document.querySelectorAll('.console-panel')];
-      const shouldCollapse = window.matchMedia('(max-width: 700px)').matches;
-
-      panels.forEach((panel, index) => {
-        const heading = panel.querySelector('h3');
-        if (!heading) return;
-
-        const button = document.createElement('button');
-        const indicator = document.createElement('span');
-        button.type = 'button';
-        button.className = 'panel-toggle';
-        button.setAttribute('aria-expanded', 'true');
-        button.innerHTML = `<span>${escapeHtml(heading.textContent)}</span>`;
-        indicator.textContent = '-';
-        button.appendChild(indicator);
-        heading.replaceWith(button);
-
-        if (shouldCollapse && index > 1) {
-          panel.classList.add('is-collapsed');
-          button.setAttribute('aria-expanded', 'false');
-          indicator.textContent = '+';
-        }
-
-        button.addEventListener('click', () => {
-          const collapsed = panel.classList.toggle('is-collapsed');
-          button.setAttribute('aria-expanded', String(!collapsed));
-          indicator.textContent = collapsed ? '+' : '-';
-        });
-      });
-    }
-
-    function setConsoleDrawer(open) {
-      const isMobile = window.matchMedia('(max-width: 700px)').matches;
-      consoleCard.classList.toggle('is-minimized', isMobile && !open);
-      document.body.classList.toggle('console-drawer-collapsed', isMobile && !open);
-      consoleDrawerToggle.setAttribute('aria-expanded', String(isMobile ? open : true));
-      consoleDrawerText.textContent = isMobile && !open ? 'Apri' : 'Chiudi';
-    }
-
-    function setupConsoleDrawer() {
-      const mobilePortrait = window.matchMedia('(max-width: 700px) and (orientation: portrait)');
-      setConsoleDrawer(!mobilePortrait.matches);
-
-      consoleDrawerToggle.addEventListener('click', () => {
-        setConsoleDrawer(consoleCard.classList.contains('is-minimized'));
-      });
-
-      window.addEventListener('resize', () => {
-        const isMobile = window.matchMedia('(max-width: 700px)').matches;
-        if (!isMobile) setConsoleDrawer(true);
-      });
-    }
-
-    function toggleVideoFit() {
-      previewWrap.classList.toggle('contain');
-      fitVideoBtn.classList.toggle('is-active', previewWrap.classList.contains('contain'));
-      showMessage(previewWrap.classList.contains('contain') ? 'Video adattato senza tagli.' : 'Video riempie tutta la preview.');
-    }
-
-    async function toggleFullscreen() {
-      try {
-        if (document.fullscreenElement) {
-          await document.exitFullscreen();
-        } else if (previewVideo.webkitEnterFullscreen && /iPad|iPhone|iPod/.test(navigator.userAgent)) {
-          previewVideo.webkitEnterFullscreen();
-        } else {
-          await previewWrap.requestFullscreen();
-          if (screen.orientation?.lock && currentVideoFormat === 'landscape') {
-            screen.orientation.lock('landscape').catch(() => {});
-          }
-        }
-      } catch (error) {
-        showMessage('Schermo intero non disponibile su questo browser.', 'error');
-      }
+    async function saveOverlaySettings() {
+      if (!matchId || !currentMatch) return;
+      await supabaseClient.from('matches').update({
+        overlay_primary:            primaryColorInput.value,
+        overlay_accent:             accentColorInput.value,
+        overlay_font:               fontSelect.value,
+        overlay_scale:              Number(overlayFontSizeInput.value) / 100,
+        overlay_position:           overlayPositionSelect.value,
+        overlay_visible:            overlayToggle.checked,
+        overlay_scoreboard_visible: scoreboardToggle.checked,
+      }).eq('id', matchId);
     }
 
     function updateOverlay() {
       const score = `${homeScore} - ${awayScore}`;
       const time = recoveryMode ? `RECUPERO +${formatClock(recoverySeconds)}` : formatClock(elapsedSeconds);
+
       overlayScore.textContent = score;
       overlayTime.textContent = time;
       timerReadout.textContent = time;
       homeScoreValue.textContent = homeScore;
       awayScoreValue.textContent = awayScore;
+
       scoreboardOverlay.classList.toggle('is-hidden', !scoreboardToggle.checked);
       matchOverlay.classList.toggle('is-hidden', !overlayToggle.checked);
     }
 
     function renderMatch(match) {
       currentMatch = match;
+
       currentHomeTeam = safe(match.home_team, 'Squadra Casa');
       currentAwayTeam = safe(match.away_team, 'Squadra Ospite');
+
       const field = safe(match.field, 'Non specificato');
       const category = safe(match.category, 'Non specificata');
       const region = safe(match.region, 'Non specificata');
       const discipline = safe(match.discipline, 'Non specificata');
       const parsedScore = parseScore(match.score);
+
       homeScore = parsedScore.home;
       awayScore = parsedScore.away;
       elapsedSeconds = Number.isFinite(Number(match.minute)) ? Number(match.minute) * 60 : elapsedSeconds;
-      document.title = `${currentHomeTeam} vs ${currentAwayTeam} - Studio LiveFut TV`;
-      const matchParams = new URLSearchParams({ mode:'broadcast' });
-      if (isUuid(match.id)) matchParams.set('id', match.id);
-      if (match.match_id) matchParams.set('match_id', match.match_id);
-      if (match.competition_id) matchParams.set('competition_id', match.competition_id);
-      matchLink.href = `match.html?${matchParams.toString()}`;
+
+      document.title = `${currentHomeTeam} vs ${currentAwayTeam} — Studio LiveFut TV`;
+      matchLink.href = `match.html?id=${encodeURIComponent(match.id)}&mode=broadcast`;
+
       setText('matchTitle', `${currentHomeTeam} vs ${currentAwayTeam}`);
-      setText('matchSubtitle', `${field} - ${category} - ${region}`);
+      setText('matchSubtitle', `${field} · ${category} · ${region}`);
       setText('matchField', field);
       setText('matchCategory', category);
       setText('matchRegion', region);
       setText('matchDiscipline', discipline);
       setText('scoreLine', `Risultato: ${homeScore} - ${awayScore}`);
       setText('minuteLine', `Minuto: ${minuteLabel(match)}`);
+
       overlayHomeTeam.textContent = currentHomeTeam;
       overlayAwayTeam.textContent = currentAwayTeam;
       homeScoreLabel.textContent = currentHomeTeam;
       awayScoreLabel.textContent = currentAwayTeam;
+
       eventTeamSelect.innerHTML = `
         <option value="home">${currentHomeTeam}</option>
         <option value="away">${currentAwayTeam}</option>
       `;
+
       updateStatusUi(match.status);
       updateOverlay();
     }
 
-    function providerLabel(provider) {
-      if (provider === 'youtube') return 'YouTube';
-      if (provider === 'facebook') return 'Facebook';
-      if (provider === 'twitch') return 'Twitch';
-      return 'LiveFut';
-    }
-
-    function renderDestinationControls() {
-      Object.entries(destinationToggles).forEach(([provider, toggle]) => {
-        const account = socialAccounts.get(provider);
-        const connected = account?.status === 'connected';
-        const pending = account?.status === 'pending';
-        const enabled = Boolean(broadcastDestinations.get(provider));
-        const label = destinationAccountLabels[provider];
-        const button = document.querySelector(`[data-social-connect="${provider}"]`);
-
-        toggle.disabled = !connected;
-        toggle.checked = connected && enabled;
-        label.textContent = connected
-          ? (account.account_label || account.display_name || 'Account collegato')
-          : pending
-            ? 'Collegamento richiesto'
-            : 'Account non collegato';
-
-        if (button) {
-          button.textContent = connected ? 'Collegato' : pending ? 'Riprendi collegamento' : 'Collega account';
-          button.disabled = connected;
-        }
-
-        const statusNode = document.querySelector(`[data-destination="${provider}"] .destination-status`);
-        if (statusNode) statusNode.remove();
-
-        const status = document.createElement('span');
-        status.className = connected
-          ? 'destination-status'
-          : pending
-            ? 'destination-status pending'
-            : 'destination-status off';
-        status.textContent = connected ? 'Disponibile' : pending ? 'In attesa' : 'Non collegato';
-        document.querySelector(`[data-destination="${provider}"]`)?.appendChild(status);
-      });
-    }
-
-    async function loadSocialAccounts() {
-      if (!currentUser) return;
-
-      try {
-        const { data, error } = await supabaseClient
-          .from('broadcaster_social_accounts')
-          .select('provider, display_name, account_label, status')
-          .eq('broadcaster_id', currentUser.id);
-
-        if (error) throw error;
-        socialAccounts = new Map((data || []).map(account => [account.provider, account]));
-      } catch (error) {
-        console.warn('Account social non disponibili:', error.message);
-        socialAccounts = new Map();
-      }
-
-      renderDestinationControls();
-    }
-
-    async function loadBroadcastDestinations() {
-      if (!currentUser || !currentMatch || !isUuid(currentMatch.id)) {
-        renderDestinationControls();
-        return;
-      }
-
-      try {
-        const { data, error } = await supabaseClient
-          .from('broadcast_destinations')
-          .select('provider, enabled')
-          .eq('broadcaster_id', currentUser.id)
-          .eq('match_id', currentMatch.id);
-
-        if (error) throw error;
-
-        broadcastDestinations = new Map([['livefut', true]]);
-        (data || []).forEach(destination => {
-          broadcastDestinations.set(destination.provider, Boolean(destination.enabled));
-        });
-      } catch (error) {
-        console.warn('Destinazioni diretta non disponibili:', error.message);
-        broadcastDestinations = new Map([['livefut', true]]);
-      }
-
-      renderDestinationControls();
-    }
-
-    async function saveBroadcastDestinations(status = 'inactive') {
-      if (!currentUser || !currentMatch || !isUuid(currentMatch.id)) return;
-
-      const providers = ['livefut', 'youtube', 'facebook', 'twitch'];
-      for (const provider of providers) {
-        const enabled = provider === 'livefut'
-          ? true
-          : Boolean(destinationToggles[provider]?.checked);
-        const destinationStatus = enabled
-          ? status
-          : status === 'finished'
-            ? 'finished'
-            : 'inactive';
-
-        const payload = {
-          match_id: currentMatch.id,
-          official_match_id: currentMatch.match_id || null,
-          broadcaster_id: currentUser.id,
-          provider,
-          enabled,
-          status: destinationStatus,
-          updated_at: new Date().toISOString()
-        };
-
-        const { data: existing } = await supabaseClient
-          .from('broadcast_destinations')
-          .select('id')
-          .eq('match_id', currentMatch.id)
-          .eq('provider', provider)
-          .maybeSingle();
-
-        if (existing?.id) {
-          await supabaseClient
-            .from('broadcast_destinations')
-            .update(payload)
-            .eq('id', existing.id);
-        } else {
-          await supabaseClient
-            .from('broadcast_destinations')
-            .insert(payload);
-        }
-      }
-    }
-
-    async function requestSocialConnection(provider) {
-      if (!currentUser) return;
-
-      const { data, error } = await supabaseClient.functions.invoke('social-oauth-start', {
-        body: {
-          provider,
-          returnUrl: window.location.href
-        }
-      });
-
-      if (error || !data?.authorization_url) {
-        showMessage(`Collegamento ${providerLabel(provider)} non disponibile: ${error?.message || 'URL OAuth non ricevuto'}`, 'error');
-        return;
-      }
-
-      window.location.href = data.authorization_url;
-    }
-
-    function applyInitialStudioSetup() {
-      if (initialStudioSetupDone) return;
-      initialStudioSetupDone = true;
-
-      scoreboardToggle.checked = true;
-      overlayToggle.checked = true;
-      updateOverlay();
-
-      if (initialWaitMinutes > 0) {
-        const waitingInput = document.getElementById('waitingMinutesInput');
-        if (waitingInput) waitingInput.value = String(initialWaitMinutes);
-        showScene('waiting');
-        showMessage(`Studio pronto. Attesa impostata: ${initialWaitMinutes} minuti.`);
-        return;
-      }
-
-      if (shouldAutostart) {
-        startBroadcast();
-      }
-    }
-
     async function updateMatchStatus(status) {
-      if (!currentMatch) return null;
-      if (!isUuid(currentMatch.id)) {
-        currentMatch = { ...currentMatch, status };
-        renderMatch(currentMatch);
-        return currentMatch;
-      }
-      const payload = { status };
-      if (status === 'finished') payload.livepeer_status = 'ended';
-      const { error } = await supabaseClient.from('matches').update(payload).eq('id', currentMatch.id);
+      const { error } = await supabaseClient
+        .from('matches')
+        .update({ status })
+        .eq('id', matchId);
+
       if (error) {
         showMessage(`Errore durante l'aggiornamento dello stato: ${error.message}`, 'error');
         return null;
       }
-      currentMatch = { ...currentMatch, status };
-      renderMatch(currentMatch);
-      return currentMatch;
+
+      if (currentMatch) {
+        const updatedMatch = { ...currentMatch, status };
+        renderMatch(updatedMatch);
+        return updatedMatch;
+      }
+
+      updateStatusUi(status);
+      return { id: matchId, status };
     }
 
     async function saveMatchData() {
-      if (!currentMatch) return;
+      if (!matchId || !currentMatch) return;
+
       const score = `${homeScore}-${awayScore}`;
       const minute = currentMinute();
+
+      const { error } = await supabaseClient
+        .from('matches')
+        .update({ score, minute })
+        .eq('id', matchId);
+
+      if (error) {
+        showMessage(`Errore durante il salvataggio dei dati partita: ${error.message}`, 'error');
+        return;
+      }
+
       currentMatch = { ...currentMatch, score, minute };
       setText('scoreLine', `Risultato: ${homeScore} - ${awayScore}`);
       setText('minuteLine', `Minuto: ${minute}'`);
-      if (!isUuid(currentMatch.id)) return;
-      const payload = {
-        score,
-        minute,
-        timer_running:           timerRunning,
-        elapsed_seconds_at_save: recoveryMode ? recoverySeconds : elapsedSeconds,
-        timer_started_at:        timerRunning ? new Date().toISOString() : null,
-        // salviamo anche se siamo in modalità recupero nel campo minute come stringa speciale
-        // per permettere a match.html di capire che è recupero
-      };
-      // Se siamo in recupero, sovrascriviamo minute con valore negativo come segnale
-      if (recoveryMode) payload.minute = -(recoverySeconds);
-      const { error } = await supabaseClient.from('matches').update(payload).eq('id', currentMatch.id);
-      if (error) showMessage(`Errore durante il salvataggio dei dati partita: ${error.message}`, 'error');
     }
 
     async function startBroadcast() {
-      if (!currentMatch) return;
-      startBtn.disabled = true;
-      showMessage('Preparazione diretta LiveFut...');
-      try {
-        const lock = await acquireBroadcastLock();
-        if (!lock) {
-          startBtn.disabled = false;
-          return;
-        }
+      if (!matchId) return;
 
-        const streamInfo = await prepareLivepeerStream();
-        mediaStream = await requestCameraStream();
-        await startLivepeerStream(streamInfo, mediaStream);
-        await saveBroadcastDestinations('pending');
-        stopBtn.disabled = false;
-        startLivepeerStatusPolling();
-        showMessage('Diretta inviata a Livepeer. Il player spettatore si attiva appena Livepeer conferma il flusso.');
+      startBtn.disabled = true;
+      showMessage('Richiesta accesso a camera e microfono...');
+
+      try {
+        mediaStream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: 'environment',
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          },
+          audio: true
+        });
+
+        previewVideo.srcObject = mediaStream;
+        previewWrap.classList.add('active');
+
+        const updatedMatch = await updateMatchStatus('live');
+
+        if (updatedMatch) {
+          stopBtn.disabled = false;
+          showMessage('Diretta avviata.');
+          startSponsorCycle();
+        } else {
+          startBtn.disabled = false;
+        }
       } catch (error) {
         startBtn.disabled = false;
-        await stopLivepeerStream();
-        hideLivepeerBroadcastFrame();
-        if (mediaStream) {
-          mediaStream.getTracks().forEach(track => track.stop());
-          mediaStream = null;
-        }
-        previewVideo.srcObject = null;
-        previewWrap.classList.remove('active');
-        stopBtn.disabled = true;
-        await releaseBroadcastLock();
-        showMessage(error?.message || 'Impossibile avviare la diretta. Controlla i permessi del browser.', 'error');
+        stopBtn.disabled = !mediaStream;
+        showMessage('Impossibile accedere a camera e microfono. Controlla i permessi del browser.', 'error');
       }
     }
 
     async function stopBroadcast() {
       stopBtn.disabled = true;
       pauseTimer();
-      stopLivepeerStatusPolling();
       stopSponsorCycle();
       hideSponsor();
       hideScene();
-      await stopLivepeerStream();
-      hideLivepeerBroadcastFrame();
+
       if (mediaStream) {
         mediaStream.getTracks().forEach(track => track.stop());
         mediaStream = null;
       }
+
       previewVideo.srcObject = null;
       previewWrap.classList.remove('active');
       await saveMatchData();
+
       const updatedMatch = await updateMatchStatus('finished');
-      await saveBroadcastDestinations('finished');
-      await releaseBroadcastLock();
+
       if (updatedMatch) {
         startBtn.disabled = false;
         showMessage('Diretta terminata.');
@@ -1576,15 +1478,20 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
 
     function startTimer() {
       if (timerRunning) return;
+
       timerRunning = true;
-      saveMatchData(); // salva subito timer_running=true e timer_started_at
       timerInterval = setInterval(() => {
-        if (recoveryMode) recoverySeconds += 1;
-        else elapsedSeconds += 1;
+        if (recoveryMode) {
+          recoverySeconds += 1;
+        } else {
+          elapsedSeconds += 1;
+        }
+
         updateOverlay();
-        // salva ogni 10 secondi per tenere sincronizzato lo spettatore
-        const sec = recoveryMode ? recoverySeconds : elapsedSeconds;
-        if (sec % 10 === 0) saveMatchData();
+
+        if (!recoveryMode && elapsedSeconds % 60 === 0) {
+          saveMatchData();
+        }
       }, 1000);
     }
 
@@ -1609,110 +1516,83 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
       recoveryMode = true;
       recoverySeconds = 0;
       updateOverlay();
-      startTimer(); // startTimer chiama saveMatchData che salva recoveryMode via minute negativo
+      startTimer();
     }
 
     function changeScore(team, delta) {
-      if (team === 'home') homeScore = Math.max(0, homeScore + delta);
-      else awayScore = Math.max(0, awayScore + delta);
+      if (team === 'home') {
+        homeScore = Math.max(0, homeScore + delta);
+      } else {
+        awayScore = Math.max(0, awayScore + delta);
+      }
+
       updateOverlay();
       saveMatchData();
     }
 
-    function teamName(team) { return team === 'home' ? currentHomeTeam : currentAwayTeam; }
-    function oppositeTeamName(team) { return team === 'home' ? currentAwayTeam : currentHomeTeam; }
+    function teamName(team) {
+      return team === 'home' ? currentHomeTeam : currentAwayTeam;
+    }
+
+    function oppositeTeamName(team) {
+      return team === 'home' ? currentAwayTeam : currentHomeTeam;
+    }
 
     function addCommentary(title, text) {
       const item = document.createElement('div');
       item.className = 'commentary-item';
-      item.innerHTML = `<strong>${escapeHtml(title)}</strong><span>${escapeHtml(text)}</span>`;
+      item.innerHTML = `
+        <strong>${title}</strong>
+        <span>${text}</span>
+      `;
       commentaryList.prepend(item);
-    }
-
-    async function saveMatchEvent(payload) {
-      if (!currentMatch) return;
-
-      const eventPayload = {
-        match_id: isUuid(currentMatch.id) ? currentMatch.id : null,
-        official_match_id: currentMatch.match_id || null,
-        event_type: payload.event_type,
-        team_side: payload.team_side || null,
-        team_name: payload.team_name || null,
-        player_name: payload.player_name || null,
-        assist_name: payload.assist_name || null,
-        card_type: payload.card_type || null,
-        minute: currentMinute(),
-        score: `${homeScore}-${awayScore}`,
-        title: payload.title,
-        body: payload.body,
-        created_by: currentUser?.id || null
-      };
-
-      const { error } = await supabaseClient.from('match_events').insert(eventPayload);
-      if (error) {
-        showMessage(`Evento non salvato per gli spettatori: ${error.message}`, 'error');
-      }
     }
 
     function goalEvent() {
       const team = eventTeamSelect.value;
       const scorer = document.getElementById('scorerInput').value.trim();
       const assist = document.getElementById('assistInput').value.trim();
+
       changeScore(team, 1);
+
       const scoringTeam = teamName(team);
       const otherTeam = oppositeTeamName(team);
       const scorerText = scorer ? ` con ${scorer}` : '';
       const assistText = assist ? ` su assist di ${assist}` : '';
-      const leadText = homeScore === awayScore ? `${scoringTeam} trova il pareggio` : `${scoringTeam} colpisce e cambia il risultato`;
-      const body = `${leadText}${scorerText}${assistText}. GOL! Ora ${scoringTeam} e ${otherTeam} sono sul ${homeScore} - ${awayScore}.`;
-      addCommentary('Gol', body);
-      saveMatchEvent({
-        event_type: 'goal',
-        team_side: team,
-        team_name: scoringTeam,
-        player_name: scorer || null,
-        assist_name: assist || null,
-        title: 'Gol',
-        body
-      });
+      const leadText = homeScore === awayScore
+        ? `${scoringTeam} trova il pareggio`
+        : `${scoringTeam} colpisce e cambia il risultato`;
+
+      addCommentary(
+        'Gol',
+        `${leadText}${scorerText}${assistText}. GOL! Ora ${scoringTeam} e ${otherTeam} sono sul ${homeScore} - ${awayScore}.`
+      );
     }
 
     function chanceEvent() {
       const team = eventTeamSelect.value;
       const player = document.getElementById('scorerInput').value.trim();
-      const body = `${teamName(team)} si rende pericolosa${player ? ` con ${player}` : ''}. Azione importante, il risultato resta ${homeScore} - ${awayScore}.`;
-      addCommentary('Occasione', body);
-      saveMatchEvent({
-        event_type: 'chance',
-        team_side: team,
-        team_name: teamName(team),
-        player_name: player || null,
-        title: 'Occasione',
-        body
-      });
+      const playerText = player ? ` con ${player}` : '';
+      addCommentary(
+        'Occasione',
+        `${teamName(team)} si rende pericolosa${playerText}. Azione importante, il risultato resta ${homeScore} - ${awayScore}.`
+      );
     }
 
     function cardEvent() {
       const team = eventTeamSelect.value;
       const player = document.getElementById('cardPlayerInput').value.trim() || 'un giocatore';
       const card = document.getElementById('cardTypeSelect').value;
-      const title = `Cartellino ${card}`;
-      const body = `${card === 'rosso' ? 'Espulsione' : 'Ammonizione'} per ${player} della squadra ${teamName(team)}.`;
-      addCommentary(title, body);
-      saveMatchEvent({
-        event_type: 'card',
-        team_side: team,
-        team_name: teamName(team),
-        player_name: player,
-        card_type: card,
-        title,
-        body
-      });
+      addCommentary(
+        `Cartellino ${card}`,
+        `${card === 'rosso' ? 'Espulsione' : 'Ammonizione'} per ${player} della squadra ${teamName(team)}.`
+      );
     }
 
     function loadSponsorFile(input) {
       const file = input.files && input.files[0];
       if (!file) return;
+
       const url = URL.createObjectURL(file);
       sponsorImages.push(url);
       sponsorImages = sponsorImages.slice(0, 3);
@@ -1721,17 +1601,14 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
 
     function showSponsor() {
       if (!sponsorImages.length) {
-        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="360" viewBox="0 0 900 360"><rect width="900" height="360" rx="34" fill="#050505"/><rect x="16" y="16" width="868" height="328" rx="28" fill="none" stroke="#31d158" stroke-width="6"/><text x="450" y="158" text-anchor="middle" font-family="Arial" font-size="54" font-weight="800" fill="#31d158">LiveFut TV</text><text x="450" y="220" text-anchor="middle" font-family="Arial" font-size="28" font-weight="700" fill="#ffffff">Spazio sponsor</text></svg>`;
-        sponsorImage.src = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
-        sponsorOverlay.classList.add('show');
-        clearTimeout(sponsorHideTimeout);
-        sponsorHideTimeout = setTimeout(hideSponsor, 10000);
-        showMessage('Carica immagini sponsor per mostrarle durante la diretta.');
+        showMessage('Carica almeno una immagine sponsor.', 'error');
         return;
       }
+
       sponsorImage.src = sponsorImages[sponsorIndex % sponsorImages.length];
       sponsorIndex += 1;
       sponsorOverlay.classList.add('show');
+
       clearTimeout(sponsorHideTimeout);
       sponsorHideTimeout = setTimeout(hideSponsor, 10000);
     }
@@ -1744,9 +1621,13 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
 
     function startSponsorCycle() {
       stopSponsorCycle();
+
       if (!sponsorAutoToggle.checked) return;
+
       sponsorCycleInterval = setInterval(() => {
-        if (sponsorAutoToggle.checked && sponsorImages.length) showSponsor();
+        if (sponsorAutoToggle.checked && sponsorImages.length) {
+          showSponsor();
+        }
       }, 600000);
     }
 
@@ -1758,21 +1639,29 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     function showScene(type) {
       clearInterval(waitingCountdownInterval);
       sceneOverlay.classList.add('show');
+
       const score = `${currentHomeTeam} ${homeScore} - ${awayScore} ${currentAwayTeam}`;
+
       if (type === 'waiting') {
         const minutes = Math.max(1, Number(document.getElementById('waitingMinutesInput').value || 10));
         let remaining = minutes * 60;
+
         sceneKicker.textContent = 'Pre partita';
         sceneTitle.textContent = 'La partita inizierà tra poco';
         sceneSubtitle.textContent = `${currentHomeTeam} vs ${currentAwayTeam}`;
         sceneScore.textContent = '';
         sceneCountdown.textContent = formatClock(remaining);
+
         waitingCountdownInterval = setInterval(() => {
           remaining = Math.max(0, remaining - 1);
           sceneCountdown.textContent = formatClock(remaining);
-          if (remaining === 0) clearInterval(waitingCountdownInterval);
+
+          if (remaining === 0) {
+            clearInterval(waitingCountdownInterval);
+          }
         }, 1000);
       }
+
       if (type === 'halftime') {
         sceneKicker.textContent = 'Intervallo';
         sceneTitle.textContent = 'Fine primo tempo';
@@ -1780,6 +1669,7 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
         sceneScore.textContent = score;
         sceneCountdown.textContent = '';
       }
+
       if (type === 'final') {
         sceneKicker.textContent = 'Full time';
         sceneTitle.textContent = 'Fine partita';
@@ -1795,268 +1685,33 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
       sceneOverlay.classList.remove('show');
     }
 
-    async function loadOfficialMatch(matchId) {
-      const response = await fetch(OFFICIAL_DATA_URL, { cache:'no-store' });
-      if (!response.ok) throw new Error(`Dataset ufficiale non trovato: ${OFFICIAL_DATA_URL}`);
-      const payload = await response.json();
-      const match = (payload.matches || []).find(item => item.match_id === matchId);
-      if (!match) throw new Error('Partita ufficiale non trovata nel dataset.');
-      return officialMatchToStudio(match);
-    }
-
-    function isAdminProfile() {
-      return ['admin', 'administrator', 'owner', 'superuser', 'super_admin'].includes(String(currentProfile?.role || '').toLowerCase());
-    }
-
-    async function acquireBroadcastLock() {
-      if (!currentUser || !currentMatch) return null;
-
-      const { data: activeLocks, error: lockError } = await supabaseClient
-        .from('broadcast_locks')
-        .select('*')
-        .eq('match_id', currentMatch.id)
-        .eq('status', 'active')
-        .limit(1);
-
-      if (lockError) {
-        showMessage(`Errore controllo trasmissione: ${lockError.message}`, 'error');
-        return null;
-      }
-
-      const activeLock = activeLocks && activeLocks[0];
-
-      if (activeLock && activeLock.broadcaster_id !== currentUser.id && !isAdminProfile()) {
-        showBlockedBroadcast(activeLock);
-        return null;
-      }
-
-      if (activeLock && activeLock.broadcaster_id === currentUser.id) {
-        currentLockId = activeLock.id;
-        return activeLock;
-      }
-
-      if (activeLock && isAdminProfile()) {
-        await supabaseClient
-          .from('broadcast_locks')
-          .update({ status: 'ended', ended_at: new Date().toISOString() })
-          .eq('id', activeLock.id);
-      }
-
-      const { data: createdLock, error: createError } = await supabaseClient
-        .from('broadcast_locks')
-        .insert({
-          match_id: currentMatch.id,
-          official_match_id: currentMatch.match_id || null,
-          broadcaster_id: currentUser.id,
-          status: 'active'
-        })
-        .select('*')
-        .single();
-
-      if (createError) {
-        showMessage(`Impossibile bloccare la trasmissione: ${createError.message}`, 'error');
-        return null;
-      }
-
-      currentLockId = createdLock.id;
-      return createdLock;
-    }
-
-    async function releaseBroadcastLock() {
-      if (!currentLockId) return;
-
-      await supabaseClient
-        .from('broadcast_locks')
-        .update({ status: 'ended', ended_at: new Date().toISOString() })
-        .eq('id', currentLockId);
-
-      currentLockId = null;
-    }
-
-    async function requestSupportIntervention(reason) {
-      if (!currentUser || !currentMatch) return;
-
-      const { error } = await supabaseClient.from('support_requests').insert({
-        match_id: isUuid(currentMatch.id) ? currentMatch.id : null,
-        official_match_id: currentMatch.match_id || null,
-        requester_id: currentUser.id,
-        requester_name: currentProfile?.display_name || currentProfile?.username || currentUser.email || 'Utente LiveFut',
-        requester_email: currentUser.email || null,
-        match_title: `${currentMatch.home_team || 'Casa'} vs ${currentMatch.away_team || 'Ospite'}`,
-        reason
-      });
-
-      showMessage(error ? `Richiesta non inviata: ${error.message}` : 'Richiesta supporto inviata. Il team LiveFut potrà intervenire sulla diretta.', error ? 'error' : 'ok');
-    }
-
-    function showBlockedBroadcast(activeLock) {
-      pageContent.innerHTML = `
-        <div class="error-box">
-          <strong>Evento già in diretta</strong><br>
-          Non puoi trasmettere questa partita perché un altro broadcaster ha già avviato la diretta.<br><br>
-          Se ritieni che la diretta non rispetti gli standard LiveFut o sei responsabile dell'evento, contatta subito il supporto.
-          <div style="margin-top:16px;">
-            <label for="supportReasonInput">Descrivi il problema</label>
-            <textarea id="supportReasonInput" placeholder="Spiega perché stai richiedendo l'intervento sul blocco della diretta"></textarea>
-          </div>
-          <div class="button-row" style="margin-top:16px;">
-            <button class="btn btn-primary" id="supportOverrideBtn">Contatta supporto</button>
-            <a class="btn btn-secondary" href="match.html?id=${encodeURIComponent(currentMatch.id)}&mode=view">Vai alla partita</a>
-          </div>
-        </div>
-      `;
-
-      document.getElementById('supportOverrideBtn')?.addEventListener('click', () => {
-        const reason = document.getElementById('supportReasonInput')?.value.trim();
-        if (!reason) {
-          showMessage('Scrivi il motivo della richiesta di supporto.', 'error');
-          return;
-        }
-        requestSupportIntervention(`${reason} - Lock diretta: ${activeLock.id}`);
-      });
-    }
-
-    async function ensureSupabaseMatchForOfficial(officialMatch) {
-      const { data: existing, error: selectError } = await supabaseClient
-        .from('matches')
-        .select('*')
-        .eq('match_id', officialMatch.match_id)
-        .maybeSingle();
-
-      if (selectError) {
-        throw new Error(`Errore Supabase durante la ricerca della partita ufficiale: ${selectError.message}`);
-      }
-
-      if (existing) {
-        if (!existing.broadcaster_id && currentUser?.id) {
-          const { data: claimed, error: claimError } = await supabaseClient
-            .from('matches')
-            .update({ broadcaster_id: currentUser.id, updated_at: new Date().toISOString() })
-            .eq('id', existing.id)
-            .is('broadcaster_id', null)
-            .select('*')
-            .maybeSingle();
-
-          if (claimError) {
-            throw new Error(`Impossibile assegnare la partita al broadcaster: ${claimError.message}`);
-          }
-
-          if (claimed) {
-            return {
-              ...officialMatch,
-              ...claimed,
-              match_id: claimed.match_id || officialMatch.match_id,
-              competition_id: claimed.competition_id || officialMatch.competition_id,
-              discipline: claimed.discipline || officialMatch.discipline,
-              field: claimed.field || officialMatch.field,
-              source: claimed.source || 'lnd'
-            };
-          }
-        }
-
-        return {
-          ...officialMatch,
-          ...existing,
-          match_id: existing.match_id || officialMatch.match_id,
-          competition_id: existing.competition_id || officialMatch.competition_id,
-          discipline: existing.discipline || officialMatch.discipline,
-          field: existing.field || officialMatch.field,
-          source: existing.source || 'lnd'
-        };
-      }
-
-      const insertPayload = {
-        match_id: officialMatch.match_id,
-        competition_id: officialMatch.competition_id,
-        home_team: officialMatch.home_team,
-        away_team: officialMatch.away_team,
-        region: officialMatch.region,
-        discipline: officialMatch.discipline,
-        category: officialMatch.category,
-        field: officialMatch.field,
-        status: 'soon',
-        score: '0-0',
-        minute: 0,
-        broadcaster_id: currentUser.id,
-        source: 'lnd',
-        source_url: officialMatch.source_url,
-        match_date: officialMatch.match_date,
-        group_name: officialMatch.group_name,
-        age_group: officialMatch.age_group,
-        gender: officialMatch.gender,
-        competition_type: officialMatch.competition_type
-      };
-
-      const { data: created, error: insertError } = await supabaseClient
-        .from('matches')
-        .insert(insertPayload)
-        .select('*')
-        .single();
-
-      if (insertError) {
-        throw new Error(`Impossibile creare la partita live su Supabase: ${insertError.message}`);
-      }
-
-      return {
-        ...officialMatch,
-        ...created,
-        match_id: created.match_id || officialMatch.match_id,
-        competition_id: created.competition_id || officialMatch.competition_id,
-        source: created.source || 'lnd'
-      };
-    }
-
     async function loadMatch() {
-      try {
-        const user = await requireUser();
-        if (!user) return;
-
-        if (isUuid(supabaseMatchId)) {
-          const { data, error } = await supabaseClient.from('matches').select('*').eq('id', supabaseMatchId).single();
-          if (error) throw error;
-          if (!data) throw new Error('Partita non trovata.');
-          renderMatch(data);
-          await loadSocialAccounts();
-          await loadBroadcastDestinations();
-          if (socialConnected) showMessage(`${providerLabel(socialConnected)} collegato correttamente.`);
-          if (socialError) showMessage(`Collegamento social non riuscito: ${socialError}`, 'error');
-          applyInitialStudioSetup();
-          return;
-        }
-        if (officialMatchId) {
-          const officialMatch = await loadOfficialMatch(officialMatchId);
-          const match = await ensureSupabaseMatchForOfficial(officialMatch);
-          renderMatch(match);
-          await loadSocialAccounts();
-          await loadBroadcastDestinations();
-          applyInitialStudioSetup();
-          return;
-        }
-        if (supabaseMatchId && !isUuid(supabaseMatchId)) {
-          const officialMatch = await loadOfficialMatch(supabaseMatchId);
-          const match = await ensureSupabaseMatchForOfficial(officialMatch);
-          renderMatch(match);
-          await loadSocialAccounts();
-          await loadBroadcastDestinations();
-          applyInitialStudioSetup();
-          return;
-        }
+      if (!matchId) {
         showError('ID partita mancante. Apri lo studio dalla scheda partita.');
-      } catch (error) {
-        showError(`Impossibile caricare la partita: <strong>${escapeHtml(error.message)}</strong>`);
+        return;
       }
+
+      const { data, error } = await supabaseClient
+        .from('matches')
+        .select('*')
+        .eq('id', matchId)
+        .single();
+
+      if (error) {
+        showError(`Impossibile caricare la partita: <strong>${error.message}</strong>`);
+        return;
+      }
+
+      if (!data) {
+        showError('Partita non trovata.');
+        return;
+      }
+
+      renderMatch(data);
     }
 
     startBtn.addEventListener('click', startBroadcast);
     stopBtn.addEventListener('click', stopBroadcast);
-    Object.entries(destinationToggles).forEach(([provider, toggle]) => {
-      toggle.addEventListener('change', () => {
-        broadcastDestinations.set(provider, toggle.checked);
-      });
-    });
-    document.querySelectorAll('[data-social-connect]').forEach(button => {
-      button.addEventListener('click', () => requestSocialConnection(button.dataset.socialConnect));
-    });
     document.getElementById('timerStartBtn').addEventListener('click', startTimer);
     document.getElementById('timerPauseBtn').addEventListener('click', pauseTimer);
     document.getElementById('timerResetBtn').addEventListener('click', resetTimer);
@@ -2065,20 +1720,15 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     document.getElementById('homePlusBtn').addEventListener('click', () => changeScore('home', 1));
     document.getElementById('awayMinusBtn').addEventListener('click', () => changeScore('away', -1));
     document.getElementById('awayPlusBtn').addEventListener('click', () => changeScore('away', 1));
-    scoreboardToggle.addEventListener('change', updateOverlay);
-    overlayToggle.addEventListener('change', updateOverlay);
+    scoreboardToggle.addEventListener('change', () => { updateOverlay(); saveOverlaySettings(); });
+    overlayToggle.addEventListener('change', () => { updateOverlay(); saveOverlaySettings(); });
     sponsorAutoToggle.addEventListener('change', startSponsorCycle);
     themeSelect.addEventListener('change', () => {
+      saveOverlaySettings();
       applyOverlayTheme(overlayThemes[themeSelect.value]);
       updateOverlay();
     });
     document.getElementById('applyGraphicsBtn').addEventListener('click', applyCustomGraphics);
-    overlayFontSizeInput.addEventListener('input', applyCustomGraphics);
-    overlayPositionSelect.addEventListener('change', applyCustomGraphics);
-    landscapeBtn.addEventListener('click', () => setVideoFormat('landscape'));
-    portraitBtn.addEventListener('click', () => setVideoFormat('portrait'));
-    fitVideoBtn.addEventListener('click', toggleVideoFit);
-    fullscreenBtn.addEventListener('click', toggleFullscreen);
     document.getElementById('showSponsorBtn').addEventListener('click', showSponsor);
     document.getElementById('hideSponsorBtn').addEventListener('click', hideSponsor);
     document.getElementById('sponsorInput1').addEventListener('change', event => loadSponsorFile(event.target));
@@ -2093,18 +1743,18 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     document.getElementById('cardEventBtn').addEventListener('click', cardEvent);
 
     window.addEventListener('pagehide', () => {
-      if (mediaStream) mediaStream.getTracks().forEach(track => track.stop());
-      stopLivepeerStatusPolling();
+      if (mediaStream) {
+        mediaStream.getTracks().forEach(track => track.stop());
+      }
+
       stopSponsorCycle();
       clearInterval(waitingCountdownInterval);
     });
 
-    setVideoFormat('landscape');
-    setupConsoleSections();
-    setupConsoleDrawer();
-    applyOverlayTheme(overlayThemes.metalBlue);
-    applyCustomGraphics();
-    loadMatch();</script>
-<script src="https://cdn.iubenda.com/iubenda.js"></script>
+    applyOverlayTheme(overlayThemes.livefutClassic);
+    loadMatch();
+  </script>
+
+  <script src="https://cdn.iubenda.com/iubenda.js"></script>
 </body>
 </html>
