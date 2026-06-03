@@ -862,14 +862,12 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
       const city         = (document.getElementById('obCity')?.value||'').trim() || null;
       const favoriteTeam = (document.getElementById('obFavoriteTeam')?.value||'').trim() || null;
       const bio          = (document.getElementById('obBio')?.value||'').trim() || null;
-      const update = {};
+      const update = { onboarding_seen: true };
       if (username)     update.username      = username;
       if (city)         update.city          = city;
       if (favoriteTeam) update.favorite_team = favoriteTeam;
       if (bio)          update.bio           = bio;
-      if (Object.keys(update).length > 0) {
-        await sb.from('profiles').update(update).eq('id', uid);
-      }
+      await sb.from('profiles').update(update).eq('id', uid);
     }
 
     function closeOverlay() {
@@ -896,8 +894,8 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
       }
     });
 
-    skipBtn.addEventListener('click', () => {
-      if (currentStep >= 2) saveAndClose();
+    skipBtn.addEventListener('click', async () => {
+      await saveAndClose();
       closeOverlay();
     });
 

@@ -290,11 +290,10 @@
     try {
       const { data: profile } = await supabaseClient
         .from('profiles')
-        .select('username, city, display_name')
+        .select('onboarding_seen')
         .eq('id', user.id)
         .single();
-      const isNew = !profile?.username && !profile?.city;
-      return isNew ? 'live.html?onboarding=1' : 'live.html';
+      return profile?.onboarding_seen === true ? 'live.html' : 'live.html?onboarding=1';
     } catch(e) {
       return 'live.html';
     }
