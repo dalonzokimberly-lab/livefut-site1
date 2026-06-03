@@ -39,7 +39,17 @@
     .player-card,.side-card,.events-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
     .player-card{position:relative;overflow:visible;}
     .player{background:#000;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;position:relative;}
+    .player-card.viewer-portrait .player{aspect-ratio:9/16;}
+    .player-card.viewer-landscape .player{aspect-ratio:16/9;}
+    .player-card.viewer-fit .player-frame{object-fit:contain;}
+    .player-card:fullscreen{background:#000;border:0;border-radius:0;display:flex;align-items:center;justify-content:center;width:100vw;height:100vh;}
+    .player-card:fullscreen .player{width:100vw;height:100vh;aspect-ratio:auto;}
+    .player-card.viewer-fit.viewer-landscape:fullscreen .player{width:100vw;height:auto;max-height:100vh;aspect-ratio:16/9;}
+    .player-card.viewer-fit.viewer-portrait:fullscreen .player{width:min(100vw, calc(100vh * 9 / 16));height:100vh;aspect-ratio:9/16;}
+    .player-card:fullscreen .card-body{display:none;}
+    .player-card:fullscreen .spectator-overlay{inset:0;height:auto;aspect-ratio:auto;}
     .player-placeholder{text-align:center;padding:24px;}
+    .is-hidden{display:none!important;}
     .player-placeholder strong{font-family:'Barlow Condensed',sans-serif;font-size:20px;color:#fff;display:block;margin-bottom:6px;}
     .player-placeholder span{font-size:13px;color:var(--muted);}
     .card-body{padding:18px;}
@@ -71,6 +81,9 @@
     /* player iframe iniettato dal JS */
     .player-frame{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000;}
     .player{position:relative;}
+    .viewer-controls{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px;}
+    .viewer-controls .btn{padding:7px 11px;font-size:12px;}
+    .viewer-controls .is-active{background:#00c8ff;color:#060a0f;border-color:#00c8ff;}
     
     /* ── OVERLAY SPETTATORE — scoreboard sopra il player ── */
     :root{
@@ -90,6 +103,8 @@
       opacity:0;transition:opacity 0.4s ease;
     }
     .spectator-overlay.visible{opacity:1;}
+    .player-card.viewer-portrait .spectator-overlay{aspect-ratio:9/16;}
+    .player-card.viewer-landscape .spectator-overlay{aspect-ratio:16/9;}
     .spectator-overlay.pos-bottom{
       flex-direction:column-reverse;
     }
@@ -202,6 +217,12 @@
       <div class="card-body">
         <h2 id="videoTitle">Diretta partita</h2>
         <p id="videoDescription">Segui la partita su LiveFut TV.</p>
+        <div class="viewer-controls" id="viewerControls">
+          <button class="btn btn-secondary" id="viewerLandscapeBtn" type="button">Orizzontale</button>
+          <button class="btn btn-secondary" id="viewerPortraitBtn" type="button">Verticale</button>
+          <button class="btn btn-secondary" id="viewerFitBtn" type="button">Adatta</button>
+          <button class="btn btn-primary" id="viewerFullscreenBtn" type="button">Schermo intero</button>
+        </div>
         <div class="platforms" id="platformsList"><span class="pill">LiveFut TV</span></div>
         <div class="broadcast-panel" id="broadcastPanel" style="display:none">
           <strong>Modalità broadcaster</strong>
@@ -255,6 +276,8 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     const supabaseMatchId = params.get('id');
     const officialMatchId = params.get('match_id');
     const mode = params.get('mode') || 'view';
+    const VIEWER_PREF_KEY = 'livefut_viewer_player_prefs';
+    const viewerPrefs = loadViewerPrefs();
 
     const pageContent = document.getElementById('pageContent');
     let currentMatch = null;
@@ -372,6 +395,67 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
     function setText(id, value) {
       const el = document.getElementById(id);
       if (el) el.textContent = value;
+    }
+
+    function loadViewerPrefs() {
+      try {
+        return JSON.parse(localStorage.getItem(VIEWER_PREF_KEY) || '{}');
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function saveViewerPrefs() {
+      localStorage.setItem(VIEWER_PREF_KEY, JSON.stringify(viewerPrefs));
+    }
+
+    function setViewerButtonState() {
+      const orientation = viewerPrefs.orientation === 'portrait' ? 'portrait' : 'landscape';
+      const fit = viewerPrefs.fit === 'fit' ? 'fit' : 'fill';
+      document.getElementById('viewerLandscapeBtn')?.classList.toggle('is-active', orientation === 'landscape');
+      document.getElementById('viewerPortraitBtn')?.classList.toggle('is-active', orientation === 'portrait');
+      document.getElementById('viewerFitBtn')?.classList.toggle('is-active', fit === 'fit');
+      const fitBtn = document.getElementById('viewerFitBtn');
+      if (fitBtn) fitBtn.textContent = fit === 'fit' ? 'Riempi' : 'Adatta';
+    }
+
+    function applyViewerPrefs() {
+      const card = document.querySelector('.player-card');
+      if (!card) return;
+      const orientation = viewerPrefs.orientation === 'portrait' ? 'portrait' : 'landscape';
+      card.classList.toggle('viewer-portrait', orientation === 'portrait');
+      card.classList.toggle('viewer-landscape', orientation === 'landscape');
+      card.classList.toggle('viewer-fit', viewerPrefs.fit === 'fit');
+      setViewerButtonState();
+    }
+
+    function setViewerOrientation(orientation) {
+      viewerPrefs.orientation = orientation;
+      saveViewerPrefs();
+      applyViewerPrefs();
+    }
+
+    function toggleViewerFit() {
+      viewerPrefs.fit = viewerPrefs.fit === 'fit' ? 'fill' : 'fit';
+      saveViewerPrefs();
+      applyViewerPrefs();
+    }
+
+    async function openViewerFullscreen() {
+      const card = document.querySelector('.player-card');
+      if (!card) return;
+      try {
+        if (document.fullscreenElement) {
+          await document.exitFullscreen();
+          return;
+        }
+        await card.requestFullscreen();
+        if (screen.orientation?.lock && viewerPrefs.orientation !== 'portrait') {
+          screen.orientation.lock('landscape').catch(() => {});
+        }
+      } catch (error) {
+        console.warn('Schermo intero non disponibile:', error.message);
+      }
     }
 
     function providerLabel(provider) {
@@ -721,8 +805,10 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
       const playerHeadline = document.getElementById('playerHeadline');
       const playerText = document.getElementById('playerText');
       const videoDescription = document.getElementById('videoDescription');
+      const viewerControls = document.getElementById('viewerControls');
 
       if (mode === 'broadcast') {
+        if (viewerControls) viewerControls.style.display = 'none';
         modeBadge.classList.add('broadcast-badge');
         if (match.status === 'finished') {
           modeBadgeText.textContent = 'Partita conclusa';
@@ -748,6 +834,7 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
         setText('eventStatusText', 'Modalità broadcaster attiva');
         setText('eventStatusBadge', 'BROADCAST');
       } else {
+        if (viewerControls) viewerControls.style.display = '';
         modeBadge.classList.remove('broadcast-badge');
         modeBadgeText.textContent = isLivepeerReady(match)
           ? 'Diretta live'
@@ -1030,4 +1117,10 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
       donateCoins(Number(button.dataset.coins));
     });
 
+    document.getElementById('viewerLandscapeBtn')?.addEventListener('click', () => setViewerOrientation('landscape'));
+    document.getElementById('viewerPortraitBtn')?.addEventListener('click', () => setViewerOrientation('portrait'));
+    document.getElementById('viewerFitBtn')?.addEventListener('click', toggleViewerFit);
+    document.getElementById('viewerFullscreenBtn')?.addEventListener('click', openViewerFullscreen);
+
+    applyViewerPrefs();
     loadMatch();</script><script src="https://cdn.iubenda.com/iubenda.js"></script></body></html>
