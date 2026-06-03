@@ -304,26 +304,41 @@
     const email=document.getElementById('loginEmail').value.trim();
     const password=document.getElementById('loginPassword').value.trim();
     const{data,error}=await supabaseClient.auth.signInWithPassword({email,password});
-    if(error){showStatus(error.message,'error');return;}
+    if(error){
+      const message=String(error.message||'').toLowerCase().includes('invalid')
+        ? 'Credenziali non valide oppure email non ancora confermata. Controlla la mail di conferma prima di accedere.'
+        : error.message;
+      showStatus(message,'error');
+      return;
+    }
     await ensureProfile(data.user);
     window.location.href=await smartRedirect(data.user,redirectTarget);
   });
   document.getElementById('registerSubmit').addEventListener('click',async()=>{
     clearStatus();
+    const registerBtn=document.getElementById('registerSubmit');
     const displayName=document.getElementById('registerName').value.trim();
     const email=document.getElementById('registerEmail').value.trim();
     const password=document.getElementById('registerPassword').value.trim();
     const privacyConsent=document.getElementById('privacyConsent').checked;
+    if(!displayName||!email||!password){showStatus('Compila nome, email e password.','error');return;}
+    if(password.length<6){showStatus('La password deve avere almeno 6 caratteri.','error');return;}
     if(!privacyConsent){showStatus('Devi accettare Privacy Policy, Cookie Policy e Termini e Condizioni.','error');return;}
-    const{data,error}=await supabaseClient.auth.signUp({email,password,options:{emailRedirectTo:authRedirectUrl(redirectTarget),data:{display_name:displayName,privacy_accepted:true}}});
-    if(error){showStatus(error.message,'error');return;}
-    if(data.session&&data.user){
-      await ensureProfile(data.user);
-      window.location.href=await smartRedirect(data.user,redirectTarget);
-      return;
+    registerBtn.disabled=true;
+    registerBtn.textContent='Creazione...';
+    try{
+      const{data,error}=await supabaseClient.auth.signUp({email,password,options:{emailRedirectTo:authRedirectUrl('live.html?onboarding=1'),data:{display_name:displayName,privacy_accepted:true}}});
+      if(error){showStatus(error.message,'error');return;}
+      if(data.session&&data.user){
+        await ensureProfile(data.user);
+        window.location.href=await smartRedirect(data.user,redirectTarget);
+        return;
+      }
+      showStatus('Account creato. Ti abbiamo inviato una email di conferma: aprila prima di accedere. Controlla anche spam/promozioni.');
+    }finally{
+      registerBtn.disabled=false;
+      registerBtn.textContent='Crea account';
     }
-    showStatus('Account creato. Controlla la tua email e conferma la registrazione.');
-    setTab('login');
   });
   resetSubmitBtn.addEventListener('click',async()=>{
     clearStatus();
