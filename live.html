@@ -72,9 +72,106 @@
     footer a{color:var(--muted);}
     @media(max-width:820px){.nav{display:none;}.filters-grid{grid-template-columns:1fr 1fr;}}
     @media(max-width:540px){.filters-grid{grid-template-columns:1fr;}}
-  </style>
+  
+    /* ── ONBOARDING MODAL ── */
+    .ob-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.82);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity 0.35s ease;}
+    .ob-overlay.show{opacity:1;}
+    .ob-modal{background:#080d14;border:1px solid rgba(0,200,255,0.25);border-radius:16px;width:100%;max-width:480px;overflow:hidden;transform:translateY(24px);transition:transform 0.35s ease;}
+    .ob-overlay.show .ob-modal{transform:translateY(0);}
+
+    .ob-header{padding:24px 24px 0;text-align:center;}
+    .ob-step-dots{display:flex;justify-content:center;gap:6px;margin-bottom:18px;}
+    .ob-dot{width:7px;height:7px;border-radius:50%;background:rgba(0,200,255,0.2);transition:background 0.2s;}
+    .ob-dot.active{background:#00c8ff;}
+    .ob-icon{font-size:32px;margin-bottom:10px;}
+    .ob-header h2{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:#fff;text-transform:uppercase;margin:0 0 6px;letter-spacing:-0.3px;}
+    .ob-header p{font-size:14px;color:#5a8aaa;margin:0;line-height:1.6;}
+
+    .ob-body{padding:20px 24px;}
+    .ob-field{margin-bottom:12px;}
+    .ob-field label{font-size:11px;font-weight:700;color:#5a8aaa;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:5px;}
+    .ob-field input{width:100%;background:#0a1018;border:1px solid rgba(0,200,255,0.22);border-radius:8px;color:#e8f4ff;font-family:'Barlow',sans-serif;font-size:14px;padding:10px 14px;outline:none;transition:border-color 0.2s;}
+    .ob-field input:focus{border-color:#00c8ff;}
+    .ob-field input::placeholder{color:#3a5a6a;}
+
+    .ob-footer{padding:0 24px 24px;display:flex;gap:10px;}
+    .ob-btn-next{flex:1;background:#00c8ff;color:#060a0f;border:none;border-radius:8px;font-family:'Barlow',sans-serif;font-weight:700;font-size:14px;padding:11px;cursor:pointer;transition:background 0.2s;}
+    .ob-btn-next:hover{background:#22ddff;}
+    .ob-btn-skip{background:transparent;color:#3a5a6a;border:1px solid rgba(255,255,255,0.08);border-radius:8px;font-family:'Barlow',sans-serif;font-weight:600;font-size:13px;padding:11px 16px;cursor:pointer;transition:all 0.2s;}
+    .ob-btn-skip:hover{color:#5a8aaa;}
+
+    .ob-step{display:none;}
+    .ob-step.active{display:block;}
+
+    .ob-progress{height:3px;background:rgba(0,200,255,0.1);}
+    .ob-progress-bar{height:100%;background:#00c8ff;transition:width 0.4s ease;}
+
+    .ob-success{text-align:center;padding:16px 0 4px;}
+    .ob-success .ob-icon{font-size:40px;}
+
+    </style>
 </head>
 <body>
+
+<!-- ONBOARDING MODAL — appare solo al primo accesso -->
+<div class="ob-overlay" id="obOverlay" aria-modal="true" role="dialog" aria-label="Benvenuto su LiveFut TV">
+  <div class="ob-modal">
+    <div class="ob-progress"><div class="ob-progress-bar" id="obProgressBar" style="width:33%"></div></div>
+    <div class="ob-header">
+      <div class="ob-step-dots">
+        <div class="ob-dot active" id="obDot0"></div>
+        <div class="ob-dot" id="obDot1"></div>
+        <div class="ob-dot" id="obDot2"></div>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="ob-step active" id="obStep0">
+        <div class="ob-icon">👋</div>
+        <h2>Benvenuto su LiveFut TV</h2>
+        <p>Sei sulla piattaforma di live streaming per il calcio locale. Ci vogliono 30 secondi per configurare il tuo profilo.</p>
+      </div>
+      <!-- Step 2 -->
+      <div class="ob-step" id="obStep1">
+        <div class="ob-icon">🧑‍💼</div>
+        <h2>Chi sei?</h2>
+        <p>Scegli un username e dicci da dove segui il calcio.</p>
+      </div>
+      <!-- Step 3 -->
+      <div class="ob-step" id="obStep2">
+        <div class="ob-icon">⚽</div>
+        <h2>La tua squadra</h2>
+        <p>Opzionale — ma la community lo apprezza.</p>
+      </div>
+      <!-- Step 4 success -->
+      <div class="ob-step" id="obStep3">
+        <div class="ob-success">
+          <div class="ob-icon">✅</div>
+          <h2>Tutto pronto!</h2>
+          <p>Profilo salvato. Ora puoi seguire le dirette e supportare i broadcaster con le monete LiveFut.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="ob-body">
+      <!-- Step 2 fields -->
+      <div class="ob-step" id="obFields1">
+        <div class="ob-field"><label>Username</label><input id="obUsername" type="text" placeholder="es. marco_abruzzo" maxlength="32" autocomplete="username"/></div>
+        <div class="ob-field"><label>Città</label><input id="obCity" type="text" placeholder="es. Pescara" maxlength="60"/></div>
+      </div>
+      <!-- Step 3 fields -->
+      <div class="ob-step" id="obFields2">
+        <div class="ob-field"><label>Squadra del cuore</label><input id="obFavoriteTeam" type="text" placeholder="es. Napoli FC" maxlength="60"/></div>
+        <div class="ob-field"><label>Bio (opzionale)</label><input id="obBio" type="text" placeholder="es. Tifoso da sempre, broadcaster dal 2024" maxlength="120"/></div>
+      </div>
+    </div>
+
+    <div class="ob-footer">
+      <button class="ob-btn-skip" id="obSkipBtn">Salta</button>
+      <button class="ob-btn-next" id="obNextBtn">Inizia →</button>
+    </div>
+  </div>
+</div>
+
 <div class="page-bg"><svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" fill="none"><defs><radialGradient id="gp"><stop offset="0%" stop-color="#00c8ff" stop-opacity="0.07"/><stop offset="100%" stop-color="#00c8ff" stop-opacity="0"/></radialGradient></defs><ellipse cx="720" cy="450" rx="420" ry="270" fill="url(#gp)"/><rect x="120" y="60" width="1200" height="780" stroke="#00c8ff" stroke-width="1.5" opacity="0.06"/><line x1="720" y1="60" x2="720" y2="840" stroke="#00c8ff" stroke-width="1" opacity="0.05"/><circle cx="720" cy="450" r="110" stroke="#00c8ff" stroke-width="1" opacity="0.05"/><rect x="120" y="240" width="220" height="360" stroke="#00c8ff" stroke-width="1" opacity="0.05"/><rect x="1100" y="240" width="220" height="360" stroke="#00c8ff" stroke-width="1" opacity="0.05"/></svg></div>
 <header class="topbar"><div class="container topbar-inner">
   <a href="index.html"><span class="logo-live">LIVE</span><span class="logo-fut">FUT</span><span class="logo-tv">.TV</span></a>
@@ -718,4 +815,96 @@ const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
 
     resetNavigatorBtn.addEventListener('click', resetNavigator);
 
-    loadMatches();</script><script src="https://cdn.iubenda.com/iubenda.js"></script></body></html>
+    loadMatches();</script><script>
+
+  // ── ONBOARDING PRIMO ACCESSO ──
+  (function() {
+    const SUPABASE_URL = 'https://obiiemjaxmgqeavrkxdc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaWllbWpheG1ncWVhdnJreGRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NDM2OTgsImV4cCI6MjA5MjUxOTY5OH0.m_dkQYPSrj70u1LFC11vOafaU1oN8P7G6AN_qHMr69k';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const params = new URLSearchParams(window.location.search);
+    if (!params.get('onboarding')) return;
+
+    const overlay    = document.getElementById('obOverlay');
+    const nextBtn    = document.getElementById('obNextBtn');
+    const skipBtn    = document.getElementById('obSkipBtn');
+    const progressBar= document.getElementById('obProgressBar');
+
+    let currentStep = 0;
+    const steps  = [0,1,2,3].map(i => document.getElementById('obStep' + i));
+    const fields = [null,
+      document.getElementById('obFields1'),
+      document.getElementById('obFields2'),
+      null];
+    const dots   = [0,1,2].map(i => document.getElementById('obDot' + i));
+    const progress   = [33, 66, 100, 100];
+    const nextLabels = ['Inizia →', 'Avanti →', 'Salva profilo', 'Vai alle live'];
+
+    function goToStep(n) {
+      steps.forEach(s => s && s.classList.remove('active'));
+      fields.forEach(f => f && f.classList.remove('active'));
+      dots.forEach(d => d.classList.remove('active'));
+      steps[n] && steps[n].classList.add('active');
+      fields[n] && fields[n].classList.add('active');
+      if (n < 3) dots[n].classList.add('active');
+      progressBar.style.width = progress[n] + '%';
+      nextBtn.textContent = nextLabels[n];
+      skipBtn.style.display = n === 3 ? 'none' : '';
+      currentStep = n;
+    }
+
+    async function saveAndClose() {
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session) return;
+      const uid = session.user.id;
+      const username     = (document.getElementById('obUsername')?.value||'').trim().toLowerCase().replace(/[^a-z0-9_]/g,'') || null;
+      const city         = (document.getElementById('obCity')?.value||'').trim() || null;
+      const favoriteTeam = (document.getElementById('obFavoriteTeam')?.value||'').trim() || null;
+      const bio          = (document.getElementById('obBio')?.value||'').trim() || null;
+      const update = {};
+      if (username)     update.username      = username;
+      if (city)         update.city          = city;
+      if (favoriteTeam) update.favorite_team = favoriteTeam;
+      if (bio)          update.bio           = bio;
+      if (Object.keys(update).length > 0) {
+        await sb.from('profiles').update(update).eq('id', uid);
+      }
+    }
+
+    function closeOverlay() {
+      overlay.classList.remove('show');
+      setTimeout(() => { overlay.style.display = 'none'; }, 350);
+      const url = new URL(window.location.href);
+      url.searchParams.delete('onboarding');
+      window.history.replaceState({}, '', url.toString());
+    }
+
+    nextBtn.addEventListener('click', async () => {
+      if (currentStep === 0) {
+        goToStep(1);
+      } else if (currentStep === 1) {
+        goToStep(2);
+      } else if (currentStep === 2) {
+        nextBtn.disabled = true;
+        nextBtn.textContent = 'Salvataggio...';
+        await saveAndClose();
+        nextBtn.disabled = false;
+        goToStep(3);
+      } else {
+        closeOverlay();
+      }
+    });
+
+    skipBtn.addEventListener('click', () => {
+      if (currentStep >= 2) saveAndClose();
+      closeOverlay();
+    });
+
+    requestAnimationFrame(() => {
+      overlay.style.display = 'flex';
+      requestAnimationFrame(() => overlay.classList.add('show'));
+    });
+    goToStep(0);
+  })();
+</script><script src="https://cdn.iubenda.com/iubenda.js"></script></body></html>

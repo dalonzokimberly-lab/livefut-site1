@@ -231,13 +231,13 @@
   const statusBox=document.getElementById('statusBox');
 
   function sanitizeRedirectTarget(value){
-    if(!value)return'dashboard.html';
+    if(!value)return'live.html';
     try{
       const decoded=decodeURIComponent(value);
       const target=new URL(decoded,window.location.origin);
       const allowed=new Set(['dashboard.html','live.html','match.html','studio.html','create-match.html','tournaments.html','archiviopartite.html','profile.html','admin.html','index.html']);
       const page=target.pathname.split('/').pop();
-      if(target.origin!==window.location.origin||!allowed.has(page))return'dashboard.html';
+      if(target.origin!==window.location.origin||!allowed.has(page))return'live.html';
       return`${page}${target.search}${target.hash}`;
     }catch(e){return'dashboard.html';}
   }
@@ -281,6 +281,25 @@
     });
   });
   recoverToggle.addEventListener('click',()=>{clearStatus();recoverPanel.classList.toggle('show');});
+  async function smartRedirect(user, explicitTarget) {
+    // Se c'era un redirect esplicito (es. da partita) rispettalo
+    if (explicitTarget && explicitTarget !== 'live.html' && explicitTarget !== 'dashboard.html') {
+      return explicitTarget;
+    }
+    // Controlla se il profilo è già compilato (username o city presenti)
+    try {
+      const { data: profile } = await supabaseClient
+        .from('profiles')
+        .select('username, city, display_name')
+        .eq('id', user.id)
+        .single();
+      const isNew = !profile?.username && !profile?.city;
+      return isNew ? 'live.html?onboarding=1' : 'live.html';
+    } catch(e) {
+      return 'live.html';
+    }
+  }
+
   document.getElementById('loginSubmit').addEventListener('click',async()=>{
     clearStatus();
     const email=document.getElementById('loginEmail').value.trim();
@@ -288,7 +307,7 @@
     const{data,error}=await supabaseClient.auth.signInWithPassword({email,password});
     if(error){showStatus(error.message,'error');return;}
     await ensureProfile(data.user);
-    window.location.href=redirectTarget;
+    window.location.href=await smartRedirect(data.user,redirectTarget);
   });
   document.getElementById('registerSubmit').addEventListener('click',async()=>{
     clearStatus();
@@ -325,7 +344,14 @@
   });
   supabaseClient.auth.getSession().then(async({data})=>{
     if(authType==='recovery'){setTab('new-password');return;}
-    if(data.session&&loginParams.get('redirect')){await ensureProfile(data.session.user);window.location.href=redirectTarget;}
+    if(data.session){
+      await ensureProfile(data.session.user);
+      if(loginParams.get('redirect')){
+        window.location.href=await smartRedirect(data.session.user,redirectTarget);
+      } else {
+        window.location.href=await smartRedirect(data.session.user,'live.html');
+      }
+    }
   });
 </script>
 <script src="https://cdn.iubenda.com/iubenda.js"></script>
